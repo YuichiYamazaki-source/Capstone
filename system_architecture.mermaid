@@ -1,0 +1,65 @@
+flowchart TD
+    subgraph External["External Systems"]
+        RemoteStorage["🗄️ Remote Storage<br/>Inventory data (CSV etc.)"]
+        User["👤 Users"]
+    end
+
+    subgraph Pipeline["Data Pipeline"]
+        Spark["⚡ Distributed Processing Engine<br/>Cleansing & Transformation"]
+    end
+
+    subgraph Gateway["API Gateway"]
+        GW["API Gateway<br/>Routing"]
+    end
+
+    subgraph Services["Microservices"]
+        Auth["🔐 Auth Service<br/>Login / JWT Issuance"]
+        subgraph BusinessServices["Business Services"]
+            Product["📦 Product Service<br/>Product List, Detail & Stock Check"]
+            Cart["🛒 Cart Service<br/>Add, Remove & Stock Validation"]
+            Order["💳 Order Service<br/>Order Creation & Mock Payment"]
+            Semantic["🔍 Semantic Search Service<br/>Embedding Generation & Similarity Search"]
+        end
+    end
+
+    subgraph DB["Data Store"]
+        MongoDB[("NoSQL DB<br/>Users/Products/Inventory<br/>Carts/Orders/SearchHistory")]
+    end
+
+    subgraph LLMOps["LLM Ops"]
+        Embedding["Embedding Generation<br/>(LLM Provider)"]
+        ModelRegistry["Model Registry<br/>Version Management"]
+        VectorDB[("Vector DB<br/>Embedding Storage")]
+    end
+
+    subgraph ObsGroup["Monitoring"]
+        Monitoring["📊 Monitoring & Logs<br/>Observability Platform"]
+    end
+
+    subgraph CICD["CI/CD"]
+        Pipeline2["🔄 CI/CD Pipeline<br/>Auto Test & Auto Deploy"]
+    end
+
+    RemoteStorage -->|Batch Ingestion| Spark
+    Spark -->|Cleansed Inventory Data| MongoDB
+
+    User -->|HTTP Request| GW
+    GW --> Auth
+    Auth --> Product
+    Auth --> Cart
+    Auth --> Order
+    Auth --> Semantic
+
+    Auth --> MongoDB
+    Product --> MongoDB
+    Cart --> MongoDB
+    Order --> MongoDB
+    Semantic --> VectorDB
+    Semantic --> MongoDB
+
+    Cart -->|Stock Validation| MongoDB
+    Order -->|Stock Deduction| MongoDB
+
+    Embedding --> VectorDB
+    Embedding --> ModelRegistry
+    Services -->|Metrics & Logs| Monitoring
