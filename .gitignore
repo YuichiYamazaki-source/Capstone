@@ -1,0 +1,39 @@
+# Secrets
+.env
+
+# Logs
+logs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# PySpark / Java
+derby.log
+metastore_db/
+spark-warehouse/
+
+# Data (generated — not committed)
+data/
+
+# Qdrant storage
+qdrant_storage/
+
+# Node (future frontend)
+node_modules/
+dist/
+
+# pytest
+.pytest_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

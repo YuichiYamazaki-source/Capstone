@@ -1,0 +1,120 @@
+services:
+  # ===== Data Stores =====
+  mongo:
+    image: mongo:7
+    container_name: commerce-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: commerce-qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  # ===== Microservices =====
+  auth:
+    build:
+      context: .
+      dockerfile: src/auth/Dockerfile
+    container_name: commerce-auth
+    ports:
+      - "8001:8001"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - MONGO_DB=commerce
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-changeme-in-production}
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  product:
+    build:
+      context: .
+      dockerfile: src/product/Dockerfile
+    container_name: commerce-product
+    ports:
+      - "8002:8002"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - MONGO_DB=commerce
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-changeme-in-production}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - QDRANT_HOST=qdrant
+      - QDRANT_PORT=6333
+    depends_on:
+      mongo:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+
+  cart:
+    build:
+      context: .
+      dockerfile: src/cart/Dockerfile
+    container_name: commerce-cart
+    ports:
+      - "8003:8003"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - MONGO_DB=commerce
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-changeme-in-production}
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  order:
+    build:
+      context: .
+      dockerfile: src/order/Dockerfile
+    container_name: commerce-order
+    ports:
+      - "8004:8004"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+      - MONGO_DB=commerce
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-changeme-in-production}
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  # ===== Frontend =====
+  frontend:
+    build:
+      context: .
+      dockerfile: src/frontend/Dockerfile
+    container_name: commerce-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./src/frontend/src:/app/src
+      - ./src/frontend/index.html:/app/index.html
+
+  # ===== API Gateway =====
+  gateway:
+    image: nginx:alpine
+    container_name: commerce-gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth
+      - product
+      - cart
+      - order
+      - frontend
+
+volumes:
+  mongo_data:
+  qdrant_data:
