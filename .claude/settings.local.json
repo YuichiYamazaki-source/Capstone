@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv README.md.txt README.md)",
+      "Bash(mv MEMORY.md.txt MEMORY.md)",
+      "Bash(mv MOC.md.txt MOC.md)",
+      "Bash(/c/Users/yuila/miniconda3/python.exe -c \":*)",
+      "mcp__obsidian__obsidian_list_files_in_vault",
+      "mcp__obsidian__obsidian_list_files_in_dir",
+      "mcp__obsidian__obsidian_get_file_contents",
+      "mcp__obsidian__obsidian_append_content",
+      "mcp__obsidian__obsidian_patch_content",
+      "mcp__obsidian__obsidian_simple_search",
+      "WebFetch(domain:github.com)",
+      "Bash(/c/Users/yuila/miniconda3/python.exe -c \"import huggingface_hub; print\\(huggingface_hub.__version__\\)\")",
+      "Bash(/c/Users/yuila/miniconda3/python.exe -c \"import datasets; print\\(datasets.__version__\\)\")",
+      "WebFetch(domain:www.coursera.org)",
+      "Bash(/c/Users/yuila/miniconda3/python.exe -c \"import pandas; print\\(pandas.__version__\\)\")",
+      "Bash(/c/Users/yuila/miniconda3/python.exe -c \"import jupyter; print\\(''jupyter ok''\\)\")",
+      "Bash(/c/Users/yuila/miniconda3/python.exe -c \"import notebook; print\\(''notebook'', notebook.__version__\\)\")"
+    ]
+  }
+}
