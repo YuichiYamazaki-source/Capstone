@@ -1,0 +1,108 @@
+{
+  "timestamp": "2026-03-16T13:23:38.686833+00:00",
+  "version": "test-v6",
+  "ir_metrics": {
+    "total_cases": 2,
+    "avg_hit_rate": 0.5,
+    "avg_precision_at_5": 0.3,
+    "avg_recall_at_5": 0.5,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 1.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Introduction to Data Science and scikit-learn in Python",
+          "Capstone: Retrieving, Processing, and Visualizing Data with Python",
+          "Introduction to Scripting in Python Specialization",
+          "Data Science Fundamentals with Python and SQL Specialization",
+          "Automating Real-World Tasks with Python"
+        ],
+        "expected_titles": [
+          "Automating Real-World Tasks with Python",
+          "Capstone: Retrieving, Processing, and Visualizing Data with Python",
+          "Data Science Fundamentals with Python and SQL Specialization"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "hit_rate": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 5,
+        "retrieved_titles": [
+          "Introduction to Machine Learning with Python",
+          "Fundamentals of Machine Learning in Finance",
+          "Machine Learning Algorithms: Supervised Learning Tip to Tail",
+          "Introduction to Deep Learning & Neural Networks with Keras",
+          "Advanced Linear Models for Data Science 2: Statistical Linear Models"
+        ],
+        "expected_titles": [
+          "Getting Started with Machine Learning at the Edge on Arm",
+          "Applying Machine Learning to your Data with Google Cloud",
+          "Interpretable Machine Learning"
+        ]
+      }
+    ]
+  },
+  "tool_selection": {
+    "total_cases": 2,
+    "accuracy": 1.0,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "expected_tool": "search_courses_keyword",
+        "actual_tools": [
+          "search_courses_keyword"
+        ],
+        "match": true
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "expected_tool": "search_courses_semantic",
+        "actual_tools": [
+          "search_courses_semantic"
+        ],
+        "match": true
+      }
+    ]
+  },
+  "latency": {
+    "p50": 15238.73,
+    "p95": 15238.73,
+    "p99": 15238.73,
+    "avg": 12593.11
+  },
+  "llm_judge": {
+    "total_cases": 2,
+    "per_case": [
+      {
+        "id": "gt-01",
+        "scores": {
+          "answer_relevancy": 1.0,
+          "faithfulness": 0.6667,
+          "contextual_relevancy": 0.7778
+        }
+      },
+      {
+        "id": "gt-02",
+        "scores": {
+          "answer_relevancy": 0.875,
+          "faithfulness": 1.0,
+          "contextual_relevancy": 0.8
+        }
+      }
+    ],
+    "aggregate": {
+      "answer_relevancy": 0.9375,
+      "faithfulness": 0.8333,
+      "contextual_relevancy": 0.7889
+    }
+  }
+}

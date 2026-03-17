@@ -1,0 +1,783 @@
+{
+  "timestamp": "2026-03-16T18:13:37.441815+00:00",
+  "version": "v3.0-gt-rebuild",
+  "errors": [
+    {
+      "phase": "deepeval",
+      "error": "'cp932' codec can't encode character '\\u2728' in position 0: illegal multibyte sequence"
+    }
+  ],
+  "ir_metrics": {
+    "total_cases": 17,
+    "avg_hit_rate": 1.0,
+    "avg_precision_at_5": 0.6118,
+    "avg_recall_at_5": 0.4962,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 0.4286,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Introduction to Scripting in Python Specialization",
+          "Python: A Guided Journey from Introduction to Application Specialization",
+          "Python for Everybody Specialization",
+          "Programming for Designers Specialization",
+          "Python Fundamentals for Designers"
+        ],
+        "expected_titles": [
+          "Python for Everybody Specialization",
+          "Programming for Everybody (Getting Started with Python)",
+          "Introduction to Scripting in Python Specialization",
+          "Automating Real-World Tasks with Python",
+          "Python: A Guided Journey from Introduction to Application Specialization",
+          "Introduction to Python Functions",
+          "Capstone: Retrieving, Processing, and Visualizing Data with Python"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.8,
+        "recall_at_5": 0.5714,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Introduction to Machine Learning on AWS",
+          "Microsoft Azure Machine Learning",
+          "Code Yourself! An Introduction to Programming",
+          "Supervised Machine Learning: Regression and Classification",
+          "Applying Machine Learning to your Data with Google Cloud"
+        ],
+        "expected_titles": [
+          "Supervised Machine Learning: Regression and Classification",
+          "Introduction to Embedded Machine Learning",
+          "Introduction to Machine Learning on AWS",
+          "Machine Learning: Theory and Hands-on Practice with Python Specialization",
+          "Applying Machine Learning to your Data with Google Cloud",
+          "Supervised Machine Learning: Classification",
+          "Microsoft Azure Machine Learning"
+        ]
+      },
+      {
+        "id": "gt-04",
+        "query": "cybersecurity courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.8,
+        "recall_at_5": 0.4,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Foundations of Cybersecurity",
+          "Cybersecurity for Data Science",
+          "Advanced Cybersecurity",
+          "Cybersecurity in Healthcare (Hospitals & Care Centres)",
+          "Connect and Protect: Networks and Network Security"
+        ],
+        "expected_titles": [
+          "Foundations of Cybersecurity",
+          "Advanced Cybersecurity",
+          "IBM Cybersecurity Analyst Assessment",
+          "Certified in Cybersecurity Specialization",
+          "Cybersecurity in Healthcare (Hospitals & Care Centres)",
+          "Homeland Security and Cybersecurity Future",
+          "Introduction to Cybersecurity & Risk Management Specialization",
+          "Microsoft Cybersecurity Analyst Professional Certificate",
+          "Automated Cyber Security Incident Response",
+          "Cybersecurity for Data Science"
+        ]
+      },
+      {
+        "id": "gt-05",
+        "query": "I want to transition from backend development to data science",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.8,
+        "recall_at_5": 0.5,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Data Science Specialization",
+          ".NET FullStack Developer Specialization",
+          "Data Science Fundamentals with Python and SQL Specialization",
+          "Executive Data Science Specialization",
+          "Learn SQL Basics for Data Science Specialization"
+        ],
+        "expected_titles": [
+          "Data Science Fundamentals with Python and SQL Specialization",
+          "Data Science Specialization",
+          "Executive Data Science Specialization",
+          "Applied Data Science Capstone",
+          "Data Science Foundations: Statistical Inference Specialization",
+          "Data Science as a Field",
+          "Learn SQL Basics for Data Science Specialization",
+          "Tools for Data Science"
+        ]
+      },
+      {
+        "id": "gt-06",
+        "query": "deep learning courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 0.6,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Deep Learning and Reinforcement Learning",
+          "Deep Learning with Keras and Tensorflow",
+          "Capstone Assignment - CDSS 5",
+          "Probabilistic Deep Learning with TensorFlow 2",
+          "Machine Learning: Theory and Hands-on Practice with Python Specialization"
+        ],
+        "expected_titles": [
+          "Deep Learning with Keras and Tensorflow",
+          "Deep Learning and Reinforcement Learning",
+          "Deep Learning - Computer Vision for Beginners Using PyTorch",
+          "Probabilistic Deep Learning with TensorFlow 2",
+          "Explainable deep learning models for healthcare - CDSS 3"
+        ]
+      },
+      {
+        "id": "gt-08",
+        "query": "cloud computing and AWS",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.8,
+        "recall_at_5": 0.4444,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "AWS Cloud Technical Essentials",
+          "Introduction to AWS Cloud Careers",
+          "Cloud and AWS Basics",
+          "AWS Cloud Practitioner Certification Specialization",
+          "Cloud Computing Technologies - Master's"
+        ],
+        "expected_titles": [
+          "AWS Cloud Technical Essentials",
+          "Architecting Solutions on AWS",
+          "Automation in the AWS Cloud",
+          "AWS Cloud Practitioner Certification Specialization",
+          "Introduction to AWS Cloud Careers",
+          "Cloud and AWS Basics",
+          "AWS Fundamentals Specialization",
+          "DevOps on AWS Specialization",
+          "Data Engineering on AWS - Foundations"
+        ]
+      },
+      {
+        "id": "gt-10",
+        "query": "JavaScript web development",
+        "hit_rate": 1.0,
+        "precision_at_5": 1.0,
+        "recall_at_5": 0.8333,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Introduction to Javascript and Ajax: Building Web Apps",
+          "Fullstack Web Development",
+          "Introduction to HTML, CSS, & JavaScript",
+          "JavaScript Basics",
+          "Frontend Development Specialization"
+        ],
+        "expected_titles": [
+          "JavaScript Basics",
+          "Introduction to HTML, CSS, & JavaScript",
+          "Introduction to Javascript and Ajax: Building Web Apps",
+          "Fullstack Web Development",
+          "Frontend Development Specialization",
+          "Responsive Website Development and Design Specialization"
+        ]
+      },
+      {
+        "id": "gt-11",
+        "query": "I need to understand how to protect healthcare systems from cyber attacks",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 0.5,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Advanced Cybersecurity",
+          "Cybersecurity in Healthcare (Hospitals & Care Centres)",
+          "Homeland Security and Cybersecurity Future",
+          "Fundamentals of Computer Network Security Specialization",
+          "Health Informatics for Healthcare Professionals"
+        ],
+        "expected_titles": [
+          "Cybersecurity in Healthcare (Hospitals & Care Centres)",
+          "Foundations of Cybersecurity",
+          "Health Informatics for Healthcare Professionals",
+          "Advanced Cybersecurity",
+          "Assets, Threats, and Vulnerabilities",
+          "Connect and Protect: Networks and Network Security"
+        ]
+      },
+      {
+        "id": "gt-12",
+        "query": "courses about prompt engineering and ChatGPT",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.8,
+        "recall_at_5": 0.8,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Prompt Engineering Specialization",
+          "ChatGPT for Project Management: Execution, Tracking, Success",
+          "Advanced Data Analysis with ChatGPT",
+          "ChatGPT: Master Free AI Tools to Supercharge Productivity Specialization",
+          "AI for Web Developers Specialization"
+        ],
+        "expected_titles": [
+          "Prompt Engineering Specialization",
+          "ChatGPT: Master Free AI Tools to Supercharge Productivity Specialization",
+          "ChatGPT for Project Management: Execution, Tracking, Success",
+          "Advanced Data Analysis with ChatGPT",
+          "ChatGPT + Zapier: Automate Email Replies with AI"
+        ]
+      },
+      {
+        "id": "gt-13",
+        "query": "How can I build AI applications for production environments?",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.25,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "AI Workflow: AI in Production",
+          "AI for Project Managers and Scrum Masters",
+          "Machine Learning in the Enterprise",
+          "Gemini for DevOps Engineers",
+          "Setting a Generative AI Strategy"
+        ],
+        "expected_titles": [
+          "AI Workflow: AI in Production",
+          "Developing AI Applications with Python and Flask",
+          "AI for Web Developers Specialization",
+          "Generative AI for Data Engineers  Specialization"
+        ]
+      },
+      {
+        "id": "gt-14",
+        "query": "data visualization and analytics courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.4,
+        "recall_at_5": 0.2857,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Data Analysis and Visualization Foundations Specialization",
+          "BI Dashboards with IBM Cognos Analytics and Google Looker",
+          "Healthcare Information Design and Visualizations",
+          "Data Visualization with Python & R for Engineers",
+          "Use Tableau for Your Data Science Workflow Specialization"
+        ],
+        "expected_titles": [
+          "Data Analysis and Visualization Foundations Specialization",
+          "Data Visualization Capstone",
+          "Data Visualization and Communication with Tableau",
+          "Data Visualization with Python & R for Engineers",
+          "Data Analysis and Presentation Skills: the PwC Approach Final Project",
+          "Exploratory Data Analysis for the Public Sector with ggplot",
+          "Communicating Data Science Results"
+        ]
+      },
+      {
+        "id": "gt-15",
+        "query": "beginner AI courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.4,
+        "recall_at_5": 0.25,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "AI For Everyone",
+          "Generative AI Applications and Popular Tools",
+          "Leveraging Virtual Assistants for Personal Productivity",
+          "Microsoft Azure Machine Learning",
+          "Business Implications of AI: A Nano-course"
+        ],
+        "expected_titles": [
+          "AI For Everyone",
+          "AI and Disaster Management",
+          "AI for Web Developers Specialization",
+          "Business Implications of AI: A Nano-course",
+          "AI and Climate Change",
+          "AI For Business Specialization",
+          "Responsible AI in the Generative AI Era",
+          "Generative AI in Business Specialization"
+        ]
+      },
+      {
+        "id": "gt-16",
+        "query": "I want to explore the intersection of AI and healthcare",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.1667,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Generative AI for Healthcare Students and Professionals",
+          "Practical AI for Professionals",
+          "Explainable AI (XAI) Specialization",
+          "AI and Climate Change",
+          "Explainable Machine Learning (XAI)"
+        ],
+        "expected_titles": [
+          "Generative AI for Healthcare Students and Professionals",
+          "Explainable deep learning models for healthcare - CDSS 3",
+          "AI and Disaster Management",
+          "Health Informatics for Healthcare Professionals",
+          "Cybersecurity in Healthcare (Hospitals & Care Centres)",
+          "The Data Science of Health Informatics"
+        ]
+      },
+      {
+        "id": "gt-17",
+        "query": "Linux and security",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.8,
+        "recall_at_5": 0.5714,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Linux for Security Experts",
+          "Fundamentals of Computer Network Security Specialization",
+          "Linux for Developers",
+          "Linux Basics: The Command Line Interface - 6",
+          "The Complete Ethical Hacking Bootcamp: Beginner To Advanced Specialization"
+        ],
+        "expected_titles": [
+          "Linux for Security Experts",
+          "Enterprise System Management and Security",
+          "Linux for Developers",
+          "Linux Basics: The Command Line Interface - 6",
+          "Linux System Administration with IBM Power Systems",
+          "Fundamentals of Computer Network Security Specialization",
+          "Introduction to Network Security"
+        ]
+      },
+      {
+        "id": "gt-18",
+        "query": "UX design courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 1.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Design a User Experience for Social Good & Prepare for Jobs",
+          "User Interface Design and Prototyping",
+          "Google UX Design Professional Certificate",
+          "User Interface Design Specialization",
+          "Start the UX Design Process: Empathize, Define, and Ideate"
+        ],
+        "expected_titles": [
+          "Google UX Design Professional Certificate",
+          "Start the UX Design Process: Empathize, Define, and Ideate",
+          "Design a User Experience for Social Good & Prepare for Jobs"
+        ]
+      },
+      {
+        "id": "gt-19",
+        "query": "What courses can help me prepare for AWS certification?",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 0.5,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Preparing for and Passing Technical Certifications",
+          "AWS Cloud Practitioner Certification Specialization",
+          "AWS Fundamentals Specialization",
+          "Exam Prep MLS-C01: AWS Certified Specialty Machine Learning Specialization",
+          "AWS Advanced"
+        ],
+        "expected_titles": [
+          "AWS Cloud Practitioner Certification Specialization",
+          "Exam Prep MLS-C01: AWS Certified Specialty Machine Learning Specialization",
+          "AWS Cloud Technical Essentials",
+          "AWS Fundamentals Specialization",
+          "Architecting Solutions on AWS",
+          "Introduction to AWS Cloud Careers"
+        ]
+      },
+      {
+        "id": "gt-20",
+        "query": "intermediate level data science courses with good ratings",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.4,
+        "recall_at_5": 0.3333,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Data Science Foundations: Statistical Inference Specialization",
+          "Building Cloud Computing Solutions at Scale Specialization",
+          "Data Science as a Field",
+          "Python Project for Data Science",
+          "Object Oriented Java Programming: Data Structures and Beyond Specialization"
+        ],
+        "expected_titles": [
+          "Data Science Foundations: Statistical Inference Specialization",
+          "Data Science Fundamentals with Python and SQL Specialization",
+          "Advanced Linear Models for Data Science 2: Statistical Linear Models",
+          "Data Science as a Field",
+          "Applied Data Science Capstone",
+          "Process Mining: Data science in Action"
+        ]
+      }
+    ]
+  },
+  "tool_selection": {
+    "total_cases": 20,
+    "advisor_accuracy": 1.0,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-03",
+        "query": "beginner courses with rating above 4.8",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-04",
+        "query": "cybersecurity courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-05",
+        "query": "I want to transition from backend development to data science",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-06",
+        "query": "deep learning courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-07",
+        "query": "advanced level courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-08",
+        "query": "cloud computing and AWS",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-09",
+        "query": "courses from Google",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-10",
+        "query": "JavaScript web development",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-11",
+        "query": "I need to understand how to protect healthcare systems from cyber attacks",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-12",
+        "query": "courses about prompt engineering and ChatGPT",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-13",
+        "query": "How can I build AI applications for production environments?",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-14",
+        "query": "data visualization and analytics courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-15",
+        "query": "beginner AI courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-16",
+        "query": "I want to explore the intersection of AI and healthcare",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-17",
+        "query": "Linux and security",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-18",
+        "query": "UX design courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-19",
+        "query": "What courses can help me prepare for AWS certification?",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-20",
+        "query": "intermediate level data science courses with good ratings",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      }
+    ]
+  },
+  "filter_eval": {
+    "total_cases": 5,
+    "avg_filter_satisfaction": 1.0,
+    "avg_param_accuracy": 1.0,
+    "details": [
+      {
+        "id": "gt-03",
+        "query": "beginner courses with rating above 4.8",
+        "filter_satisfaction": 1.0,
+        "param_accuracy": 1.0,
+        "param_details": {
+          "level": true,
+          "min_rating": true
+        },
+        "expected_params": {
+          "level": "Beginner",
+          "min_rating": 4.8
+        },
+        "actual_args": {
+          "level": "Beginner",
+          "min_rating": 4.8,
+          "organization": ""
+        },
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Supervised Machine Learning: Regression and Classification",
+          "Cryptography",
+          "ISC2 Systems Security Certified Practitioner (SSCP)",
+          "SAS Programmer Professional Certificate",
+          "Learn to Teach Java:  Sequences, Primitive Types and Using Objects"
+        ]
+      },
+      {
+        "id": "gt-07",
+        "query": "advanced level courses",
+        "filter_satisfaction": 1.0,
+        "param_accuracy": 1.0,
+        "param_details": {
+          "level": true
+        },
+        "expected_params": {
+          "level": "Advanced"
+        },
+        "actual_args": {
+          "level": "Advanced",
+          "min_rating": 0.0,
+          "organization": ""
+        },
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Advanced Ruby Programming and Object-Oriented Design",
+          "Advanced Django: Introduction to Django Rest Framework",
+          "Everyday Excel, Part 3 (Projects)",
+          "Advanced Data Analysis and Visualization with Pandas",
+          "Foundations of Data Structures and Algorithms Specialization"
+        ]
+      },
+      {
+        "id": "gt-09",
+        "query": "courses from Google",
+        "filter_satisfaction": 1.0,
+        "param_accuracy": 1.0,
+        "param_details": {
+          "organization": true
+        },
+        "expected_params": {
+          "organization": "Google"
+        },
+        "actual_args": {
+          "level": "",
+          "min_rating": 0.0,
+          "organization": "Google"
+        },
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Foundations of Cybersecurity",
+          "Optimizing Your Google Cloud Costs",
+          "Gemini in Google Sheets",
+          "Google Cloud Infrastructure for AWS Professionals Specialization",
+          "Preparing for Google Cloud Certification: Cloud Developer Professional Certificate"
+        ]
+      },
+      {
+        "id": "gt-15",
+        "query": "beginner AI courses",
+        "filter_satisfaction": 1.0,
+        "param_accuracy": 1.0,
+        "param_details": {
+          "level": true
+        },
+        "expected_params": {
+          "level": "Beginner"
+        },
+        "actual_args": {
+          "level": "Beginner",
+          "min_rating": 0.0,
+          "organization": ""
+        },
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "AI For Everyone",
+          "Generative AI Applications and Popular Tools",
+          "Leveraging Virtual Assistants for Personal Productivity",
+          "Microsoft Azure Machine Learning",
+          "Business Implications of AI: A Nano-course"
+        ]
+      },
+      {
+        "id": "gt-20",
+        "query": "intermediate level data science courses with good ratings",
+        "filter_satisfaction": 1.0,
+        "param_accuracy": 1.0,
+        "param_details": {
+          "level": true
+        },
+        "expected_params": {
+          "level": "Intermediate"
+        },
+        "actual_args": {
+          "level": "Intermediate",
+          "min_rating": 4.0,
+          "organization": ""
+        },
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Data Science Foundations: Statistical Inference Specialization",
+          "Building Cloud Computing Solutions at Scale Specialization",
+          "Data Science as a Field",
+          "Python Project for Data Science",
+          "Object Oriented Java Programming: Data Structures and Beyond Specialization"
+        ]
+      }
+    ]
+  },
+  "latency": {
+    "p50": 6864.46,
+    "p95": 13327.6,
+    "p99": 13327.6,
+    "avg": 7431.85
+  }
+}

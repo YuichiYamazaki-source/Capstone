@@ -1,0 +1,187 @@
+{
+  "timestamp": "2026-03-16T16:53:19.012155+00:00",
+  "version": "v2.1-prompt-simplified",
+  "ir_metrics": {
+    "total_cases": 5,
+    "avg_hit_rate": 0.8,
+    "avg_precision_at_5": 0.52,
+    "avg_recall_at_5": 0.52,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 0.6,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Programming for Designers Specialization",
+          "Python for Everybody Specialization",
+          "Python: A Guided Journey from Introduction to Application Specialization",
+          "Introduction to Scripting in Python Specialization",
+          "Python Fundamentals for Designers"
+        ],
+        "expected_titles": [
+          "Python for Everybody Specialization",
+          "Python: A Guided Journey from Introduction to Application Specialization",
+          "Introduction to Scripting in Python Specialization",
+          "Programming for Everybody (Getting Started with Python)",
+          "Automating Real-World Tasks with Python"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 0.6,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Supervised Machine Learning: Regression and Classification",
+          "Introduction to Machine Learning on AWS",
+          "Applying Machine Learning to your Data with Google Cloud",
+          "AI For Business Specialization",
+          "Microsoft Azure Machine Learning"
+        ],
+        "expected_titles": [
+          "Supervised Machine Learning: Regression and Classification",
+          "Introduction to Embedded Machine Learning",
+          "Introduction to Machine Learning on AWS",
+          "Machine Learning: Theory and Hands-on Practice with Python Specialization",
+          "Applying Machine Learning to your Data with Google Cloud"
+        ]
+      },
+      {
+        "id": "gt-03",
+        "query": "beginner courses with rating above 4.8",
+        "hit_rate": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Cryptography",
+          "SAS Programmer Professional Certificate",
+          "Learn to Teach Java:  Sequences, Primitive Types and Using Objects",
+          "Supervised Machine Learning: Regression and Classification",
+          "ISC2 Systems Security Certified Practitioner (SSCP)"
+        ],
+        "expected_titles": [
+          "AI For Everyone",
+          "Prompt Engineering Specialization",
+          "ChatGPT: Master Free AI Tools to Supercharge Productivity Specialization"
+        ]
+      },
+      {
+        "id": "gt-04",
+        "query": "cybersecurity courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.8,
+        "recall_at_5": 0.8,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Foundations of Cybersecurity",
+          "Advanced Cybersecurity",
+          "IBM Cybersecurity Analyst Assessment",
+          "Certified in Cybersecurity Specialization",
+          "Homeland Security and Cybersecurity Future"
+        ],
+        "expected_titles": [
+          "Foundations of Cybersecurity",
+          "Advanced Cybersecurity",
+          "IBM Cybersecurity Analyst Assessment",
+          "Certified in Cybersecurity Specialization",
+          "Cybersecurity in Healthcare (Hospitals & Care Centres)"
+        ]
+      },
+      {
+        "id": "gt-05",
+        "query": "I want to transition from backend development to data science",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 0.6,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Data Science Specialization",
+          "Data Science Fundamentals with Python and SQL Specialization",
+          "Learn SQL Basics for Data Science Specialization",
+          "Executive Data Science Specialization",
+          "Python Project for Data Science"
+        ],
+        "expected_titles": [
+          "Data Science Fundamentals with Python and SQL Specialization",
+          "Data Science Specialization",
+          "Executive Data Science Specialization",
+          "Applied Data Science Capstone",
+          "Data Science Foundations: Statistical Inference Specialization"
+        ]
+      }
+    ]
+  },
+  "tool_selection": {
+    "total_cases": 5,
+    "advisor_accuracy": 1.0,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-03",
+        "query": "beginner courses with rating above 4.8",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-04",
+        "query": "cybersecurity courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-05",
+        "query": "I want to transition from backend development to data science",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      }
+    ]
+  },
+  "latency": {
+    "p50": 10229.47,
+    "p95": 11571.94,
+    "p99": 11571.94,
+    "avg": 9959.35
+  }
+}

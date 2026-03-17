@@ -1,0 +1,36 @@
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort (import sorting)
+    "UP",   # pyupgrade (modern Python syntax)
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "D",    # pydocstyle (docstring)
+    "C90",  # mccabe (complexity)
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "D100",  # Missing docstring in public module
+    "D104",  # Missing docstring in public package (__init__.py)
+    "D107",  # Missing docstring in __init__
+    "B008",  # function call in default argument (FastAPI Depends/Query pattern)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

@@ -1,0 +1,179 @@
+{
+  "timestamp": "2026-03-16T16:02:20.436423+00:00",
+  "version": "v2.1-hybrid-fix",
+  "ir_metrics": {
+    "total_cases": 5,
+    "avg_hit_rate": 0.6,
+    "avg_precision_at_5": 0.0,
+    "avg_recall_at_5": 0.0,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "C++ Programming: Classes and Data",
+          "Programming for Designers Specialization",
+          "Introduction to Machine Learning with Python",
+          "SAS® Programming for Distributed Computing in SAS® Viya®",
+          "SAS Programmer Professional Certificate"
+        ],
+        "expected_titles": [
+          "Automating Real-World Tasks with Python",
+          "Capstone: Retrieving, Processing, and Visualizing Data with Python",
+          "Data Science Fundamentals with Python and SQL Specialization"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Supervised Machine Learning: Regression and Classification",
+          "Introduction to Machine Learning with Python",
+          "Learning How to Learn: Powerful mental tools to help you master tough subjects",
+          "AI for Good Specialization",
+          "Overcoming Dyslexia"
+        ],
+        "expected_titles": [
+          "Getting Started with Machine Learning at the Edge on Arm",
+          "Applying Machine Learning to your Data with Google Cloud",
+          "Interpretable Machine Learning"
+        ]
+      },
+      {
+        "id": "gt-03",
+        "query": "beginner courses with rating above 4.8",
+        "hit_rate": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "A Bridge to the World: Korean Language for Beginners Ⅰ",
+          "Advancing Proficiency in U.S. Payroll Fundamentals",
+          "Mindfulness and Well-being: Living with Balance and Ease",
+          "SAS Programmer Professional Certificate",
+          "Introduction to Computers"
+        ],
+        "expected_titles": [
+          "AI For Everyone",
+          "Prompt Engineering Specialization",
+          "ChatGPT: Master Free AI Tools to Supercharge Productivity Specialization"
+        ]
+      },
+      {
+        "id": "gt-04",
+        "query": "cybersecurity courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Laravel: Configure, Validate, Authenticate and Authorize",
+          "Becoming a Cybersecurity Consultant",
+          "IBM Cybersecurity Analyst Assessment",
+          "Introduction to Computers",
+          "Information Technology (IT) and Cloud Fundamentals Specialization"
+        ],
+        "expected_titles": [
+          "Foundations of Cybersecurity",
+          "Certified in Cybersecurity Specialization",
+          "Cybersecurity in Healthcare (Hospitals & Care Centres)"
+        ]
+      },
+      {
+        "id": "gt-05",
+        "query": "I want to transition from backend development to data science",
+        "hit_rate": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Exploratory Data Analysis for the Public Sector with ggplot",
+          "SQL for Data Science with R",
+          "Data Visualization Capstone",
+          "Data Storage and Queries",
+          "Power BI Data Analyst Prep"
+        ],
+        "expected_titles": [
+          "Data Science Fundamentals with Python and SQL Specialization",
+          "Applied Data Science Capstone",
+          "Data Science Foundations: Statistical Inference Specialization"
+        ]
+      }
+    ]
+  },
+  "tool_selection": {
+    "total_cases": 5,
+    "advisor_accuracy": 1.0,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-03",
+        "query": "beginner courses with rating above 4.8",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-04",
+        "query": "cybersecurity courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-05",
+        "query": "I want to transition from backend development to data science",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      }
+    ]
+  },
+  "latency": {
+    "p50": 9136.49,
+    "p95": 15056.8,
+    "p99": 15056.8,
+    "avg": 9581.57
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "timestamp": "2026-03-16T15:24:16.983120+00:00",
+  "version": "v2.0-multi-agent",
+  "ir_metrics": {
+    "total_cases": 3,
+    "avg_hit_rate": 0.6667,
+    "avg_precision_at_5": 0.2667,
+    "avg_recall_at_5": 0.4444,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 1.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Introduction to Data Science and scikit-learn in Python",
+          "Capstone: Retrieving, Processing, and Visualizing Data with Python",
+          "Introduction to Scripting in Python Specialization",
+          "Data Science Fundamentals with Python and SQL Specialization",
+          "Automating Real-World Tasks with Python"
+        ],
+        "expected_titles": [
+          "Automating Real-World Tasks with Python",
+          "Capstone: Retrieving, Processing, and Visualizing Data with Python",
+          "Data Science Fundamentals with Python and SQL Specialization"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.3333,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Applying Machine Learning to your Data with Google Cloud",
+          "Advanced Tools for Digital Marketing Analytics",
+          "AI For Business Specialization",
+          "Data Science: Foundations using R Specialization",
+          "Data Science Specialization"
+        ],
+        "expected_titles": [
+          "Getting Started with Machine Learning at the Edge on Arm",
+          "Applying Machine Learning to your Data with Google Cloud",
+          "Interpretable Machine Learning"
+        ]
+      },
+      {
+        "id": "gt-03",
+        "query": "beginner courses with rating above 4.8",
+        "hit_rate": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Laravel: Configure, Validate, Authenticate and Authorize",
+          "Hydrocarbon Exploration and Production",
+          "Programming for Designers Specialization",
+          "Urban Climate Governance: Towards 1.5° Celsius Alignment",
+          "Medical Terminology II"
+        ],
+        "expected_titles": [
+          "AI For Everyone",
+          "Prompt Engineering Specialization",
+          "ChatGPT: Master Free AI Tools to Supercharge Productivity Specialization"
+        ]
+      }
+    ]
+  },
+  "tool_selection": {
+    "total_cases": 3,
+    "advisor_accuracy": 1.0,
+    "retrieval_accuracy": 0.6667,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "expected_retrieval_tool": "search_courses_keyword",
+        "actual_retrieval_tools": [
+          "search_courses_keyword"
+        ],
+        "retrieval_match": true
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "expected_retrieval_tool": "search_courses_semantic",
+        "actual_retrieval_tools": [
+          "filter_courses"
+        ],
+        "retrieval_match": false
+      },
+      {
+        "id": "gt-03",
+        "query": "beginner courses with rating above 4.8",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "expected_retrieval_tool": "filter_courses",
+        "actual_retrieval_tools": [
+          "filter_courses"
+        ],
+        "retrieval_match": true
+      }
+    ]
+  },
+  "latency": {
+    "p50": 16214.57,
+    "p95": 16640.12,
+    "p99": 16640.12,
+    "avg": 15379.95
+  },
+  "llm_judge": {
+    "total_cases": 3,
+    "per_case": [
+      {
+        "id": "gt-01",
+        "scores": {
+          "answer_relevancy": 1.0,
+          "faithfulness": 1.0,
+          "contextual_relevancy": 1.0
+        }
+      },
+      {
+        "id": "gt-02",
+        "scores": {
+          "answer_relevancy": 0.65,
+          "faithfulness": 0.8,
+          "contextual_relevancy": 0.8
+        }
+      },
+      {
+        "id": "gt-03",
+        "scores": {
+          "answer_relevancy": 0.5333,
+          "faithfulness": 0.5,
+          "contextual_relevancy": 1.0
+        }
+      }
+    ],
+    "aggregate": {
+      "answer_relevancy": 0.7278,
+      "faithfulness": 0.7667,
+      "contextual_relevancy": 0.9333
+    }
+  }
+}

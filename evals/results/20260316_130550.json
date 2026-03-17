@@ -1,0 +1,88 @@
+{
+  "timestamp": "2026-03-16T13:05:14.841324+00:00",
+  "version": "test-v3",
+  "errors": [
+    {
+      "phase": "deepeval",
+      "error": "'cp932' codec can't encode character '\\u2728' in position 0: illegal multibyte sequence"
+    }
+  ],
+  "ir_metrics": {
+    "total_cases": 2,
+    "avg_hit_rate": 0.5,
+    "avg_precision_at_5": 0.3,
+    "avg_recall_at_5": 0.5,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 1.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Introduction to Data Science and scikit-learn in Python",
+          "Capstone: Retrieving, Processing, and Visualizing Data with Python",
+          "Introduction to Scripting in Python Specialization",
+          "Data Science Fundamentals with Python and SQL Specialization",
+          "Automating Real-World Tasks with Python"
+        ],
+        "expected_titles": [
+          "Automating Real-World Tasks with Python",
+          "Capstone: Retrieving, Processing, and Visualizing Data with Python",
+          "Data Science Fundamentals with Python and SQL Specialization"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "hit_rate": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 5,
+        "retrieved_titles": [
+          "Introduction to Machine Learning with Python",
+          "Fundamentals of Machine Learning in Finance",
+          "Machine Learning Algorithms: Supervised Learning Tip to Tail",
+          "Introduction to Deep Learning & Neural Networks with Keras",
+          "Advanced Linear Models for Data Science 2: Statistical Linear Models"
+        ],
+        "expected_titles": [
+          "Getting Started with Machine Learning at the Edge on Arm",
+          "Applying Machine Learning to your Data with Google Cloud",
+          "Interpretable Machine Learning"
+        ]
+      }
+    ]
+  },
+  "tool_selection": {
+    "total_cases": 2,
+    "accuracy": 1.0,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "expected_tool": "search_courses_keyword",
+        "actual_tools": [
+          "search_courses_keyword"
+        ],
+        "match": true
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "expected_tool": "search_courses_semantic",
+        "actual_tools": [
+          "search_courses_semantic"
+        ],
+        "match": true
+      }
+    ]
+  },
+  "latency": {
+    "p50": 18139.75,
+    "p95": 18139.75,
+    "p99": 18139.75,
+    "avg": 16550.1
+  }
+}

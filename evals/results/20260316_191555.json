@@ -1,0 +1,139 @@
+{
+  "timestamp": "2026-03-16T19:15:30.217010+00:00",
+  "version": "v-score-config-test",
+  "ir_metrics": {
+    "total_cases": 2,
+    "avg_hit_rate": 1.0,
+    "avg_precision_at_5": 0.7,
+    "avg_recall_at_5": 0.5,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.6,
+        "recall_at_5": 0.4286,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Introduction to Scripting in Python Specialization",
+          "Python: A Guided Journey from Introduction to Application Specialization",
+          "Python for Everybody Specialization",
+          "Programming for Designers Specialization",
+          "Python Fundamentals for Designers"
+        ],
+        "expected_titles": [
+          "Python for Everybody Specialization",
+          "Programming for Everybody (Getting Started with Python)",
+          "Introduction to Scripting in Python Specialization",
+          "Automating Real-World Tasks with Python",
+          "Python: A Guided Journey from Introduction to Application Specialization",
+          "Introduction to Python Functions",
+          "Capstone: Retrieving, Processing, and Visualizing Data with Python"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.8,
+        "recall_at_5": 0.5714,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Introduction to Machine Learning on AWS",
+          "Microsoft Azure Machine Learning",
+          "Code Yourself! An Introduction to Programming",
+          "Supervised Machine Learning: Regression and Classification",
+          "Applying Machine Learning to your Data with Google Cloud"
+        ],
+        "expected_titles": [
+          "Supervised Machine Learning: Regression and Classification",
+          "Introduction to Embedded Machine Learning",
+          "Introduction to Machine Learning on AWS",
+          "Machine Learning: Theory and Hands-on Practice with Python Specialization",
+          "Applying Machine Learning to your Data with Google Cloud",
+          "Supervised Machine Learning: Classification",
+          "Microsoft Azure Machine Learning"
+        ]
+      }
+    ]
+  },
+  "tool_selection": {
+    "total_cases": 3,
+    "advisor_accuracy": 1.0,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-03",
+        "query": "beginner courses with rating above 4.8",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      }
+    ]
+  },
+  "filter_eval": {
+    "total_cases": 1,
+    "avg_filter_satisfaction": 1.0,
+    "avg_param_accuracy": 1.0,
+    "details": [
+      {
+        "id": "gt-03",
+        "query": "beginner courses with rating above 4.8",
+        "filter_satisfaction": 1.0,
+        "param_accuracy": 1.0,
+        "param_details": {
+          "level": true,
+          "min_rating": true
+        },
+        "expected_params": {
+          "level": "Beginner",
+          "min_rating": 4.8
+        },
+        "actual_args": {
+          "level": "Beginner",
+          "min_rating": 4.8,
+          "organization": ""
+        },
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "ISC2 Systems Security Certified Practitioner (SSCP)",
+          "Cryptography",
+          "Learn to Teach Java:  Sequences, Primitive Types and Using Objects",
+          "Programming for Everybody (Getting Started with Python)",
+          "Information Technology (IT) and Cloud Fundamentals Specialization"
+        ]
+      }
+    ]
+  },
+  "latency": {
+    "p50": 7908.55,
+    "p95": 9121.65,
+    "p99": 9121.65,
+    "avg": 8192.0
+  }
+}
