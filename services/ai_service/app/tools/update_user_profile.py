@@ -17,7 +17,7 @@ async def update_user_profile(
     skills: list[str] | None = None,
     motivation: str | None = None,
     interest_areas: list[str] | None = None,
-) -> str:
+) -> str:  # LLM-facing: changes affect model behavior
     """Update the user's profile with new information learned from conversation.
 
     Only update fields that the user has explicitly mentioned.

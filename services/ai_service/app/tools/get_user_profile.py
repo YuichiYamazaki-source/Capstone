@@ -12,7 +12,7 @@ logger = logging.getLogger("ai-service.tools.get_user_profile")
 
 
 @function_tool
-async def get_user_profile(user_id: str) -> str:
+async def get_user_profile(user_id: str) -> str:  # LLM-facing: changes affect model behavior
     """Get the user's profile including skills, goals, and interests.
 
     Use to personalize recommendations based on the user's background.

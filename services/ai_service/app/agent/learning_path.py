@@ -4,7 +4,7 @@ Searches courses at multiple levels, checks prerequisites,
 and designs an ordered learning path personalized to the user's current skills.
 """
 
-from agents import Agent
+from agents import Agent, ModelSettings
 
 from app.agent.course_retrieval import retrieve_courses
 from app.config import settings
@@ -91,9 +91,10 @@ that the information is temporarily unavailable.
 
 learning_path_agent = Agent(
     name="Learning Path Designer",
-    handoff_description="Designs structured, multi-step learning paths "
+    handoff_description="Designs structured, multi-step learning paths "  # LLM-facing: changes affect model behavior
     "from beginner to advanced with prerequisite ordering.",
     instructions=LEARNING_PATH_PROMPT,
     model=settings.openai_model,
+    model_settings=ModelSettings(max_tokens=4096),
     tools=[retrieve_courses, get_course_details, get_user_profile],
 )

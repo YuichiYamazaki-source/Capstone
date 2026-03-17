@@ -20,7 +20,7 @@ _RETRY_BACKOFF_BASE = 2  # seconds
 
 
 @function_tool
-async def web_search(query: str, max_results: int = 3) -> str:
+async def web_search(query: str, max_results: int = 3) -> str:  # LLM-facing: changes affect model behavior
     """Search the web for external information not in the course database.
 
     Use for career requirements, industry trends, or skill demand data.

@@ -33,21 +33,21 @@
 | 2026-03-16 | 3-6 RAG pipeline | ✅ | Hybrid search (BM25 sparse + dense + RRF fusion) + level normalization |
 | 2026-03-16 | 3-7 Explore chat | ✅ | Chat API connected to Learning Advisor Agent |
 | | **Phase 4: Measurable** | | **"Make it right"** |
-| 2026-03-17 | 4-1 Observability | ✅ | LangFuse v4 (traces + scores + cost tracking) + Arize Phoenix (OTEL). Agent routing tracked in metadata. |
+| 2026-03-17 | 4-1 Observability | ✅ | LangFuse v4 (traces + scores + cost tracking + prompt versioning). Phoenix evaluated and removed (no unique value over LangFuse). |
 | | 4-2 Full data ingestion | ⬜ | 6,645 courses embedding + indexing (currently 1,000 sample) |
 | 2026-03-16 | 4-3 Ground truth dataset | ✅ | 20 test cases: keyword/semantic + filter-only + mixed. Stratified from indexed data. |
-| 2026-03-17 | 4-4 Offline evaluation | ✅ | DeepEval (Answer Relevancy, Faithfulness, Contextual Relevancy) + IR metrics (Hit Rate, Precision@5, Recall@5) + Filter metrics + Agent Routing Accuracy. 38 GT cases (20 search + 18 multi-agent). |
-| 2026-03-17 | 4-5 Online evaluation | ✅ | Latency p50/p95/p99 captured. LangFuse score graph fixed (old latency_ms/courses_count deleted). LLM-as-a-Judge available via LangFuse GUI. |
+| 2026-03-17 | 4-4 Offline evaluation | ✅ | DeepEval (Answer Relevancy, Faithfulness, Actionability) + IR metrics (Hit Rate, Precision@5, Recall@5) + Filter metrics + Agent Routing Accuracy. 38 GT cases (20 search + 18 multi-agent). 65+ pytest tests. |
+| 2026-03-17 | 4-5 Online evaluation | ✅ | Latency p50/p95/p99 captured. LangFuse score graph fixed. LLM-as-a-Judge available via LangFuse GUI. |
 | | 4-6 Accuracy improvement | ⬜ | Reranker, prompt tuning, embedding refinement |
 | | 4-7 Performance optimization | ⬜ | Parallel ingestion, connection pooling |
 | | **Phase 5: Resilient** | | **"Make it safe"** |
 | | 5-1 Local fallback | ⬜ | MiniLM-L6-v2 embedding fallback |
-| | 5-2 Graceful degradation | ⬜ | Vector DB down → keyword fallback |
-| | 5-3 Error handling | ⬜ | Circuit breaker, retry, timeouts |
-| | 5-4 Guardrails | ⬜ | Content safety, prerequisite validation |
-| | 5-5 Test suite | ⬜ | Unit + Integration + Load (pytest + locust) |
+| 2026-03-17 | 5-2 Graceful degradation | ✅ | Qdrant down → MongoDB text search fallback |
+| 2026-03-17 | 5-3 Error handling | 🚧 | Retry + backoff in embedding/web_search, [ERROR] convention. Circuit breaker pending. |
+| 2026-03-17 | 5-4 Guardrails | ✅ | Input: sanitize + injection detection (9 patterns) + topic relevance + PII redaction. Output: PII + system info + credential masking. |
+| 2026-03-17 | 5-5 Test suite | ✅ | 65+ tests (10 files): routing, direct handling, e2e handoff, web search, career, skill gap, learning path, guardrails (22), quality metrics (15). |
 | | 5-6 CI/CD thresholds | ⬜ | Quality gates: accuracy, latency, guardrail pass rate |
-| | 5-7 Safety evaluation | ⬜ | Guardrail metrics, edge case testing |
+| 2026-03-17 | 5-7 Safety evaluation | ✅ | 22 guardrail tests: off-topic (5), injection (5), on-topic (5), PII (4), output sanitize (3). |
 | | **Phase 6: Deliverable** | | **"Ship it"** |
 | | 6-1 Architecture diagram | ⬜ | JPEG/PDF for submission |
 | | 6-2 Stakeholder PPT | ⬜ | EDA, Design, Decisions, Evaluation |

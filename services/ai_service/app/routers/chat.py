@@ -6,11 +6,14 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field, field_validator
 
 from app.agent.learning_advisor import run_agent
+from app.guardrails import sanitize_output, validate_input
 from app.monitoring import record_request_metrics
 from app.observability import observe_function
 
 router = APIRouter(tags=["chat"])
 logger = logging.getLogger("ai-service.chat")
+
+MAX_HISTORY_MESSAGES = 20
 
 # ObjectId: 24 hex characters
 _OBJECT_ID_RE = re.compile(r"^[0-9a-fA-F]{24}$")
@@ -82,28 +85,45 @@ async def chat(request: ChatRequest):
     if not request.message.strip():
         raise HTTPException(status_code=400, detail="Message cannot be empty")
 
+    # Input guardrails
+    sanitized_message, guardrail_error = await validate_input(request.message)
+    if guardrail_error:
+        return ChatResponse(reply=guardrail_error)
+
     start = time.perf_counter()
 
-    history = [{"role": msg.role, "content": msg.content} for msg in request.history]
+    # Truncate history to prevent context overflow and cost explosion
+    recent_history = request.history[-MAX_HISTORY_MESSAGES:]
+    history = [{"role": msg.role, "content": msg.content} for msg in recent_history]
 
-    result = await run_agent(
-        message=request.message,
-        user_id=request.user_id,
-        conversation_id=request.conversation_id,
-        history=history,
-    )
+    try:
+        result = await run_agent(
+            message=sanitized_message,
+            user_id=request.user_id,
+            conversation_id=request.conversation_id,
+            history=history,
+        )
+    except Exception as e:
+        logger.error("Agent execution failed", extra={"error": str(e)})
+        raise HTTPException(
+            status_code=500,
+            detail="Something went wrong. Please try again.",
+        ) from e
 
     latency_ms = (time.perf_counter() - start) * 1000
 
     record_request_metrics(
-        query=request.message,
+        query=sanitized_message,
         result=result,
         user_id=request.user_id,
         latency_ms=latency_ms,
     )
 
+    # Output guardrails
+    reply = sanitize_output(result["reply"])
+
     return ChatResponse(
-        reply=result["reply"],
+        reply=reply,
         conversation_id=result.get("conversation_id"),
         agent=result.get("agent", "Learning Advisor"),
         tool_calls=result.get("tool_calls", []),

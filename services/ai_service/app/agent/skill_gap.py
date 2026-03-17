@@ -4,7 +4,7 @@ Fetches user profile, researches required skills for the target role,
 computes the gap, and recommends courses to fill it.
 """
 
-from agents import Agent
+from agents import Agent, ModelSettings
 
 from app.agent.course_retrieval import retrieve_courses
 from app.config import settings
@@ -114,9 +114,10 @@ that the information is temporarily unavailable.
 
 skill_gap_agent = Agent(
     name="Skill Gap Analyst",
-    handoff_description="Analyzes skill gaps between the user's current abilities "
+    handoff_description="Analyzes skill gaps between the user's current abilities "  # LLM-facing: changes affect model behavior
     "and their target role, then recommends courses to fill gaps.",
     instructions=SKILL_GAP_PROMPT,
     model=settings.openai_model,
+    model_settings=ModelSettings(max_tokens=4096),
     tools=[get_user_profile, retrieve_courses, web_search],
 )

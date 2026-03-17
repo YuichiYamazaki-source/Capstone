@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="35" failures="2" skipped="0" tests="86" time="507.960" timestamp="2026-03-17T11:49:59.511921+00:00" hostname="c099d4d661de"><testcase classname="tests.eval.test_career" name="test_career_json_format" time="22.778" /><testcase classname="tests.eval.test_career" name="test_career_uses_web_search" time="12.522" /><testcase classname="tests.eval.test_career" name="test_career_web_search_utilization" time="17.528" /><testcase classname="tests.eval.test_career" name="test_career_action_plan_structure" time="20.786" /><testcase classname="tests.eval.test_direct_handling" name="test_direct_handling[greeting]" time="0.797" /><testcase classname="tests.eval.test_direct_handling" name="test_direct_handling[unrelated]" time="1.916" /><testcase classname="tests.eval.test_direct_handling" name="test_direct_handling[course_search]" time="9.084" /><testcase classname="tests.eval.test_direct_handling" name="test_greeting_no_tool_calls" time="1.310" /><testcase classname="tests.eval.test_direct_handling" name="test_course_search_uses_retrieve" time="7.232" /><testcase classname="tests.eval.test_e2e_handoff" name="test_e2e_skill_gap" time="16.495"><failure message="AssertionError: assert 'Career Advisor' == 'Skill Gap Analyst'&#10;  &#10;  - Skill Gap Analyst&#10;  + Career Advisor">tests/eval/test_e2e_handoff.py:21: in test_e2e_skill_gap
+    assert response["agent"] == "Skill Gap Analyst"
+E   AssertionError: assert 'Career Advisor' == 'Skill Gap Analyst'
+E     
+E     - Skill Gap Analyst
+E     + Career Advisor</failure></testcase><testcase classname="tests.eval.test_e2e_handoff" name="test_e2e_career" time="20.468" /><testcase classname="tests.eval.test_e2e_handoff" name="test_e2e_learning_path" time="14.094" /><testcase classname="tests.eval.test_guardrails.TestOffTopicRejection" name="test_off_topic_rejected[geography]" time="1.099" /><testcase classname="tests.eval.test_guardrails.TestOffTopicRejection" name="test_off_topic_rejected[creative_writing]" time="0.785" /><testcase classname="tests.eval.test_guardrails.TestOffTopicRejection" name="test_off_topic_rejected[cooking]" time="0.584" /><testcase classname="tests.eval.test_guardrails.TestOffTopicRejection" name="test_off_topic_rejected[jokes]" time="0.586" /><testcase classname="tests.eval.test_guardrails.TestOffTopicRejection" name="test_off_topic_rejected[weather]" time="0.664" /><testcase classname="tests.eval.test_guardrails.TestPromptInjectionBlocking" name="test_injection_blocked[ignore_instructions]" time="0.017" /><testcase classname="tests.eval.test_guardrails.TestPromptInjectionBlocking" name="test_injection_blocked[role_override]" time="0.016" /><testcase classname="tests.eval.test_guardrails.TestPromptInjectionBlocking" name="test_injection_blocked[reveal_prompt]" time="0.020" /><testcase classname="tests.eval.test_guardrails.TestPromptInjectionBlocking" name="test_injection_blocked[forget_rules]" time="0.019" /><testcase classname="tests.eval.test_guardrails.TestPromptInjectionBlocking" name="test_injection_blocked[dan_mode]" time="0.016" /><testcase classname="tests.eval.test_guardrails.TestOnTopicPassThrough" name="test_on_topic_passes[course_search]" time="8.458" /><testcase classname="tests.eval.test_guardrails.TestOnTopicPassThrough" name="test_on_topic_passes[career_skills]" time="17.453" /><testcase classname="tests.eval.test_guardrails.TestOnTopicPassThrough" name="test_on_topic_passes[learning_path]" time="20.974" /><testcase classname="tests.eval.test_guardrails.TestOnTopicPassThrough" name="test_on_topic_passes[course_comparison]" time="8.852" /><testcase classname="tests.eval.test_guardrails.TestOnTopicPassThrough" name="test_on_topic_passes[best_rated]" time="6.806" /><testcase classname="tests.eval.test_guardrails.TestInputPIIRedaction" name="test_email_redacted_from_input" time="0.008" /><testcase classname="tests.eval.test_guardrails.TestInputPIIRedaction" name="test_phone_redacted_from_input" time="0.000" /><testcase classname="tests.eval.test_guardrails.TestInputPIIRedaction" name="test_ssn_redacted_from_input" time="0.000" /><testcase classname="tests.eval.test_guardrails.TestInputPIIRedaction" name="test_clean_input_unchanged" time="0.000" /><testcase classname="tests.eval.test_guardrails.TestOutputSanitization" name="test_email_redacted" time="0.001" /><testcase classname="tests.eval.test_guardrails.TestOutputSanitization" name="test_phone_redacted" time="0.001" /><testcase classname="tests.eval.test_guardrails.TestOutputSanitization" name="test_stack_trace_removed" time="0.001" /><testcase classname="tests.eval.test_learning_path" name="test_learning_path_json_format" time="13.937" /><testcase classname="tests.eval.test_learning_path" name="test_learning_path_level_coherence" time="15.594" /><testcase classname="tests.eval.test_learning_path" name="test_learning_path_tool_calls" time="20.034" /><testcase classname="tests.eval.test_learning_path" name="test_learning_path_course_detail_utilization" time="12.005" /><testcase classname="tests.eval.test_learning_path" name="test_learning_path_level_coverage" time="18.039" /><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_skill_gap[skill_gap_0]" time="0.001"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_skill_gap[skill_gap_1]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_skill_gap[skill_gap_2]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_skill_gap[skill_gap_3]" time="0.001"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_skill_gap[skill_gap_4]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_career[career_0]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_career[career_1]" time="0.001"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_career[career_2]" time="0.001"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_career[career_3]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_career[career_4]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_learning_path[learning_path_0]" time="0.001"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_learning_path[learning_path_1]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_learning_path[learning_path_2]" time="0.001"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_learning_path[learning_path_3]" time="0.001"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_answer_relevancy_learning_path[learning_path_4]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_skill_gap[skill_gap_0]" time="0.001"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_skill_gap[skill_gap_1]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_skill_gap[skill_gap_2]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_skill_gap[skill_gap_3]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_skill_gap[skill_gap_4]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_career[career_0]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_career[career_1]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_career[career_2]" time="0.001"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_career[career_3]" time="0.001"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_career[career_4]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_learning_path[learning_path_0]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_learning_path[learning_path_1]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_learning_path[learning_path_2]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_learning_path[learning_path_3]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_faithfulness_learning_path[learning_path_4]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_actionability_career[career_0]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_actionability_career[career_1]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_actionability_career[career_2]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_actionability_career[career_3]" time="0.000"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_quality_metrics" name="test_actionability_career[career_4]" time="0.002"><error message="failed on setup with &quot;pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.&#10;See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture&quot;">/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:458: in setup
+    return super().setup()
+           ^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/site-packages/pytest_asyncio/plugin.py:728: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+E   pytest.PytestRemovedIn9Warning: 'test_quality_metrics.py' requested an async fixture 'agent_responses', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture</error></testcase><testcase classname="tests.eval.test_routing" name="test_routing_accuracy[skill_gap]" time="21.109" /><testcase classname="tests.eval.test_routing" name="test_routing_accuracy[career]" time="19.958" /><testcase classname="tests.eval.test_routing" name="test_routing_accuracy[learning_path]" time="11.749" /><testcase classname="tests.eval.test_routing" name="test_routing_accuracy[direct_search]" time="9.280" /><testcase classname="tests.eval.test_skill_gap" name="test_skill_gap_json_format" time="19.856" /><testcase classname="tests.eval.test_skill_gap" name="test_skill_gap_tool_calls" time="19.909" /><testcase classname="tests.eval.test_skill_gap" name="test_skill_gap_web_search_utilization" time="17.352"><failure message="AssertionError: assert 'Career Advisor' == 'Skill Gap Analyst'&#10;  &#10;  - Skill Gap Analyst&#10;  + Career Advisor">tests/eval/test_skill_gap.py:56: in test_skill_gap_web_search_utilization
+    assert response["agent"] == "Skill Gap Analyst"
+E   AssertionError: assert 'Career Advisor' == 'Skill Gap Analyst'
+E     
+E     - Skill Gap Analyst
+E     + Career Advisor</failure></testcase><testcase classname="tests.eval.test_web_search" name="test_skill_gap_uses_web_search" time="24.549" /><testcase classname="tests.eval.test_web_search" name="test_skill_gap_web_search_reflected_in_output" time="19.494" /><testcase classname="tests.eval.test_web_search" name="test_career_uses_web_search" time="21.382" /><testcase classname="tests.eval.test_web_search" name="test_career_web_search_reflected_in_output" time="17.970" /><testcase classname="tests.eval.test_web_search" name="test_learning_path_no_web_search" time="13.718" /></testsuite></testsuites>

@@ -1,15 +1,13 @@
-"""Online observability: request-level tracing.
+"""Online observability: request-level tracing via LangFuse.
 
 Provides visibility into WHAT happens inside each request:
   - LangFuse auto-instrumentation for OpenAI Agents SDK (traces, spans)
-  - Phoenix OTEL exporter for local trace visualization
   - measure_latency() for non-LLM steps (embedding, Qdrant, MongoDB)
 
 Environment variables:
   LANGFUSE_PUBLIC_KEY  - LangFuse cloud public key
   LANGFUSE_SECRET_KEY  - LangFuse cloud secret key
   LANGFUSE_BASE_URL    - defaults to https://us.cloud.langfuse.com
-  PHOENIX_COLLECTOR_ENDPOINT - Phoenix OTEL endpoint (optional)
 """
 
 import logging
@@ -21,42 +19,10 @@ logger = logging.getLogger("ai-service.observability")
 
 _initialized = False
 _tracing_enabled = False
-_phoenix_enabled = False
-
-
-def _init_phoenix():
-    """Initialize Arize Phoenix OTEL exporter if endpoint is configured."""
-    global _phoenix_enabled
-    phoenix_endpoint = os.getenv("PHOENIX_COLLECTOR_ENDPOINT")
-    if not phoenix_endpoint:
-        logger.info("Phoenix disabled: PHOENIX_COLLECTOR_ENDPOINT not set")
-        return
-
-    try:
-        from opentelemetry import trace
-        from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
-            OTLPSpanExporter,
-        )
-        from opentelemetry.sdk.trace import TracerProvider
-        from opentelemetry.sdk.trace.export import SimpleSpanProcessor
-
-        exporter = OTLPSpanExporter(endpoint=phoenix_endpoint)
-        provider = TracerProvider()
-        provider.add_span_processor(SimpleSpanProcessor(exporter))
-        trace.set_tracer_provider(provider)
-        _phoenix_enabled = True
-        logger.info(
-            "Phoenix initialized",
-            extra={"endpoint": phoenix_endpoint},
-        )
-    except ImportError:
-        logger.warning("Phoenix disabled: opentelemetry packages not installed")
-    except Exception as e:
-        logger.error("Phoenix init error", extra={"error": str(e)})
 
 
 def init_tracing():
-    """Initialize LangFuse + Phoenix + OpenAI Agents SDK instrumentation.
+    """Initialize LangFuse + OpenAI Agents SDK instrumentation.
 
     Safe to call multiple times (idempotent).
     Degrades gracefully if keys/packages are missing.
@@ -65,15 +31,13 @@ def init_tracing():
     if _initialized:
         return
 
-    _init_phoenix()
-
     # Disable SDK built-in tracing to avoid duplicate traces
-    # (LangFuse/Phoenix handle tracing via OpenInference instrumentation)
+    # (LangFuse handles tracing via OpenInference instrumentation)
     try:
         from agents.tracing import set_tracing_disabled
 
         set_tracing_disabled(True)
-        logger.info("SDK built-in tracing disabled (using LangFuse/Phoenix instead)")
+        logger.info("SDK built-in tracing disabled (using LangFuse instead)")
     except ImportError:
         pass
 
@@ -110,18 +74,6 @@ def init_tracing():
 def is_tracing_enabled() -> bool:
     """Check if LangFuse tracing is active."""
     return _tracing_enabled
-
-
-def is_phoenix_enabled() -> bool:
-    """Check if Phoenix OTEL tracing is active."""
-    return _phoenix_enabled
-
-
-def get_tracer(name: str):
-    """Get an OTEL tracer. Returns no-op tracer if Phoenix is disabled."""
-    from opentelemetry import trace
-
-    return trace.get_tracer(name)
 
 
 def observe_function(name: str = None):

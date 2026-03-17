@@ -14,7 +14,7 @@ from app.tools.hybrid_search import hybrid_search
 logger = logging.getLogger("ai-service.agent.retrieval")
 
 
-@function_tool
+@function_tool  # LLM-facing: changes affect model behavior
 async def retrieve_courses(
     query: str,
     level: str = "",

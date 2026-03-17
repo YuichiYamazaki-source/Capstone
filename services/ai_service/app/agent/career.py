@@ -4,7 +4,7 @@ Researches career paths, maps required skills, and recommends
 courses aligned with the user's career goals.
 """
 
-from agents import Agent
+from agents import Agent, ModelSettings
 
 from app.agent.course_retrieval import retrieve_courses
 from app.config import settings
@@ -109,9 +109,10 @@ that the information is temporarily unavailable.
 
 career_agent = Agent(
     name="Career Advisor",
-    handoff_description="Provides career path guidance, researches job market "
+    handoff_description="Provides career path guidance, researches job market "  # LLM-facing: changes affect model behavior
     "requirements, and recommends courses aligned with career goals.",
     instructions=CAREER_PROMPT,
     model=settings.openai_model,
+    model_settings=ModelSettings(max_tokens=4096),
     tools=[get_user_profile, retrieve_courses, web_search],
 )

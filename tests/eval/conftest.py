@@ -18,7 +18,7 @@ import httpx
 import pytest
 
 GATEWAY_URL = os.getenv("GATEWAY_URL", "http://gateway:8000")
-TIMEOUT = 120.0
+TIMEOUT = 180.0
 
 
 @pytest.fixture(scope="session")

@@ -8,7 +8,7 @@
 |-----------|--------|-------|
 | LLM Orchestration | OpenAI Agents SDK | Agent SDK-based architecture |
 | Evaluation | DeepEval | Required by Requirement 2 |
-| Observability | LangFuse, Arize Phoenix | Tracing & monitoring |
+| Observability | LangFuse | Tracing, cost tracking, prompt versioning |
 | Backend | Python + FastAPI | API layer (microservices: Gateway, Course Service, User Service) |
 | Frontend | React + JavaScript + Vite + MUI | Udemy-style UI, feature-based directory structure |
 | Dataset | Coursera Course Dataset | CSV/JSON, 6,645 courses |
@@ -78,6 +78,17 @@
 - Use case: API outage, cost optimization, offline development
 
 **Note**: For production/commercial use, model selection should be revisited with cost-performance benchmarking across embedding dimensions, latency, and retrieval quality.
+
+### Observability: LangFuse (Phoenix evaluated and removed)
+
+**Evaluated**: Arize Phoenix (local OTEL tracing)
+
+Phoenix was initially adopted alongside LangFuse for local trace visualization. After evaluation:
+- Phoenix v13.x removed the `px.Inferences` embedding visualization API (available in v4.x, but requires Python <3.13 and fragile dependency pins)
+- All Phoenix capabilities (tracing, latency, cost) were already covered by LangFuse cloud
+- Phoenix added Docker container overhead with no unique value
+
+**Decision**: LangFuse only. Covers tracing, cost tracking, prompt versioning (v1 registered), and evaluation dataset management. Embedding space visualization handled by standalone UMAP/t-SNE script (`scripts/visualize_embeddings.py`).
 
 ### Caching: Deferred
 

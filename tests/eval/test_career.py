@@ -40,3 +40,45 @@ async def test_career_uses_web_search():
     assert "web_search" in all_tools, (
         f"web_search not called. all_tool_calls: {all_tools}"
     )
+
+
+@pytest.mark.asyncio
+async def test_career_web_search_utilization():
+    """Career Advisor reflects web_search results in data_source field."""
+    response = await chat("What certifications do I need for a data engineering career?")
+    assert response["agent"] == "Career Advisor"
+
+    all_tools = response.get("all_tool_calls", [])
+    assert "web_search" in all_tools, (
+        f"web_search not called — career advice must be grounded in market data. "
+        f"all_tool_calls: {all_tools}"
+    )
+
+    parsed = extract_json_from_reply(response["reply"])
+    assert parsed is not None, "Could not parse JSON from reply"
+    assert parsed.get("data_source") == "web_search", (
+        f"data_source should be 'web_search' when web_search succeeds, "
+        f"got: {parsed.get('data_source')}"
+    )
+
+
+@pytest.mark.asyncio
+async def test_career_action_plan_structure():
+    """Career Advisor provides action plans with timeline."""
+    response = await chat("What career path should I take to become an AI engineer?")
+    assert response["agent"] == "Career Advisor"
+
+    parsed = extract_json_from_reply(response["reply"])
+    assert parsed is not None, "Could not parse JSON from reply"
+
+    paths = parsed.get("career_paths", [])
+    assert len(paths) > 0, "No career paths provided"
+
+    for path in paths:
+        action_plan = path.get("action_plan", [])
+        assert len(action_plan) > 0, (
+            f"Career path '{path.get('role')}' has no action plan"
+        )
+        for step in action_plan:
+            assert "month" in step, f"Action plan step missing 'month': {step}"
+            assert "action" in step, f"Action plan step missing 'action': {step}"

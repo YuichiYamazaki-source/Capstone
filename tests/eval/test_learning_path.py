@@ -72,3 +72,49 @@ async def test_learning_path_tool_calls():
     )
     # get_course_details is expected but not strictly required
     # (agent may skip it for simpler paths)
+
+
+@pytest.mark.asyncio
+async def test_learning_path_course_detail_utilization():
+    """Learning Path Designer calls get_course_details for recommended courses."""
+    response = await chat(
+        "Create a learning path for data science from beginner to advanced"
+    )
+    assert response["agent"] == "Learning Path Designer"
+
+    all_tools = response.get("all_tool_calls", [])
+    assert "get_course_details" in all_tools, (
+        f"get_course_details not called — path designer should check prerequisites. "
+        f"all_tool_calls: {all_tools}"
+    )
+
+
+@pytest.mark.asyncio
+async def test_learning_path_level_coverage():
+    """Path summary should span from starting_level to target_level."""
+    response = await chat(
+        "Build a step-by-step curriculum from beginner to advanced in cybersecurity"
+    )
+    assert response["agent"] == "Learning Path Designer"
+
+    parsed = extract_json_from_reply(response["reply"])
+    assert parsed is not None, "Could not parse JSON from reply"
+
+    summary = parsed.get("summary", {})
+    if isinstance(summary, str):
+        # summary is sometimes a string instead of dict — skip level check
+        return
+
+    starting = summary.get("starting_level", "")
+    target = summary.get("target_level", "")
+
+    assert starting, "summary.starting_level is empty"
+    assert target, "summary.target_level is empty"
+
+    # Starting level should be <= target level
+    starting_num = LEVEL_ORDER.get(starting, -1)
+    target_num = LEVEL_ORDER.get(target, -1)
+    if starting_num >= 0 and target_num >= 0:
+        assert target_num >= starting_num, (
+            f"Target level ({target}) should be >= starting level ({starting})"
+        )

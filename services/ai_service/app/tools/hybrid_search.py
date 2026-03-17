@@ -5,14 +5,20 @@ in a single API call, with server-side Reciprocal Rank Fusion.
 
 Architecture:
   query_points(prefetch=[bm25, dense], fusion=RRF) → merged results
+
+Fallback:
+  If Qdrant is unavailable, falls back to MongoDB text search on
+  title + description + skills fields.
 """
 
+import asyncio
 import logging
 
 from qdrant_client import models
 from qdrant_client.models import FieldCondition, Filter, MatchText, Range
 
 from app.agent.context import add_collected_courses
+from app.clients.mongodb import get_db
 from app.clients.openai_client import get_openai_client
 from app.clients.qdrant import get_qdrant_client
 from app.config import settings
@@ -24,6 +30,9 @@ QDRANT_COLLECTION = "courses"
 PREFETCH_LIMIT = 20
 # RRF weights: [BM25, Dense]. Boost semantic for intent-based queries.
 RRF_WEIGHTS = [1.0, 1.5]
+
+_MAX_RETRIES = 2
+_RETRY_BACKOFF_BASE = 2  # seconds
 
 # Normalize LLM-extracted level names to actual DB values.
 # DB stores "Beginner level", "Intermediate level", "Advanced level".
@@ -102,13 +111,8 @@ async def hybrid_search(
     # Enrich BM25 query with skill term for keyword matching
     bm25_query = f"{query} {skill}" if skill else query
 
-    # Generate dense embedding for semantic search
-    with measure_latency("hybrid_embedding"):
-        embed_resp = await openai.embeddings.create(
-            model=settings.openai_embedding_model,
-            input=query,
-        )
-    query_vector = embed_resp.data[0].embedding
+    # Generate dense embedding with retry
+    query_vector = await _embed_with_retry(openai, query)
 
     # Normalize level name before building filter
     level = _normalize_level(level)
@@ -116,49 +120,55 @@ async def hybrid_search(
     # Build payload filter (applied to both prefetches)
     qdrant_filter = _build_filter(level, min_rating, organization)
 
-    # Single Qdrant call: BM25 + dense + server-side RRF fusion
-    with measure_latency("hybrid_qdrant_query"):
-        results = qdrant.query_points(
-            collection_name=QDRANT_COLLECTION,
-            prefetch=[
-                models.Prefetch(
-                    query=models.Document(
-                        text=bm25_query,
-                        model="Qdrant/bm25",
+    # Try Qdrant hybrid search, fall back to MongoDB if unavailable
+    try:
+        with measure_latency("hybrid_qdrant_query"):
+            results = qdrant.query_points(
+                collection_name=QDRANT_COLLECTION,
+                prefetch=[
+                    models.Prefetch(
+                        query=models.Document(
+                            text=bm25_query,
+                            model="Qdrant/bm25",
+                        ),
+                        using="bm25",
+                        limit=PREFETCH_LIMIT,
+                        filter=qdrant_filter,
                     ),
-                    using="bm25",
-                    limit=PREFETCH_LIMIT,
-                    filter=qdrant_filter,
+                    models.Prefetch(
+                        query=query_vector,
+                        using="dense",
+                        limit=PREFETCH_LIMIT,
+                        filter=qdrant_filter,
+                    ),
+                ],
+                query=models.RrfQuery(
+                    rrf=models.Rrf(weights=RRF_WEIGHTS),
                 ),
-                models.Prefetch(
-                    query=query_vector,
-                    using="dense",
-                    limit=PREFETCH_LIMIT,
-                    filter=qdrant_filter,
-                ),
-            ],
-            query=models.RrfQuery(
-                rrf=models.Rrf(weights=RRF_WEIGHTS),
-            ),
-            limit=top_k,
-            with_payload=True,
-        )
+                limit=top_k,
+                with_payload=True,
+            )
 
-    # Format results
-    courses = []
-    for point in results.points:
-        p = point.payload
-        courses.append(
-            {
-                "id": p.get("mongo_id", ""),
-                "title": p.get("title", "Unknown"),
-                "organization": p.get("organization", "N/A"),
-                "level": p.get("level", "N/A"),
-                "rating": p.get("rating"),
-                "skills": p.get("skills", []),
-                "url": p.get("url"),
-            }
+        courses = []
+        for point in results.points:
+            p = point.payload
+            courses.append(
+                {
+                    "id": p.get("mongo_id", ""),
+                    "title": p.get("title", "Unknown"),
+                    "organization": p.get("organization", "N/A"),
+                    "level": p.get("level", "N/A"),
+                    "rating": p.get("rating"),
+                    "skills": p.get("skills", []),
+                    "url": p.get("url"),
+                }
+            )
+    except Exception as e:
+        logger.warning(
+            "Qdrant unavailable, falling back to MongoDB text search",
+            extra={"error": str(e)},
         )
+        courses = await _mongodb_fallback_search(query, level, min_rating, top_k)
 
     # Collect for API response
     add_collected_courses(courses)
@@ -177,4 +187,83 @@ async def hybrid_search(
         },
     )
 
+    return courses
+
+
+async def _embed_with_retry(openai, query: str) -> list[float]:
+    """Generate dense embedding with exponential backoff retry."""
+    last_error = None
+    for attempt in range(_MAX_RETRIES + 1):
+        try:
+            with measure_latency("hybrid_embedding"):
+                embed_resp = await openai.embeddings.create(
+                    model=settings.openai_embedding_model,
+                    input=query,
+                )
+            return embed_resp.data[0].embedding
+        except Exception as e:
+            last_error = e
+            if attempt < _MAX_RETRIES:
+                wait = _RETRY_BACKOFF_BASE**attempt
+                logger.warning(
+                    "Embedding retry",
+                    extra={
+                        "attempt": attempt + 1,
+                        "wait_s": wait,
+                        "error": str(e),
+                    },
+                )
+                await asyncio.sleep(wait)
+            else:
+                logger.error(
+                    "Embedding failed after retries",
+                    extra={"attempts": _MAX_RETRIES + 1, "error": str(e)},
+                )
+    raise last_error
+
+
+async def _mongodb_fallback_search(
+    query: str,
+    level: str,
+    min_rating: float,
+    top_k: int,
+) -> list[dict]:
+    """Fallback: MongoDB text search when Qdrant is unavailable."""
+    db = get_db()
+
+    mongo_filter: dict = {"$text": {"$search": query}}
+    if level:
+        mongo_filter["level"] = level
+    if min_rating > 0:
+        mongo_filter["rating"] = {"$gte": min_rating}
+
+    with measure_latency("mongodb_fallback_search"):
+        cursor = (
+            db.courses.find(
+                mongo_filter,
+                {"score": {"$meta": "textScore"}},
+            )
+            .sort([("score", {"$meta": "textScore"})])
+            .limit(top_k)
+        )
+        docs = await cursor.to_list(length=top_k)
+
+    courses = []
+    for doc in docs:
+        courses.append(
+            {
+                "id": str(doc["_id"]),
+                "title": doc.get("title", "Unknown"),
+                "organization": doc.get("organization", "N/A"),
+                "level": doc.get("level", "N/A"),
+                "rating": doc.get("rating"),
+                "skills": doc.get("skills", []),
+                "url": doc.get("url"),
+            }
+        )
+
+    logger.info(
+        "MongoDB fallback search completed",
+        extra={"query": query[:100], "result_count": len(courses)},
+    )
     return courses

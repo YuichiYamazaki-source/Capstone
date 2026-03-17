@@ -36,7 +36,6 @@ services:
       QDRANT_HOST: qdrant
       QDRANT_PORT: 6333
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o}
-      PHOENIX_COLLECTOR_ENDPOINT: http://phoenix:6006/v1/traces
       GATEWAY_URL: http://gateway:8000
     volumes:
       - ./evals:/app/evals
@@ -44,7 +43,6 @@ services:
     depends_on:
       - mongo
       - qdrant
-      - phoenix
     networks:
       - app-network
 
@@ -70,15 +68,6 @@ services:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:-dev-secret-key-change-in-production}
     depends_on:
       - mongo
-    networks:
-      - app-network
-
-  # ===== Observability =====
-  phoenix:
-    image: arizephoenix/phoenix:latest
-    ports:
-      - "6006:6006"
-    restart: unless-stopped
     networks:
       - app-network
 

@@ -537,6 +537,13 @@ def main():
             COLLECTION,
         )
 
+    # Create text index for fallback search
+    collection.create_index(
+        [("title", "text"), ("description", "text"), ("skills", "text")],
+        name="text_search_fallback",
+    )
+    logger.info("Text search index created")
+
     # Verify
     count = collection.count_documents({})
     levels = collection.distinct("level")

@@ -47,3 +47,21 @@ async def test_skill_gap_tool_calls():
     assert "retrieve_courses" in all_tools, (
         f"retrieve_courses not called. all_tool_calls: {all_tools}"
     )
+
+
+@pytest.mark.asyncio
+async def test_skill_gap_web_search_utilization():
+    """Skill Gap Analyst uses web_search for market-driven skill requirements."""
+    response = await chat("What skills should I prioritize to become a backend developer?")
+    assert response["agent"] == "Skill Gap Analyst"
+
+    all_tools = response.get("all_tool_calls", [])
+    assert "web_search" in all_tools, (
+        f"web_search not called — skill requirements should come from web search. "
+        f"all_tool_calls: {all_tools}"
+    )
+
+    # Verify web_search data is reflected in output
+    parsed = extract_json_from_reply(response["reply"])
+    assert parsed is not None, "Could not parse JSON from reply"
+    assert len(parsed.get("gaps", [])) > 0, "No gaps identified despite web_search call"

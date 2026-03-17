@@ -11,7 +11,7 @@ logger = logging.getLogger("ai-service.tools.get_course_details")
 
 
 @function_tool
-async def get_course_details(course_title: str) -> str:
+async def get_course_details(course_title: str) -> str:  # LLM-facing: changes affect model behavior
     """Get full details of a course by title.
 
     Use when you need complete information about a specific course

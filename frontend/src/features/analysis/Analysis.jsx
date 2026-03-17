@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -7,315 +7,611 @@ import Chip from "@mui/material/Chip";
 import Button from "@mui/material/Button";
 import LinearProgress from "@mui/material/LinearProgress";
 import Alert from "@mui/material/Alert";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import Skeleton from "@mui/material/Skeleton";
+import CircularProgress from "@mui/material/CircularProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import Fade from "@mui/material/Fade";
+import Slide from "@mui/material/Slide";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import WorkIcon from "@mui/icons-material/Work";
 import SchoolIcon from "@mui/icons-material/School";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CloseIcon from "@mui/icons-material/Close";
+import PersonIcon from "@mui/icons-material/Person";
 import { useAuth } from "../../contexts/AuthContext";
-import { getCourses } from "../courses/api";
-import { RECOMMENDED_PATHS } from "../../constants/recommendedPaths";
+import client from "../../api/client";
 
-const SKILL_DOMAINS = [
-  { domain: "Data & Analytics", skills: ["python", "data analysis", "sql", "statistics", "data visualization"] },
-  { domain: "AI & Machine Learning", skills: ["machine learning", "deep learning", "ai", "neural networks", "tensorflow"] },
-  { domain: "Cloud & Infrastructure", skills: ["cloud computing", "aws", "google cloud", "devops", "docker"] },
-  { domain: "Security", skills: ["cybersecurity", "network security", "encryption"] },
-  { domain: "Business & Management", skills: ["project management", "leadership", "communication", "marketing"] },
-  { domain: "Web Development", skills: ["javascript", "react", "html", "css", "node.js"] },
-];
+const CAREER_ICONS = {
+  default: <WorkIcon />,
+  engineer: <TrendingUpIcon />,
+  scientist: <TrendingUpIcon />,
+  manager: <WorkIcon />,
+  designer: <SchoolIcon />,
+};
 
-const CAREER_PATHS = [
-  { title: "Data Scientist", requiredDomains: ["Data & Analytics", "AI & Machine Learning"], icon: <TrendingUpIcon /> },
-  { title: "Cloud Engineer", requiredDomains: ["Cloud & Infrastructure", "Security"], icon: <SchoolIcon /> },
-  { title: "Product Manager", requiredDomains: ["Business & Management", "Data & Analytics"], icon: <WorkIcon /> },
-  { title: "ML Engineer", requiredDomains: ["AI & Machine Learning", "Cloud & Infrastructure", "Data & Analytics"], icon: <TrendingUpIcon /> },
-];
+function getCareerIcon(role) {
+  const lower = (role || "").toLowerCase();
+  for (const [key, icon] of Object.entries(CAREER_ICONS)) {
+    if (key !== "default" && lower.includes(key)) return icon;
+  }
+  return CAREER_ICONS.default;
+}
+
+// Slide transition for modal
+const SlideUp = (props) => <Slide direction="up" {...props} />;
 
 export default function Analysis() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const profile = user?.profile;
-  const [allCourses, setAllCourses] = useState([]);
 
-  useEffect(() => {
-    if (!user) { navigate("/login"); return; }
-    getCourses({ limit: 100 }).then((d) => setAllCourses(d.courses)).catch(() => {});
-  }, [user]);
+  // Each section has independent state
+  const [skillGap, setSkillGap] = useState({ data: null, evidence: "", loading: false, error: null, latency: 0 });
+  const [career, setCareer] = useState({ data: null, evidence: "", loading: false, error: null, latency: 0 });
+  const [learningPath, setLearningPath] = useState({ data: null, evidence: "", loading: false, error: null, latency: 0 });
+
+  // Evidence modal state
+  const [evidenceModal, setEvidenceModal] = useState({ open: false, title: "", content: "" });
+
+  const runAnalysis = useCallback(
+    async (type, setter) => {
+      if (!user?.id) return;
+      setter((prev) => ({ ...prev, loading: true, error: null }));
+      try {
+        const res = await client.post(`/analyze/${type}`, { user_id: user.id });
+        setter({
+          data: res.data.result,
+          evidence: res.data.evidence || "",
+          loading: false,
+          error: null,
+          latency: res.data.latency_ms,
+        });
+      } catch (err) {
+        const detail = err.response?.data?.detail || "Analysis failed. Please try again.";
+        setter((prev) => ({ ...prev, loading: false, error: detail }));
+      }
+    },
+    [user?.id],
+  );
+
+  if (!user) {
+    navigate("/login");
+    return null;
+  }
 
   if (!profile?.skills?.length) {
     return (
       <Box sx={{ px: { xs: 2, md: 6, lg: 10 }, py: 4 }}>
-        <Typography variant="h5" fontWeight={700} mb={2}>Personal Analysis</Typography>
+        <Typography variant="h5" fontWeight={700} mb={2}>
+          Personal Analysis
+        </Typography>
         <Paper sx={{ p: 4, textAlign: "center" }}>
-          <Typography variant="body1" mb={2}>Complete your profile to see personalized analysis.</Typography>
-          <Button variant="contained" onClick={() => navigate("/onboarding")}>Set Up Profile</Button>
+          <Typography variant="body1" mb={2}>
+            Complete your profile to see personalized analysis.
+          </Typography>
+          <Button variant="contained" onClick={() => navigate("/onboarding")}>
+            Set Up Profile
+          </Button>
         </Paper>
       </Box>
     );
   }
 
-  const userSkills = profile.skills.map((s) => s.toLowerCase());
-
-  // Domain coverage
-  const domainAnalysis = SKILL_DOMAINS.map((d) => {
-    const matched = d.skills.filter((s) => userSkills.some((us) => s.includes(us) || us.includes(s)));
-    const coverage = Math.round((matched.length / d.skills.length) * 100);
-    const coursesInDomain = allCourses.filter((c) =>
-      c.skills.some((cs) => d.skills.some((ds) => cs.toLowerCase().includes(ds) || ds.includes(cs.toLowerCase())))
-    );
-    return { ...d, matched, coverage, courseCount: coursesInDomain.length };
-  }).sort((a, b) => b.coverage - a.coverage);
-
-  // Career alignment
-  const careerAlignment = CAREER_PATHS.map((cp) => {
-    const domainScores = cp.requiredDomains.map((rd) => {
-      const da = domainAnalysis.find((d) => d.domain === rd);
-      return da ? da.coverage : 0;
-    });
-    const avgScore = Math.round(domainScores.reduce((a, b) => a + b, 0) / domainScores.length);
-    return { ...cp, score: avgScore, domainScores };
-  }).sort((a, b) => b.score - a.score);
-
-  // Skill gaps
-  const skillGaps = domainAnalysis
-    .filter((d) => d.coverage > 0 && d.coverage < 100)
-    .map((d) => ({
-      domain: d.domain,
-      missing: d.skills.filter((s) => !userSkills.some((us) => s.includes(us) || us.includes(s))),
-      courseCount: d.courseCount,
-    }));
+  const openEvidence = (title, content) => {
+    setEvidenceModal({ open: true, title, content });
+  };
 
   return (
     <Box sx={{ px: { xs: 2, md: 6, lg: 10 }, py: 3 }}>
-      <Typography variant="h5" fontWeight={700} mb={0.5}>Personal Analysis</Typography>
-      <Typography variant="body2" color="text.secondary" mb={2}>
-        Based on your profile — {profile.skills.length} skills, goal: {profile.motivation || "not set"}
+      {/* Header */}
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 0.5 }}>
+        <Typography variant="h5" fontWeight={700}>
+          Personal Analysis
+        </Typography>
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={<PersonIcon />}
+          onClick={() => navigate("/profile")}
+          sx={{ borderColor: "#6c63ff", color: "#6c63ff" }}
+        >
+          Edit Profile
+        </Button>
+      </Box>
+      <Typography variant="body2" color="text.secondary" mb={3}>
+        {profile.skills.length} skills registered — Goal: {profile.motivation || "not set"}
       </Typography>
 
-      <Alert severity="info" icon={<InfoOutlinedIcon />} sx={{ mb: 3 }}>
-        <Typography variant="body2">
-          <strong>Preview mode</strong> — Analysis is based on keyword matching with your profile.
-          In Phase 3, AI Agents will provide deeper, contextual analysis using LLM interpretation.
-        </Typography>
-      </Alert>
+      {/* Skill Gap Section */}
+      <AnalysisSection
+        title="Skill Gap Analysis"
+        icon={<TrendingUpIcon sx={{ fontSize: 20, color: "#6c63ff" }} />}
+        state={skillGap}
+        onAnalyze={() => runAnalysis("skill-gap", setSkillGap)}
+        onShowEvidence={() => openEvidence("Skill Gap Analysis — Evidence", skillGap.evidence)}
+      >
+        {skillGap.data && <SkillGapContent data={skillGap.data} navigate={navigate} />}
+      </AnalysisSection>
 
-      {/* Domain Coverage */}
-      <Paper sx={{ p: 3, mb: 2 }}>
-        <Typography variant="h6" fontWeight={700} fontSize={16} mb={2}>Skill Domain Coverage</Typography>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-          {domainAnalysis.map((d) => (
-            <Box key={d.domain} sx={{ flex: "1 1 calc(50% - 8px)", minWidth: 280 }}>
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                <Typography variant="body2" fontWeight={600}>{d.domain}</Typography>
-                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                  <Typography variant="caption" color="text.secondary">{d.courseCount} courses</Typography>
-                  <Typography variant="caption" fontWeight={600} color={d.coverage >= 60 ? "#388e3c" : d.coverage >= 30 ? "#f57c00" : "#999"}>
-                    {d.coverage}%
-                  </Typography>
-                </Box>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={d.coverage}
-                sx={{
-                  height: 8, borderRadius: 4, bgcolor: "#e0e0e0", mb: 0.5,
-                  "& .MuiLinearProgress-bar": {
-                    bgcolor: d.coverage >= 60 ? "#4caf50" : d.coverage >= 30 ? "#ff9800" : "#e0e0e0",
-                    borderRadius: 4,
-                  },
-                }}
-              />
-              <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
-                {d.skills.map((s) => {
-                  const has = userSkills.some((us) => s.includes(us) || us.includes(s));
-                  return (
-                    <Chip
-                      key={s}
-                      label={s}
-                      size="small"
-                      icon={has ? <CheckCircleIcon sx={{ fontSize: 14 }} /> : <RadioButtonUncheckedIcon sx={{ fontSize: 14 }} />}
-                      sx={{
-                        fontSize: 11,
-                        bgcolor: has ? "#e8f5e9" : "#f5f5f5",
-                        color: has ? "#388e3c" : "#999",
-                        "& .MuiChip-icon": { color: has ? "#4caf50" : "#ccc" },
-                      }}
-                    />
-                  );
-                })}
+      {/* Career Section */}
+      <AnalysisSection
+        title="Career Path Alignment"
+        icon={<WorkIcon sx={{ fontSize: 20, color: "#6c63ff" }} />}
+        state={career}
+        onAnalyze={() => runAnalysis("career", setCareer)}
+        onShowEvidence={() => openEvidence("Career Path Alignment — Evidence", career.evidence)}
+      >
+        {career.data && <CareerContent data={career.data} />}
+      </AnalysisSection>
+
+      {/* Learning Path Section */}
+      <AnalysisSection
+        title="Recommended Learning Path"
+        icon={<SchoolIcon sx={{ fontSize: 20, color: "#6c63ff" }} />}
+        state={learningPath}
+        onAnalyze={() => runAnalysis("learning-path", setLearningPath)}
+        onShowEvidence={() => openEvidence("Recommended Learning Path — Evidence", learningPath.evidence)}
+      >
+        {learningPath.data && <LearningPathContent data={learningPath.data} />}
+      </AnalysisSection>
+
+      {/* Evidence Modal */}
+      <EvidenceModal
+        open={evidenceModal.open}
+        title={evidenceModal.title}
+        content={evidenceModal.content}
+        onClose={() => setEvidenceModal({ open: false, title: "", content: "" })}
+      />
+    </Box>
+  );
+}
+
+function AnalysisSection({ title, icon, state, onAnalyze, onShowEvidence, children }) {
+  const { data, loading, error, latency } = state;
+  const hasEvidence = state.evidence && state.evidence.trim().length > 0;
+  const isAnalyzed = data !== null;
+
+  return (
+    <Paper sx={{ p: 3, mb: 2, transition: "box-shadow 0.3s", "&:hover": { boxShadow: 3 } }}>
+      {/* Section header */}
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: isAnalyzed ? 2 : 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {icon}
+          <Typography variant="h6" fontWeight={700} fontSize={16}>
+            {title}
+          </Typography>
+          {latency > 0 && (
+            <Chip
+              label={`${(latency / 1000).toFixed(1)}s`}
+              size="small"
+              sx={{ fontSize: 10, height: 20, bgcolor: "#e0f2f1", color: "#00695c" }}
+            />
+          )}
+        </Box>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          {hasEvidence && (
+            <Button
+              variant="text"
+              size="small"
+              startIcon={<InfoOutlinedIcon />}
+              onClick={onShowEvidence}
+              sx={{ color: "#6c63ff", fontSize: 12 }}
+            >
+              Evidence
+            </Button>
+          )}
+          <Button
+            variant={isAnalyzed ? "outlined" : "contained"}
+            size="small"
+            startIcon={loading ? <CircularProgress size={14} /> : isAnalyzed ? <RefreshIcon /> : <PlayArrowIcon />}
+            onClick={onAnalyze}
+            disabled={loading}
+            sx={
+              isAnalyzed
+                ? { borderColor: "#6c63ff", color: "#6c63ff" }
+                : { bgcolor: "#6c63ff", "&:hover": { bgcolor: "#5a52d5" } }
+            }
+          >
+            {loading ? "Analyzing..." : isAnalyzed ? "Refresh" : "Analyze"}
+          </Button>
+        </Box>
+      </Box>
+
+      {/* Error */}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
+      {/* Loading skeleton */}
+      {loading && !data && (
+        <Box>
+          <Skeleton variant="text" width="40%" height={24} />
+          <Skeleton variant="rectangular" height={100} sx={{ mt: 1, borderRadius: 1 }} />
+        </Box>
+      )}
+
+      {/* Not analyzed yet */}
+      {!isAnalyzed && !loading && !error && (
+        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic" }}>
+          Not analyzed yet. Click "Analyze" to run AI-powered analysis.
+        </Typography>
+      )}
+
+      {/* Content */}
+      {isAnalyzed && <Fade in={isAnalyzed} timeout={500}>{children}</Fade>}
+    </Paper>
+  );
+}
+
+function EvidenceModal({ open, title, content, onClose }) {
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      TransitionComponent={SlideUp}
+      PaperProps={{ sx: { borderRadius: 3, maxHeight: "80vh" } }}
+    >
+      <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <InfoOutlinedIcon sx={{ color: "#6c63ff" }} />
+          <Typography variant="h6" fontSize={16} fontWeight={700}>
+            {title}
+          </Typography>
+        </Box>
+        <IconButton onClick={onClose} size="small">
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent dividers>
+        {content ? (
+          <Typography
+            variant="body2"
+            sx={{
+              whiteSpace: "pre-wrap",
+              lineHeight: 1.8,
+              "& strong": { color: "#6c63ff" },
+            }}
+          >
+            {content}
+          </Typography>
+        ) : (
+          <Typography variant="body2" color="text.secondary" sx={{ fontStyle: "italic" }}>
+            No detailed evidence available for this analysis.
+          </Typography>
+        )}
+      </DialogContent>
+      <DialogActions sx={{ px: 3, py: 1.5 }}>
+        <Button onClick={onClose} sx={{ color: "#6c63ff" }}>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+function SkillGapContent({ data, navigate }) {
+  if (data.error) {
+    return <Alert severity="warning">{data.error}</Alert>;
+  }
+
+  const gaps = data.gaps || [];
+  const currentSkills = data.current_skills || [];
+
+  return (
+    <Box>
+      {data.target_role && (
+        <Typography variant="body2" color="text.secondary" mb={1}>
+          Target: {data.target_role} — {currentSkills.length} current skills, {gaps.length} gaps
+        </Typography>
+      )}
+      {data.summary && (
+        <Typography variant="body2" mb={2}>
+          {data.summary}
+        </Typography>
+      )}
+
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+        {gaps.map((gap, i) => (
+          <Box key={gap.skill || i} sx={{ flex: "1 1 calc(50% - 8px)", minWidth: 280 }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 0.5 }}>
+              <Typography variant="body2" fontWeight={600}>
+                {gap.skill}
+              </Typography>
+              <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
+                {gap.priority && (
+                  <Chip
+                    label={`P${gap.priority}`}
+                    size="small"
+                    sx={{
+                      fontSize: 10,
+                      height: 20,
+                      bgcolor: gap.priority <= 2 ? "#ffebee" : "#fff3e0",
+                      color: gap.priority <= 2 ? "#c62828" : "#e65100",
+                    }}
+                  />
+                )}
+                {gap.match_type && (
+                  <Chip
+                    label={gap.match_type}
+                    size="small"
+                    icon={
+                      gap.match_type === "matched" ? (
+                        <CheckCircleIcon sx={{ fontSize: 12 }} />
+                      ) : (
+                        <RadioButtonUncheckedIcon sx={{ fontSize: 12 }} />
+                      )
+                    }
+                    sx={{
+                      fontSize: 10,
+                      height: 20,
+                      bgcolor: gap.match_type === "matched" ? "#e8f5e9" : "#fff8e1",
+                      color: gap.match_type === "matched" ? "#2e7d32" : "#f57f17",
+                      "& .MuiChip-icon": {
+                        color: gap.match_type === "matched" ? "#4caf50" : "#ffc107",
+                      },
+                    }}
+                  />
+                )}
               </Box>
             </Box>
-          ))}
-        </Box>
-      </Paper>
+            {gap.reason && (
+              <Typography variant="caption" color="text.secondary" display="block" mb={0.75}>
+                {gap.reason}
+              </Typography>
+            )}
+            {gap.note && (
+              <Typography variant="caption" color="warning.main" display="block" mb={0.75}>
+                {gap.note}
+              </Typography>
+            )}
+            {gap.courses?.length > 0 && (
+              <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+                {gap.courses.map((course, j) => (
+                  <Chip
+                    key={course.title || j}
+                    label={`${course.title} (${course.organization})`}
+                    size="small"
+                    onClick={() => navigate(`/search?q=${encodeURIComponent(course.title)}`)}
+                    sx={{
+                      fontSize: 11,
+                      bgcolor: "#f5f3ff",
+                      color: "#6c63ff",
+                      cursor: "pointer",
+                      "&:hover": { bgcolor: "#ede7f6" },
+                    }}
+                  />
+                ))}
+              </Box>
+            )}
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+}
 
-      {/* Career Alignment */}
-      <Paper sx={{ p: 3, mb: 2 }}>
-        <Typography variant="h6" fontWeight={700} fontSize={16} mb={2}>Career Path Alignment</Typography>
-        <Box sx={{ display: "flex", gap: 2, overflowX: "auto", pb: 1 }}>
-          {careerAlignment.map((cp) => (
+function CareerContent({ data }) {
+  if (data.error) {
+    return <Alert severity="warning">{data.error}</Alert>;
+  }
+
+  const careers = data.career_paths || [];
+
+  return (
+    <Box>
+      {data.recommendation && (
+        <Typography variant="body2" color="text.secondary" mb={2}>
+          {data.recommendation}
+        </Typography>
+      )}
+
+      <Box sx={{ display: "flex", gap: 2, overflowX: "auto", pb: 1 }}>
+        {careers.map((cp, i) => {
+          const totalSkills = cp.required_skills?.length || 0;
+          const userHas = cp.required_skills?.filter((s) => s.user_has).length || 0;
+          const score = totalSkills > 0 ? Math.round((userHas / totalSkills) * 100) : 0;
+
+          return (
             <Paper
-              key={cp.title}
+              key={cp.role || i}
               variant="outlined"
               sx={{
-                p: 2.5, minWidth: 240, flex: "1 1 0",
-                borderColor: cp.score >= 50 ? "#6c63ff" : "#e0e0e0",
-                bgcolor: cp.score >= 50 ? "#faf9ff" : "#fff",
+                p: 2.5,
+                minWidth: 280,
+                flex: "1 1 0",
+                borderColor: score >= 50 ? "#6c63ff" : "#e0e0e0",
+                bgcolor: score >= 50 ? "#faf9ff" : "#fff",
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": { transform: "translateY(-2px)", boxShadow: 2 },
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, color: "#6c63ff" }}>
-                {cp.icon}
-                <Typography variant="subtitle2" fontWeight={600}>{cp.title}</Typography>
+                {getCareerIcon(cp.role)}
+                <Typography variant="subtitle2" fontWeight={600}>
+                  {cp.role}
+                </Typography>
               </Box>
+
+              {cp.overview && (
+                <Box sx={{ mb: 1 }}>
+                  {cp.overview.demand && (
+                    <Typography variant="caption" display="block" color="text.secondary">
+                      Demand: {cp.overview.demand}
+                    </Typography>
+                  )}
+                  {cp.overview.salary_range && (
+                    <Typography variant="caption" display="block" color="text.secondary">
+                      Salary: {cp.overview.salary_range}
+                    </Typography>
+                  )}
+                </Box>
+              )}
+
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
                 <LinearProgress
-                  variant="determinate" value={cp.score}
+                  variant="determinate"
+                  value={score}
                   sx={{
-                    flex: 1, height: 8, borderRadius: 4, bgcolor: "#e0e0e0",
-                    "& .MuiLinearProgress-bar": { bgcolor: cp.score >= 50 ? "#6c63ff" : "#ff9800", borderRadius: 4 },
+                    flex: 1,
+                    height: 8,
+                    borderRadius: 4,
+                    bgcolor: "#e0e0e0",
+                    "& .MuiLinearProgress-bar": {
+                      bgcolor: score >= 50 ? "#6c63ff" : "#ff9800",
+                      borderRadius: 4,
+                      transition: "width 1s ease-in-out",
+                    },
                   }}
                 />
-                <Typography variant="body2" fontWeight={700} fontSize={14}>{cp.score}%</Typography>
-              </Box>
-              <Typography variant="caption" color="text.secondary">
-                Requires: {cp.requiredDomains.join(", ")}
-              </Typography>
-            </Paper>
-          ))}
-        </Box>
-      </Paper>
-
-      {/* Skills to Develop */}
-      {skillGaps.length > 0 && (
-        <Paper sx={{ p: 3, mb: 2 }}>
-          <Typography variant="h6" fontWeight={700} fontSize={16} mb={2}>Skills to Develop</Typography>
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-            {skillGaps.map((g) => (
-              <Box key={g.domain} sx={{ flex: "1 1 calc(50% - 8px)", minWidth: 280 }}>
-                <Typography variant="body2" fontWeight={600} mb={0.5}>{g.domain}</Typography>
-                <Typography variant="caption" color="text.secondary" display="block" mb={0.75}>
-                  {g.courseCount} courses available to fill these gaps
+                <Typography variant="body2" fontWeight={700} fontSize={14}>
+                  {score}%
                 </Typography>
+              </Box>
+
+              {cp.required_skills && (
                 <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
-                  {g.missing.map((s) => (
+                  {cp.required_skills.map((s, j) => (
+                    <Chip
+                      key={s.skill || j}
+                      label={s.skill}
+                      size="small"
+                      icon={
+                        s.user_has ? (
+                          <CheckCircleIcon sx={{ fontSize: 12 }} />
+                        ) : (
+                          <RadioButtonUncheckedIcon sx={{ fontSize: 12 }} />
+                        )
+                      }
+                      sx={{
+                        fontSize: 10,
+                        bgcolor: s.user_has ? "#e8f5e9" : "#f5f5f5",
+                        color: s.user_has ? "#388e3c" : "#999",
+                        "& .MuiChip-icon": { color: s.user_has ? "#4caf50" : "#ccc" },
+                      }}
+                    />
+                  ))}
+                </Box>
+              )}
+            </Paper>
+          );
+        })}
+      </Box>
+    </Box>
+  );
+}
+
+function LearningPathContent({ data }) {
+  if (data.error) {
+    return <Alert severity="warning">{data.error}</Alert>;
+  }
+
+  const steps = data.path || [];
+  const summary = data.summary || {};
+
+  return (
+    <Box>
+      {data.goal && (
+        <Typography variant="body2" color="text.secondary" mb={0.5}>
+          Goal: {data.goal}
+        </Typography>
+      )}
+      {summary.estimated_duration && (
+        <Typography variant="caption" color="text.secondary" display="block" mb={2}>
+          {summary.total_courses || steps.length} courses — Est. {summary.estimated_duration}
+          {data.personalized && data.skipped_levels?.length > 0 && <> (skipped: {data.skipped_levels.join(", ")})</>}
+        </Typography>
+      )}
+
+      <Box sx={{ position: "relative", pl: 3.5 }}>
+        <Box
+          sx={{
+            position: "absolute",
+            left: 9,
+            top: 0,
+            bottom: 0,
+            width: 2,
+            bgcolor: "#e0e0e0",
+          }}
+        />
+        {steps.map((step, i) => (
+          <Fade in key={step.title || i} timeout={300 + i * 150}>
+            <Box
+              sx={{
+                position: "relative",
+                mb: i < steps.length - 1 ? 2.5 : 0,
+                p: 2,
+                bgcolor: "#fafafa",
+                borderRadius: 2,
+                transition: "background-color 0.2s",
+                "&:hover": { bgcolor: "#f0f0f0" },
+                "&::before": {
+                  content: '""',
+                  position: "absolute",
+                  left: -23,
+                  top: 18,
+                  width: 10,
+                  height: 10,
+                  borderRadius: "50%",
+                  bgcolor: "#6c63ff",
+                  border: "2px solid #fff",
+                  boxShadow: "0 0 0 2px #6c63ff",
+                },
+              }}
+            >
+              <Typography variant="caption" color="primary" fontWeight={600} letterSpacing={0.5}>
+                Step {step.step || i + 1} — {step.level || ""}
+              </Typography>
+              <Typography variant="subtitle2" fontWeight={600} fontSize={13}>
+                {step.title}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {step.organization}
+                {step.rating && ` — ${step.rating} rating`}
+                {step.duration && ` — ${step.duration}`}
+              </Typography>
+              {step.skills_acquired && (
+                <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap", mt: 0.75 }}>
+                  {step.skills_acquired.map((s) => (
                     <Chip
                       key={s}
                       label={s}
                       size="small"
-                      onClick={() => navigate(`/search?q=${encodeURIComponent(s)}`)}
-                      sx={{ fontSize: 11, bgcolor: "#fff3e0", color: "#f57c00", cursor: "pointer", "&:hover": { bgcolor: "#ffe0b2" } }}
+                      sx={{ fontSize: 10, height: 20, bgcolor: "#f5f3ff", color: "#6c63ff" }}
                     />
                   ))}
                 </Box>
-              </Box>
-            ))}
-          </Box>
-        </Paper>
-      )}
-
-      {/* Recommended Paths — horizontally scrollable */}
-      <Paper sx={{ p: 3, mb: 2 }}>
-        <Typography variant="h6" fontWeight={700} fontSize={16} mb={0.5}>Recommended Learning Paths</Typography>
-        <Typography variant="body2" color="text.secondary" mb={2}>
-          Curated course sequences to reach your career goals. Scroll to explore different paths.
-        </Typography>
-
-        <Box sx={{ display: "flex", gap: 3, overflowX: "auto", pb: 1 }}>
-          {RECOMMENDED_PATHS.map((path) => (
-            <Paper
-              key={path.id}
-              variant="outlined"
-              sx={{
-                p: 3,
-                minWidth: 380,
-                maxWidth: 420,
-                flex: "0 0 auto",
-                borderColor: "#e8e0ff",
-                borderRadius: 3,
-              }}
-            >
-              {/* Path header */}
-              <Box sx={{ mb: 2, pb: 1.5, borderBottom: "1px solid #f0f0f0" }}>
-                <Typography variant="subtitle1" fontWeight={700} fontSize={15}>
-                  {path.title}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  {path.description}
-                </Typography>
-              </Box>
-
-              {/* Timeline steps */}
-              <Box sx={{ position: "relative", pl: 3.5 }}>
+              )}
+              {step.why && (
                 <Box
                   sx={{
-                    position: "absolute",
-                    left: 9,
-                    top: 0,
-                    bottom: 0,
-                    width: 2,
-                    bgcolor: "#e0e0e0",
+                    mt: 1,
+                    p: 1,
+                    bgcolor: "#f5f3ff",
+                    borderLeft: "3px solid #6c63ff",
+                    borderRadius: "0 6px 6px 0",
                   }}
-                />
-                {path.steps.map((step, i) => (
-                  <Box
-                    key={i}
-                    sx={{
-                      position: "relative",
-                      mb: i < path.steps.length - 1 ? 2.5 : 0,
-                      p: 2,
-                      bgcolor: "#fafafa",
-                      borderRadius: 2,
-                      "&::before": {
-                        content: '""',
-                        position: "absolute",
-                        left: -23,
-                        top: 18,
-                        width: 10,
-                        height: 10,
-                        borderRadius: "50%",
-                        bgcolor: "#6c63ff",
-                        border: "2px solid #fff",
-                        boxShadow: "0 0 0 2px #6c63ff",
-                      },
-                    }}
-                  >
-                    <Typography variant="caption" color="primary" fontWeight={600} letterSpacing={0.5}>
-                      {step.label}
-                    </Typography>
-                    <Typography variant="subtitle2" fontWeight={600} fontSize={13}>
-                      {step.title}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {step.org}
-                    </Typography>
-                    <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap", mt: 0.75 }}>
-                      {step.skills.map((s) => (
-                        <Chip key={s} label={s} size="small" sx={{ fontSize: 10, height: 20, bgcolor: "#f5f3ff", color: "#6c63ff" }} />
-                      ))}
-                    </Box>
-                    <Box
-                      sx={{
-                        mt: 1,
-                        p: 1,
-                        bgcolor: "#f5f3ff",
-                        borderLeft: "3px solid #6c63ff",
-                        borderRadius: "0 6px 6px 0",
-                      }}
-                    >
-                      <Typography variant="caption" color="text.secondary" fontSize={11}>
-                        {step.reason}
-                      </Typography>
-                    </Box>
-                  </Box>
-                ))}
-              </Box>
-            </Paper>
-          ))}
-        </Box>
-      </Paper>
+                >
+                  <Typography variant="caption" color="text.secondary" fontSize={11}>
+                    {step.why}
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </Fade>
+        ))}
+      </Box>
     </Box>
   );
 }

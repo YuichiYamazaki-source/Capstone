@@ -12,7 +12,7 @@ Sub-agents have no handoffs (prevents loops).
 
 import logging
 
-from agents import Agent, Runner, handoff
+from agents import Agent, ModelSettings, Runner, handoff
 
 from app.agent.career import career_agent
 from app.agent.context import (
@@ -109,6 +109,7 @@ learning_advisor = Agent(
     name="Learning Advisor",
     instructions=ADVISOR_PROMPT,
     model=settings.openai_model,
+    model_settings=ModelSettings(max_tokens=4096),
     tools=[
         retrieve_courses,
         get_user_profile,
