@@ -3,15 +3,10 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import StarIcon from "@mui/icons-material/Star";
-
-const levelColors = {
-  Beginner: { bg: "#e8f5e9", color: "#388e3c" },
-  Intermediate: { bg: "#e3f2fd", color: "#1976d2" },
-  Advanced: { bg: "#fce4ec", color: "#c62828" },
-};
+import { LEVEL_COLORS } from "../../constants/colors";
 
 export default function CourseCard({ course, reasons }) {
-  const lc = levelColors[course.level] || { bg: "#f5f5f5", color: "#666" };
+  const lc = LEVEL_COLORS[course.level] || { bg: "#f5f5f5", color: "#666" };
 
   return (
     <Paper

@@ -16,9 +16,11 @@ from agents import Agent, Runner, handoff
 
 from app.agent.career import career_agent
 from app.agent.context import (
+    get_all_tool_calls,
     get_collected_courses,
     get_retrieval_args,
     get_retrieval_tool_calls,
+    reset_all_tool_calls,
     reset_collected_courses,
     reset_retrieval_args,
     reset_retrieval_tool_calls,
@@ -152,6 +154,7 @@ async def run_agent(
     reset_collected_courses()
     reset_retrieval_tool_calls()
     reset_retrieval_args()
+    reset_all_tool_calls()
 
     result = await Runner.run(
         learning_advisor,
@@ -202,4 +205,5 @@ async def run_agent(
         "retrieval_args": get_retrieval_args(),
         "courses": get_collected_courses(),
         "agent": agent_name,
+        "all_tool_calls": get_all_tool_calls(),
     }

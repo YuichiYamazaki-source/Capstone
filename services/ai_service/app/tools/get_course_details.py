@@ -4,6 +4,7 @@ import logging
 
 from agents import function_tool
 
+from app.agent.context import add_tool_call
 from app.clients.mongodb import get_db
 
 logger = logging.getLogger("ai-service.tools.get_course_details")
@@ -19,6 +20,7 @@ async def get_course_details(course_title: str) -> str:
     Args:
         course_title: Exact or partial title of the course.
     """
+    add_tool_call("get_course_details")
     db = get_db()
 
     doc = await db.courses.find_one(

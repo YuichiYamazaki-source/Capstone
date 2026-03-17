@@ -10,6 +10,7 @@ import logging
 from agents import function_tool
 from openai import AsyncOpenAI
 
+from app.agent.context import add_tool_call
 from app.clients.openai_client import get_openai_client
 
 logger = logging.getLogger("ai-service.tools.web_search")
@@ -28,6 +29,7 @@ async def web_search(query: str, max_results: int = 3) -> str:
         query: Search query (e.g. 'skills needed for AI Engineer at Google 2025').
         max_results: Maximum number of results to summarize (default 3).
     """
+    add_tool_call("web_search")
     client: AsyncOpenAI = get_openai_client()
 
     last_error: Exception | None = None

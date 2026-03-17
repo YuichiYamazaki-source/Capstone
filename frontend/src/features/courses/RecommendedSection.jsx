@@ -6,6 +6,7 @@ import Chip from "@mui/material/Chip";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import StarIcon from "@mui/icons-material/Star";
 import { getCourses } from "./api";
+import { LEVEL_COLORS } from "../../constants/colors";
 
 function scoreMatch(course, profile) {
   let score = 0;
@@ -69,12 +70,6 @@ export default function RecommendedSection({ courses, profile }) {
 
   if (ranked.length === 0) return null;
 
-  const levelColors = {
-    Beginner: { bg: "#e8f5e9", color: "#388e3c" },
-    Intermediate: { bg: "#e3f2fd", color: "#1976d2" },
-    Advanced: { bg: "#fce4ec", color: "#c62828" },
-  };
-
   return (
     <Box sx={{ mb: 3 }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
@@ -85,7 +80,7 @@ export default function RecommendedSection({ courses, profile }) {
       </Box>
       <Box sx={{ display: "flex", gap: 2, overflowX: "auto", pb: 1 }}>
         {ranked.map((course) => {
-          const lc = levelColors[course.level] || { bg: "#f5f5f5", color: "#666" };
+          const lc = LEVEL_COLORS[course.level] || { bg: "#f5f5f5", color: "#666" };
           return (
             <Paper
               key={course.id}

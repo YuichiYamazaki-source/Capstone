@@ -5,6 +5,7 @@ import logging
 from agents import function_tool
 from bson import ObjectId
 
+from app.agent.context import add_tool_call
 from app.clients.mongodb import get_db
 
 logger = logging.getLogger("ai-service.tools.update_user_profile")
@@ -27,6 +28,7 @@ async def update_user_profile(
         motivation: Updated motivation/goal statement.
         interest_areas: Updated list of interest areas (replaces existing).
     """
+    add_tool_call("update_user_profile")
     db = get_db()
 
     update_fields: dict = {}

@@ -8,7 +8,7 @@ import logging
 
 from agents import function_tool
 
-from app.agent.context import add_retrieval_tool_calls, set_retrieval_args
+from app.agent.context import add_retrieval_tool_calls, add_tool_call, set_retrieval_args
 from app.tools.hybrid_search import hybrid_search
 
 logger = logging.getLogger("ai-service.agent.retrieval")
@@ -33,6 +33,8 @@ async def retrieve_courses(
         skill: Filter by specific skill name.
         top_k: Number of results to return (default 10).
     """
+    add_tool_call("retrieve_courses")
+
     # Capture tool call arguments for evaluation
     set_retrieval_args(
         {

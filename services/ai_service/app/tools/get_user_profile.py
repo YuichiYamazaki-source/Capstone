@@ -5,6 +5,7 @@ import logging
 from agents import function_tool
 from bson import ObjectId
 
+from app.agent.context import add_tool_call
 from app.clients.mongodb import get_db
 
 logger = logging.getLogger("ai-service.tools.get_user_profile")
@@ -19,6 +20,7 @@ async def get_user_profile(user_id: str) -> str:
     Args:
         user_id: The user's ID.
     """
+    add_tool_call("get_user_profile")
     db = get_db()
 
     try:

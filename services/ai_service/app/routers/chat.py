@@ -63,6 +63,7 @@ class ChatResponse(BaseModel):
     tool_calls: list[str] = []
     retrieval_tool_calls: list[str] = []
     retrieval_args: dict = {}
+    all_tool_calls: list[str] = []
     latency_ms: float = 0.0
     courses: list[CourseData] = []
 
@@ -108,6 +109,7 @@ async def chat(request: ChatRequest):
         tool_calls=result.get("tool_calls", []),
         retrieval_tool_calls=result.get("retrieval_tool_calls", []),
         retrieval_args=result.get("retrieval_args", {}),
+        all_tool_calls=result.get("all_tool_calls", []),
         latency_ms=round(latency_ms, 2),
         courses=result.get("courses", []),
     )

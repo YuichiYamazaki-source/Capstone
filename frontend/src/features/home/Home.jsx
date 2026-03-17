@@ -23,6 +23,7 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useAuth } from "../../contexts/AuthContext";
 import { getCourses } from "../courses/api";
+import { LEVEL_COLORS } from "../../constants/colors";
 
 function scoreMatch(course, profile) {
   let score = 0;
@@ -41,12 +42,6 @@ function scoreMatch(course, profile) {
   if (profile.motivation === "Skill Up at Current Job" && course.level === "Intermediate") score += 2;
   return score;
 }
-
-const LEVEL_COLORS = {
-  Beginner: { bg: "#e8f5e9", color: "#388e3c" },
-  Intermediate: { bg: "#e3f2fd", color: "#1976d2" },
-  Advanced: { bg: "#fce4ec", color: "#c62828" },
-};
 
 const MOTIVATION_INSIGHTS = {
   "Career Change": {

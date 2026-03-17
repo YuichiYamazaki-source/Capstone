@@ -133,7 +133,15 @@
       "Bash(/c/Users/yuila/miniconda3/Scripts/ruff.exe format:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(sort -k2)",
+      "Bash(WORKTREE=\"/home/yuila/projects/FDE2ndBatchTraning/Capstone/.claude/worktrees/agent-a77f0035\")",
+      "Bash(MAIN=\"/home/yuila/projects/FDE2ndBatchTraning/Capstone\")",
+      "Bash(mkdir -p \"$MAIN/frontend/src/constants\" \"$MAIN/frontend/scripts\")",
+      "Bash(cp \"$WORKTREE/frontend/biome.json\" \"$MAIN/frontend/biome.json\")",
+      "Bash(cp \"$WORKTREE/frontend/package.json\" \"$MAIN/frontend/package.json\")",
+      "Bash(sudo docker:*)",
+      "Bash(python3:*)"
     ]
   }
 }

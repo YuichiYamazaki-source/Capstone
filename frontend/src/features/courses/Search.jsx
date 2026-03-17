@@ -105,15 +105,18 @@ export default function Search() {
   const loadCourses = async (overrides = {}) => {
     setLoading(true);
     try {
-      const params = {
+      const { level, organization, skills, ...rest } = {
         limit: PAGE_SIZE,
         offset: 0,
         ...filters,
         ...overrides,
       };
-      if (!params.level) delete params.level;
-      if (!params.organization) delete params.organization;
-      if (!params.skills?.length) delete params.skills;
+      const params = {
+        ...rest,
+        ...(level ? { level } : {}),
+        ...(organization ? { organization } : {}),
+        ...(skills?.length ? { skills } : {}),
+      };
       const data = await getCourses(params);
       setCourses(data.courses);
       setTotal(data.total);

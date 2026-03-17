@@ -9,6 +9,7 @@ from contextvars import ContextVar
 _collected_courses: ContextVar[list[dict]] = ContextVar("_collected_courses")
 _retrieval_tool_calls: ContextVar[list[str]] = ContextVar("_retrieval_tool_calls")
 _retrieval_args: ContextVar[dict] = ContextVar("_retrieval_args")
+_all_tool_calls: ContextVar[list[str]] = ContextVar("_all_tool_calls")
 
 
 def reset_collected_courses() -> None:
@@ -77,3 +78,22 @@ def set_retrieval_args(args: dict) -> None:
 def get_retrieval_args() -> dict:
     """Return a copy of the retrieval arguments for the current request."""
     return dict(_retrieval_args.get({}))
+
+
+def reset_all_tool_calls() -> None:
+    """Reset the all-tool-calls list for a new request."""
+    _all_tool_calls.set([])
+
+
+def add_tool_call(tool_name: str) -> None:
+    """Record that a tool was invoked during this request.
+
+    Args:
+        tool_name: Name of the tool function that was called.
+    """
+    _all_tool_calls.get([]).append(tool_name)
+
+
+def get_all_tool_calls() -> list[str]:
+    """Return all tool calls recorded during this request."""
+    return list(_all_tool_calls.get([]))
