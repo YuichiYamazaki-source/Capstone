@@ -8,8 +8,13 @@ import logging
 
 from agents import function_tool
 
-from app.agent.context import add_retrieval_tool_calls, add_tool_call, set_retrieval_args
+from app.agent.context import (
+    add_retrieval_tool_calls,
+    add_tool_call,
+    set_retrieval_args,
+)
 from app.tools.hybrid_search import hybrid_search
+from app.tools.reranker import cross_encoder_rerank
 
 logger = logging.getLogger("ai-service.agent.retrieval")
 
@@ -54,14 +59,25 @@ async def retrieve_courses(
             min_rating=min_rating,
             organization=organization,
             skill=skill,
-            top_k=top_k,
+            top_k=max(top_k, 20),  # Fetch extra for reranking
         )
     except Exception as e:
         logger.error("Hybrid search failed", extra={"query": query, "error": str(e)})
         return f"[ERROR] retrieve_courses: {e}"
 
+    # Cross-encoder reranking for improved relevance
+    if results:
+        try:
+            results = cross_encoder_rerank(query, results, top_k=top_k)
+        except Exception as e:
+            logger.warning(
+                "Cross-encoder rerank failed, using original order",
+                extra={"error": str(e)},
+            )
+            results = results[:top_k]
+
     # Record retrieval method for evaluation metrics
-    add_retrieval_tool_calls(["hybrid_search"])
+    add_retrieval_tool_calls(["hybrid_search", "cross_encoder_rerank"])
 
     if not results:
         return "No courses found matching your query."

@@ -21,6 +21,7 @@ def get_qdrant_client() -> QdrantClient:
             host=settings.qdrant_host,
             port=settings.qdrant_port,
             timeout=10,
+            prefer_grpc=True,
         )
         logger.info(
             "Qdrant client initialized",

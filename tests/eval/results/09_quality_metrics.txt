@@ -1,0 +1,91 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.15, pytest-9.0.2, pluggy-1.6.0 -- /usr/local/bin/python3.11
+cachedir: .pytest_cache
+rootdir: /app
+plugins: deepeval-3.8.9, rerunfailures-16.1, asyncio-1.3.0, anyio-4.12.1, repeat-0.9.4, xdist-3.8.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 35 items
+
+tests/eval/test_quality_metrics.py::test_answer_relevancy_skill_gap[skill_gap_0] PASSED [  2%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_skill_gap[skill_gap_1] PASSED [  5%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_skill_gap[skill_gap_2] PASSED [  8%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_skill_gap[skill_gap_3] PASSED [ 11%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_skill_gap[skill_gap_4] PASSED [ 14%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_career[career_0] PASSED [ 17%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_career[career_1] PASSED [ 20%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_career[career_2] PASSED [ 22%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_career[career_3] PASSED [ 25%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_career[career_4] FAILED [ 28%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_learning_path[learning_path_0] PASSED [ 31%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_learning_path[learning_path_1] PASSED [ 34%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_learning_path[learning_path_2] PASSED [ 37%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_learning_path[learning_path_3] PASSED [ 40%]
+tests/eval/test_quality_metrics.py::test_answer_relevancy_learning_path[learning_path_4] PASSED [ 42%]
+tests/eval/test_quality_metrics.py::test_faithfulness_skill_gap[skill_gap_0] PASSED [ 45%]
+tests/eval/test_quality_metrics.py::test_faithfulness_skill_gap[skill_gap_1] PASSED [ 48%]
+tests/eval/test_quality_metrics.py::test_faithfulness_skill_gap[skill_gap_2] PASSED [ 51%]
+tests/eval/test_quality_metrics.py::test_faithfulness_skill_gap[skill_gap_3] PASSED [ 54%]
+tests/eval/test_quality_metrics.py::test_faithfulness_skill_gap[skill_gap_4] PASSED [ 57%]
+tests/eval/test_quality_metrics.py::test_faithfulness_career[career_0] PASSED [ 60%]
+tests/eval/test_quality_metrics.py::test_faithfulness_career[career_1] PASSED [ 62%]
+tests/eval/test_quality_metrics.py::test_faithfulness_career[career_2] PASSED [ 65%]
+tests/eval/test_quality_metrics.py::test_faithfulness_career[career_3] PASSED [ 68%]
+tests/eval/test_quality_metrics.py::test_faithfulness_career[career_4] PASSED [ 71%]
+tests/eval/test_quality_metrics.py::test_faithfulness_learning_path[learning_path_0] PASSED [ 74%]
+tests/eval/test_quality_metrics.py::test_faithfulness_learning_path[learning_path_1] PASSED [ 77%]
+tests/eval/test_quality_metrics.py::test_faithfulness_learning_path[learning_path_2] PASSED [ 80%]
+tests/eval/test_quality_metrics.py::test_faithfulness_learning_path[learning_path_3] PASSED [ 82%]
+tests/eval/test_quality_metrics.py::test_faithfulness_learning_path[learning_path_4] PASSED [ 85%]
+tests/eval/test_quality_metrics.py::test_actionability_career[career_0] PASSED [ 88%]
+tests/eval/test_quality_metrics.py::test_actionability_career[career_1] PASSED [ 91%]
+tests/eval/test_quality_metrics.py::test_actionability_career[career_2] PASSED [ 94%]
+tests/eval/test_quality_metrics.py::test_actionability_career[career_3] PASSED [ 97%]
+tests/eval/test_quality_metrics.py::test_actionability_career[career_4] PASSED [100%]Running teardown with pytest sessionfinish...
+
+
+=================================== FAILURES ===================================
+____________________ test_answer_relevancy_career[career_4] ____________________
+tests/eval/test_quality_metrics.py:129: in test_answer_relevancy_career
+    _run_answer_relevancy(case_id, gt_cases, agent_responses)
+tests/eval/test_quality_metrics.py:157: in _run_answer_relevancy
+    assert metric.score >= DEEPEVAL_THRESHOLD, (
+E   AssertionError: Answer Relevancy 0.45 < 0.5 for gt-31: How much do machine learning engineers earn and what do they do?. Reason: The score is 0.45 because the output included several irrelevant statements about course recommendations and skill development, which do not directly address the question about earnings and job responsibilities of machine learning engineers.
+E   assert 0.45454545454545453 >= 0.5
+E    +  where 0.45454545454545453 = <deepeval.metrics.answer_relevancy.answer_relevancy.AnswerRelevancyMetric object at 0x72723cc9d550>.score
+----------------------------- Captured stderr call -----------------------------
+
+------------------------------ Captured log call -------------------------------
+ERROR    asyncio:base_events.py:1785 Task exception was never retrieved
+future: <Task finished name='Task-116' coro=<AsyncClient.aclose() done, defined at /usr/local/lib/python3.11/site-packages/httpx/_client.py:1978> exception=RuntimeError('Event loop is closed')>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/asyncio/tasks.py", line 277, in __step
+    result = coro.send(None)
+             ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/httpx/_client.py", line 1985, in aclose
+    await self._transport.aclose()
+  File "/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py", line 406, in aclose
+    await self._pool.aclose()
+  File "/usr/local/lib/python3.11/site-packages/httpcore/_async/connection_pool.py", line 353, in aclose
+    await self._close_connections(closing_connections)
+  File "/usr/local/lib/python3.11/site-packages/httpcore/_async/connection_pool.py", line 345, in _close_connections
+    await connection.aclose()
+  File "/usr/local/lib/python3.11/site-packages/httpcore/_async/connection.py", line 173, in aclose
+    await self._connection.aclose()
+  File "/usr/local/lib/python3.11/site-packages/httpcore/_async/http11.py", line 258, in aclose
+    await self._network_stream.aclose()
+  File "/usr/local/lib/python3.11/site-packages/httpcore/_backends/anyio.py", line 53, in aclose
+    await self._stream.aclose()
+  File "/usr/local/lib/python3.11/site-packages/anyio/streams/tls.py", line 241, in aclose
+    await self.transport_stream.aclose()
+  File "/usr/local/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 1329, in aclose
+    self._transport.close()
+  File "/usr/local/lib/python3.11/asyncio/selector_events.py", line 864, in close
+    self._loop.call_soon(self._call_connection_lost, None)
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 762, in call_soon
+    self._check_closed()
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 520, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+=========================== short test summary info ============================
+FAILED tests/eval/test_quality_metrics.py::test_answer_relevancy_career[career_4]
+=================== 1 failed, 34 passed in 932.09s (0:15:32) ===================

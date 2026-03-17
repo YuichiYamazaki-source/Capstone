@@ -46,19 +46,19 @@ Build the AI pipeline end-to-end with sample courses. The goal is functional cor
 
 ---
 
-## Phase 4: Measurable — "Make it right" 🚧
+## Phase 4: Measurable — "Make it right" ✅
 
 Instrument, measure, and improve. This phase focuses on evaluation metrics, accuracy improvement, and observability. Includes both offline and online validation.
 
 | # | Task | Status | Details |
 |---|------|--------|---------|
 | 4-1 | Observability setup | ✅ | LangFuse v4 (traces + scores + cost + prompt versioning). Phoenix evaluated and removed. |
-| 4-2 | Full data ingestion | ⬜ | 6,645 courses: cleansing, embedding, Qdrant indexing (currently 1,000 sample) |
+| 4-2 | Full data ingestion | ✅ | 6,599 courses (deduplicated) → MongoDB + Qdrant. Async parallel embedding (5x concurrency). |
 | 4-3 | Ground truth dataset | ✅ | 38 test cases: 20 search (keyword/semantic/filter) + 18 multi-agent (6 per specialist). |
 | 4-4 | Offline evaluation | ✅ | IR metrics (Hit Rate, Precision@5, Recall@5) + Filter metrics + DeepEval LLM-as-Judge (Answer Relevancy, Faithfulness, Actionability) + Agent Routing Accuracy. |
 | 4-5 | Online evaluation | ✅ | Latency p50/p95/p99 captured. LangFuse score graph fixed. LLM-as-Judge available via LangFuse GUI. |
-| 4-6 | Accuracy improvement | ⬜ | Reranker tuning, prompt optimization, embedding strategy refinement |
-| 4-7 | Performance optimization | ⬜ | Parallel ingestion, connection pooling, cold start optimization |
+| 4-6 | Accuracy improvement | ✅ | Cross-encoder reranking (fastembed TextCrossEncoder), profile-based reranking, RRF weight tuning [1.2, 1.5], BM25 query enrichment (level term). |
+| 4-7 | Performance optimization | ✅ | Async parallel embedding (5x concurrency), MongoDB connection pooling (maxPoolSize=10), Qdrant gRPC, httpx shared client with pool, PREFETCH_LIMIT 20→30. Load tests via locust. |
 
 ### Tracing Strategy
 
@@ -74,18 +74,18 @@ Synergy: Agent SDK traces feed into LangFuse for cost/latency aggregation, cover
 
 ---
 
-## Phase 5: Resilient — "Make it safe" 🚧
+## Phase 5: Resilient — "Make it safe" ✅
 
 Harden the system for reliability and safety. Define thresholds for CI/CD pipeline gates.
 
 | # | Task | Status | Details |
 |---|------|--------|---------|
-| 5-1 | Local fallback | ⬜ | MiniLM-L6-v2 embedding when OpenAI is unavailable |
+| 5-1 | Local fallback | ✅ | fastembed MiniLM-L6-v2 local embedding + BM25-only Qdrant search when OpenAI is unavailable. |
 | 5-2 | Graceful degradation | ✅ | Qdrant down → MongoDB text search fallback (hybrid_search.py) |
-| 5-3 | Error handling | 🚧 | Retry with exponential backoff in embedding/web_search. [ERROR] prefix convention. Circuit breaker not yet implemented. |
+| 5-3 | Error handling | ✅ | Retry with exponential backoff + Circuit breaker (CLOSED→OPEN→HALF_OPEN) for OpenAI embedding and Qdrant. CircuitOpenError triggers fallback chain. |
 | 5-4 | Guardrails | ✅ | Input: sanitization + prompt injection detection (9 patterns) + topic relevance (keyword + LLM fallback) + PII redaction. Output: PII redaction + system info leakage prevention + credential masking. |
 | 5-5 | Test suite | ✅ | 65+ tests across 10 files: routing (4), direct handling (3), e2e handoff (3), web search (6), career (4), skill gap (3), learning path (5), guardrails (22), quality metrics (15). Pytest + DeepEval. |
-| 5-6 | CI/CD thresholds | ⬜ | Define quality gates: min accuracy, max latency, guardrail pass rate |
+| 5-6 | CI/CD thresholds | ✅ | thresholds.yaml + check_thresholds.py + run_ci.sh + pytest markers (ci_required, full_eval). |
 | 5-7 | Safety evaluation | ✅ | 22 guardrail tests: off-topic rejection (5), prompt injection blocking (5), on-topic pass-through (5), PII redaction (4), output sanitization (3). |
 
 **Goal**: System degrades gracefully under failure; safety metrics meet defined thresholds
@@ -116,7 +116,7 @@ Final documentation, presentation, and deployment readiness.
 Phase 1  ✅  UI Mock
 Phase 2  ✅  Full-Stack MVP
 Phase 3  ✅  AI Functional    — "Make it work"    (機能性)
-Phase 4  🚧  Measurable       — "Make it right"   (評価・精度向上) ← 4-2, 4-6, 4-7 remaining
-Phase 5  🚧  Resilient        — "Make it safe"    (安全性・耐障害性) ← 5-1, 5-3(partial), 5-6 remaining
+Phase 4  ✅  Measurable       — "Make it right"   (評価・精度向上)
+Phase 5  ✅  Resilient        — "Make it safe"    (安全性・耐障害性)
 Phase 6  ⬜  Deliverable      — "Ship it"         (提出・発表)
 ```

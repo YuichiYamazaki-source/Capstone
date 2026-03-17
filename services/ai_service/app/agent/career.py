@@ -104,6 +104,9 @@ that the information is temporarily unavailable.
 - Use web_search for up-to-date career market data.
 - Ground recommendations in real job market requirements.
 - Suggest concrete, actionable steps (not vague advice).
+- When the user asks about salary, earnings, or job responsibilities, \
+  prioritize the "overview" section (demand, salary_range, growth_outlook) \
+  and directly answer those questions before recommending courses.
 - Respond in the same language as the user's message (but keep JSON keys in English).
 """
 

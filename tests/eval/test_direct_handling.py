@@ -5,21 +5,12 @@ These queries should NOT be delegated to any specialist agent.
 
 import pytest
 
-from tests.eval.conftest import chat
+from tests.eval.conftest import Q_COURSE_SEARCH, Q_GREETING, chat
 
 DIRECT_CASES = [
-    (
-        "Hello!",
-        "greeting",
-    ),
-    (
-        "What's the weather like today?",
-        "unrelated",
-    ),
-    (
-        "Show me beginner data science courses",
-        "course_search",
-    ),
+    (Q_GREETING, "greeting"),
+    ("What's the weather like today?", "unrelated"),
+    (Q_COURSE_SEARCH, "course_search"),
 ]
 
 
@@ -41,7 +32,7 @@ async def test_direct_handling(query, case_type):
 @pytest.mark.asyncio
 async def test_greeting_no_tool_calls():
     """Greetings should not trigger any tool calls."""
-    response = await chat("Hi there!")
+    response = await chat(Q_GREETING)
     assert len(response.get("all_tool_calls", [])) == 0, (
         f"Greeting triggered tool calls: {response.get('all_tool_calls')}"
     )
@@ -50,7 +41,7 @@ async def test_greeting_no_tool_calls():
 @pytest.mark.asyncio
 async def test_course_search_uses_retrieve():
     """Course search should call retrieve_courses."""
-    response = await chat("Find me Python courses")
+    response = await chat(Q_COURSE_SEARCH)
     assert "retrieve_courses" in response.get("all_tool_calls", []), (
         f"Course search did not call retrieve_courses. "
         f"all_tool_calls: {response.get('all_tool_calls')}"

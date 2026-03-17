@@ -1,0 +1,14 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.15, pytest-9.0.2, pluggy-1.6.0 -- /usr/local/bin/python3.11
+cachedir: .pytest_cache
+rootdir: /app
+plugins: deepeval-3.8.9, rerunfailures-16.1, asyncio-1.3.0, anyio-4.12.1, repeat-0.9.4, xdist-3.8.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 3 items
+
+tests/eval/test_e2e_handoff.py::test_e2e_skill_gap PASSED                [ 33%]
+tests/eval/test_e2e_handoff.py::test_e2e_career PASSED                   [ 66%]
+tests/eval/test_e2e_handoff.py::test_e2e_learning_path PASSED            [100%]Running teardown with pytest sessionfinish...
+
+
+========================= 3 passed in 65.10s (0:01:05) =========================

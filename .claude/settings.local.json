@@ -192,7 +192,24 @@
       "Bash(grep -E '\\\\.\\(yml|yaml|toml|cfg|ini\\)$')",
       "Bash(grep -c '\"\"id\"\":' /home/yuila/projects/FDE2ndBatchTraning/Capstone/evals/ground_truth.json)",
       "Bash(python scripts/register_prompts.py --diff)",
-      "Bash(python scripts/register_prompts.py --version v3)"
+      "Bash(python scripts/register_prompts.py --version v3)",
+      "Bash(tee /home/yuila/projects/FDE2ndBatchTraning/Capstone/tests/eval/results/01_routing.txt)",
+      "Bash(tee /home/yuila/projects/FDE2ndBatchTraning/Capstone/tests/eval/results/02_direct_handling.txt)",
+      "Bash(tee /home/yuila/projects/FDE2ndBatchTraning/Capstone/tests/eval/results/03_e2e_handoff.txt)",
+      "Bash(tee /home/yuila/projects/FDE2ndBatchTraning/Capstone/tests/eval/results/04_skill_gap.txt)",
+      "Bash(tee /home/yuila/projects/FDE2ndBatchTraning/Capstone/tests/eval/results/05_career.txt)",
+      "Bash(tee /home/yuila/projects/FDE2ndBatchTraning/Capstone/tests/eval/results/06_learning_path.txt)",
+      "Bash(tee /home/yuila/projects/FDE2ndBatchTraning/Capstone/tests/eval/results/07_web_search.txt)",
+      "Bash(tee /home/yuila/projects/FDE2ndBatchTraning/Capstone/tests/eval/results/08_guardrails.txt)",
+      "Bash(tee /home/yuila/projects/FDE2ndBatchTraning/Capstone/tests/eval/results/09_quality_metrics.txt)",
+      "Bash(tee /home/yuila/projects/FDE2ndBatchTraning/Capstone/tests/eval/results/04_skill_gap_rerun.txt)",
+      "Bash(tee /home/yuila/projects/FDE2ndBatchTraning/Capstone/tests/eval/results/09_quality_metrics_rerun.txt)",
+      "Bash(chmod:*)",
+      "Bash(python scripts/ingest_courses.py --all)",
+      "Bash(python scripts/generate_embeddings.py --batch-size 50 --concurrency 5)",
+      "Bash(OPENAI_MODEL=gpt-4o-mini python -m pytest tests/eval/ -v --tb=short)",
+      "Bash(GATEWAY_URL=http://localhost:8000 OPENAI_MODEL=gpt-4o-mini python -m pytest tests/eval/ -v --tb=short)",
+      "Bash(GATEWAY_URL=http://localhost:8000 OPENAI_MODEL=gpt-4o-mini python -m pytest tests/eval/test_routing.py -v --tb=short)"
     ]
   }
 }

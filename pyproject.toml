@@ -34,3 +34,9 @@ max-complexity = 10
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[tool.pytest.ini_options]
+markers = [
+    "ci_required: tests that must pass in CI (no LLM cost)",
+    "full_eval: expensive LLM-as-judge tests (API cost)",
+]

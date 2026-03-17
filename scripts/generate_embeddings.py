@@ -1,7 +1,7 @@
 """Generate dense + BM25 sparse vectors for courses and store in Qdrant.
 
 Usage:
-    python scripts/generate_embeddings.py [--batch-size N]
+    python scripts/generate_embeddings.py [--batch-size N] [--concurrency N]
 
 Creates a Qdrant collection with two named vectors:
   - "dense": OpenAI text-embedding-3-small (semantic search)
@@ -13,12 +13,13 @@ Requires: OPENAI_API_KEY, MONGO_URI, QDRANT_HOST in environment or local/.env
 """
 
 import argparse
+import asyncio
 import logging
 import sys
 import uuid
 
 from dotenv import load_dotenv
-from openai import OpenAI
+from openai import AsyncOpenAI
 from pymongo import MongoClient
 from qdrant_client import QdrantClient, models
 
@@ -70,43 +71,67 @@ def build_bm25_text(doc: dict) -> str:
     return " ".join(parts)
 
 
-def generate_dense_embeddings(
+async def generate_dense_embeddings(
     texts: list[str],
-    client: OpenAI,
+    client: AsyncOpenAI,
     batch_size: int = 50,
+    concurrency: int = 5,
 ) -> list[list[float]]:
-    """Generate dense embeddings in batches using OpenAI API."""
-    all_embeddings = []
+    """Generate dense embeddings in parallel batches using AsyncOpenAI.
+
+    Uses asyncio.Semaphore to limit concurrent API calls.
+
+    Args:
+        texts: List of text strings to embed.
+        client: AsyncOpenAI client instance.
+        batch_size: Number of texts per API call.
+        concurrency: Maximum concurrent API calls.
+
+    Returns:
+        List of embedding vectors (one per input text).
+    """
+    semaphore = asyncio.Semaphore(concurrency)
+    results: dict[int, list[list[float]]] = {}
+
+    async def embed_batch(batch_idx: int, batch: list[str]):
+        async with semaphore:
+            logger.info(
+                "Dense embedding batch %d (size: %d)",
+                batch_idx,
+                len(batch),
+            )
+            response = await client.embeddings.create(
+                model=EMBEDDING_MODEL,
+                input=batch,
+            )
+            embeddings = [item.embedding for item in response.data]
+            results[batch_idx] = embeddings
+            logger.info(
+                "Batch %d done (tokens: %d)",
+                batch_idx,
+                response.usage.total_tokens,
+            )
+
+    # Create tasks for all batches
+    tasks = []
     for i in range(0, len(texts), batch_size):
         batch = texts[i : i + batch_size]
-        logger.info("Dense embedding batch %d-%d", i, i + len(batch))
-        response = client.embeddings.create(model=EMBEDDING_MODEL, input=batch)
-        all_embeddings.extend([item.embedding for item in response.data])
-        logger.info(
-            "Batch done (tokens: %d)",
-            response.usage.total_tokens,
-        )
+        batch_idx = i // batch_size
+        tasks.append(embed_batch(batch_idx, batch))
+
+    # Run all batches with concurrency control
+    await asyncio.gather(*tasks)
+
+    # Reassemble in order
+    all_embeddings = []
+    for idx in range(len(tasks)):
+        all_embeddings.extend(results[idx])
+
     return all_embeddings
 
 
-def main():
-    """CLI entry point for generating course embeddings."""
-    parser = argparse.ArgumentParser(
-        description="Generate course embeddings (dense + BM25) and store in Qdrant",
-    )
-    parser.add_argument(
-        "--batch-size",
-        type=int,
-        default=50,
-        help="Embedding batch size (default: 50)",
-    )
-    parser.add_argument("--mongo-uri", default=MONGO_URI)
-    parser.add_argument("--mongo-db", default=MONGO_DB)
-    parser.add_argument("--qdrant-host", default=QDRANT_HOST)
-    parser.add_argument("--qdrant-port", type=int, default=QDRANT_PORT)
-    parser.add_argument("--env-file", default="local/.env")
-    args = parser.parse_args()
-
+async def async_main(args):
+    """Async entry point for embedding generation."""
     load_dotenv(args.env_file)
 
     # --- MongoDB: load courses ---
@@ -133,12 +158,13 @@ def main():
 
     logger.info("Valid courses: %d", len(valid_courses))
 
-    # --- Generate dense embeddings via OpenAI ---
-    openai_client = OpenAI()
-    dense_embeddings = generate_dense_embeddings(
+    # --- Generate dense embeddings via OpenAI (parallel) ---
+    openai_client = AsyncOpenAI()
+    dense_embeddings = await generate_dense_embeddings(
         dense_texts,
         openai_client,
         batch_size=args.batch_size,
+        concurrency=args.concurrency,
     )
     logger.info("Dense embeddings generated: %d", len(dense_embeddings))
 
@@ -220,6 +246,33 @@ def main():
     )
 
     mongo_client.close()
+
+
+def main():
+    """CLI entry point for generating course embeddings."""
+    parser = argparse.ArgumentParser(
+        description="Generate course embeddings (dense + BM25) and store in Qdrant",
+    )
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=50,
+        help="Embedding batch size (default: 50)",
+    )
+    parser.add_argument(
+        "--concurrency",
+        type=int,
+        default=5,
+        help="Max concurrent embedding API calls (default: 5)",
+    )
+    parser.add_argument("--mongo-uri", default=MONGO_URI)
+    parser.add_argument("--mongo-db", default=MONGO_DB)
+    parser.add_argument("--qdrant-host", default=QDRANT_HOST)
+    parser.add_argument("--qdrant-port", type=int, default=QDRANT_PORT)
+    parser.add_argument("--env-file", default="local/.env")
+    args = parser.parse_args()
+
+    asyncio.run(async_main(args))
 
 
 if __name__ == "__main__":

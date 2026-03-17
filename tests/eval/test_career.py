@@ -6,7 +6,7 @@ web search data and action plans.
 
 import pytest
 
-from tests.eval.conftest import chat, extract_json_from_reply
+from tests.eval.conftest import Q_CAREER, Q_CAREER_2, chat, extract_json_from_reply
 
 REQUIRED_JSON_KEYS = {"career_paths", "recommendation", "data_source"}
 REQUIRED_PATH_KEYS = {"role", "required_skills", "recommended_courses", "action_plan"}
@@ -15,7 +15,7 @@ REQUIRED_PATH_KEYS = {"role", "required_skills", "recommended_courses", "action_
 @pytest.mark.asyncio
 async def test_career_json_format():
     """Career Advisor returns valid JSON with required keys."""
-    response = await chat("What career path should I take in AI?")
+    response = await chat(Q_CAREER)
     assert response["agent"] == "Career Advisor"
 
     parsed = extract_json_from_reply(response["reply"])
@@ -34,7 +34,7 @@ async def test_career_json_format():
 @pytest.mark.asyncio
 async def test_career_uses_web_search():
     """Career Advisor calls web_search for market data."""
-    response = await chat("What's the job market like for data engineers?")
+    response = await chat(Q_CAREER_2)
     all_tools = response.get("all_tool_calls", [])
 
     assert "web_search" in all_tools, (
@@ -45,7 +45,7 @@ async def test_career_uses_web_search():
 @pytest.mark.asyncio
 async def test_career_web_search_utilization():
     """Career Advisor reflects web_search results in data_source field."""
-    response = await chat("What certifications do I need for a data engineering career?")
+    response = await chat(Q_CAREER_2)
     assert response["agent"] == "Career Advisor"
 
     all_tools = response.get("all_tool_calls", [])
@@ -65,7 +65,7 @@ async def test_career_web_search_utilization():
 @pytest.mark.asyncio
 async def test_career_action_plan_structure():
     """Career Advisor provides action plans with timeline."""
-    response = await chat("What career path should I take to become an AI engineer?")
+    response = await chat(Q_CAREER)
     assert response["agent"] == "Career Advisor"
 
     parsed = extract_json_from_reply(response["reply"])

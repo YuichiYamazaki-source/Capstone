@@ -6,7 +6,12 @@ non-decreasing difficulty levels.
 
 import pytest
 
-from tests.eval.conftest import chat, extract_json_from_reply
+from tests.eval.conftest import (
+    Q_LEARNING_PATH,
+    Q_LEARNING_PATH_2,
+    chat,
+    extract_json_from_reply,
+)
 
 REQUIRED_JSON_KEYS = {"goal", "personalized", "path", "summary"}
 REQUIRED_STEP_KEYS = {"step", "title", "level"}
@@ -16,9 +21,7 @@ LEVEL_ORDER = {"Beginner": 0, "Intermediate": 1, "Advanced": 2}
 @pytest.mark.asyncio
 async def test_learning_path_json_format():
     """Learning Path Designer returns valid JSON with required keys."""
-    response = await chat(
-        "Create a learning path for web development from beginner to advanced"
-    )
+    response = await chat(Q_LEARNING_PATH)
     assert response["agent"] == "Learning Path Designer"
 
     parsed = extract_json_from_reply(response["reply"])
@@ -38,9 +41,7 @@ async def test_learning_path_json_format():
 @pytest.mark.asyncio
 async def test_learning_path_level_coherence():
     """Path levels should be non-decreasing (Beginner → Intermediate → Advanced)."""
-    response = await chat(
-        "Build a step-by-step curriculum for data science"
-    )
+    response = await chat(Q_LEARNING_PATH_2)
     parsed = extract_json_from_reply(response["reply"])
     assert parsed is not None, "Could not parse JSON from reply"
 
@@ -61,25 +62,19 @@ async def test_learning_path_level_coherence():
 
 @pytest.mark.asyncio
 async def test_learning_path_tool_calls():
-    """Learning Path Designer calls retrieve_courses and get_course_details."""
-    response = await chat(
-        "Map out a learning journey for cloud computing"
-    )
+    """Learning Path Designer calls retrieve_courses."""
+    response = await chat(Q_LEARNING_PATH_2)
     all_tools = response.get("all_tool_calls", [])
 
     assert "retrieve_courses" in all_tools, (
         f"retrieve_courses not called. all_tool_calls: {all_tools}"
     )
-    # get_course_details is expected but not strictly required
-    # (agent may skip it for simpler paths)
 
 
 @pytest.mark.asyncio
 async def test_learning_path_course_detail_utilization():
     """Learning Path Designer calls get_course_details for recommended courses."""
-    response = await chat(
-        "Create a learning path for data science from beginner to advanced"
-    )
+    response = await chat(Q_LEARNING_PATH)
     assert response["agent"] == "Learning Path Designer"
 
     all_tools = response.get("all_tool_calls", [])
@@ -92,9 +87,7 @@ async def test_learning_path_course_detail_utilization():
 @pytest.mark.asyncio
 async def test_learning_path_level_coverage():
     """Path summary should span from starting_level to target_level."""
-    response = await chat(
-        "Build a step-by-step curriculum from beginner to advanced in cybersecurity"
-    )
+    response = await chat(Q_LEARNING_PATH)
     assert response["agent"] == "Learning Path Designer"
 
     parsed = extract_json_from_reply(response["reply"])

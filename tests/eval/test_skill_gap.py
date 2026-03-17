@@ -6,7 +6,7 @@ and calls the expected tools.
 
 import pytest
 
-from tests.eval.conftest import chat, extract_json_from_reply
+from tests.eval.conftest import Q_SKILL_GAP, Q_SKILL_GAP_2, chat, extract_json_from_reply
 
 REQUIRED_JSON_KEYS = {"target_role", "current_skills", "gaps", "summary"}
 REQUIRED_GAP_KEYS = {"skill", "priority", "match_type", "courses"}
@@ -15,7 +15,7 @@ REQUIRED_GAP_KEYS = {"skill", "priority", "match_type", "courses"}
 @pytest.mark.asyncio
 async def test_skill_gap_json_format():
     """Skill Gap Analyst returns valid JSON with required keys."""
-    response = await chat("What skills am I missing to become a data scientist?")
+    response = await chat(Q_SKILL_GAP)
     assert response["agent"] == "Skill Gap Analyst"
 
     parsed = extract_json_from_reply(response["reply"])
@@ -38,7 +38,7 @@ async def test_skill_gap_json_format():
 @pytest.mark.asyncio
 async def test_skill_gap_tool_calls():
     """Skill Gap Analyst calls web_search and retrieve_courses."""
-    response = await chat("Analyze my skill gaps for an ML Engineer role")
+    response = await chat(Q_SKILL_GAP_2)
     all_tools = response.get("all_tool_calls", [])
 
     assert "web_search" in all_tools, (
@@ -52,7 +52,7 @@ async def test_skill_gap_tool_calls():
 @pytest.mark.asyncio
 async def test_skill_gap_web_search_utilization():
     """Skill Gap Analyst uses web_search for market-driven skill requirements."""
-    response = await chat("What skills should I prioritize to become a backend developer?")
+    response = await chat(Q_SKILL_GAP_2)
     assert response["agent"] == "Skill Gap Analyst"
 
     all_tools = response.get("all_tool_calls", [])

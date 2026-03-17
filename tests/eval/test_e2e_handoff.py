@@ -3,19 +3,24 @@
 Each test validates the complete pipeline:
   Explore page input → Learning Advisor → handoff → Specialist → structured JSON
 
-These are integration tests that check routing + tool usage + output format
-in a single pass.
+Uses canonical queries (cached) to avoid redundant API calls.
 """
 
 import pytest
 
-from tests.eval.conftest import chat, extract_json_from_reply
+from tests.eval.conftest import (
+    Q_CAREER,
+    Q_LEARNING_PATH,
+    Q_SKILL_GAP,
+    chat,
+    extract_json_from_reply,
+)
 
 
 @pytest.mark.asyncio
 async def test_e2e_skill_gap():
     """Full handoff: user asks about skill gaps → Skill Gap Analyst responds."""
-    response = await chat("What skills do I need to become a cloud architect?")
+    response = await chat(Q_SKILL_GAP)
 
     # Routing
     assert response["agent"] == "Skill Gap Analyst"
@@ -35,7 +40,7 @@ async def test_e2e_skill_gap():
 @pytest.mark.asyncio
 async def test_e2e_career():
     """Full handoff: user asks about careers → Career Advisor responds."""
-    response = await chat("Should I pursue a career in cybersecurity or cloud?")
+    response = await chat(Q_CAREER)
 
     # Routing
     assert response["agent"] == "Career Advisor"
@@ -53,7 +58,7 @@ async def test_e2e_career():
 @pytest.mark.asyncio
 async def test_e2e_learning_path():
     """Full handoff: user asks for a study plan → Learning Path Designer responds."""
-    response = await chat("Design a 6-month study plan for AI and machine learning")
+    response = await chat(Q_LEARNING_PATH)
 
     # Routing
     assert response["agent"] == "Learning Path Designer"

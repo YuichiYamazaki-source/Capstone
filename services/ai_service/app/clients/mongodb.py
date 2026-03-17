@@ -15,6 +15,8 @@ async def connect_db() -> None:
     global _client, _db
     _client = AsyncIOMotorClient(
         settings.mongo_uri,
+        maxPoolSize=10,
+        minPoolSize=1,
         serverSelectionTimeoutMS=5000,
         socketTimeoutMS=10000,
         connectTimeoutMS=5000,

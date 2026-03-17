@@ -109,6 +109,8 @@ that the information is temporarily unavailable.
 - Show ALL skills the market requires, even if no exact course match exists.
 - For unmatched skills, always suggest the closest alternative course.
 - Be specific about which skills are missing and why they matter.
+- Every gap entry MUST include a "courses" array (at least one course). \
+  Never omit the "courses" key — it is required for downstream processing.
 - Respond in the same language as the user's message (but keep JSON keys in English).
 """
 

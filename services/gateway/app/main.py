@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.logging_config import setup_logging
+from app.routers.ai import close_http_client
 from app.routers.ai import router as ai_router
 from app.routers.courses import router as courses_router
 from app.routers.users import router as users_router
@@ -51,6 +52,12 @@ async def request_logging_middleware(request: Request, call_next):
 app.include_router(courses_router)
 app.include_router(users_router)
 app.include_router(ai_router)
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Clean up shared HTTP client on shutdown."""
+    await close_http_client()
 
 
 @app.get("/health")

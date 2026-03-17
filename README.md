@@ -48,10 +48,10 @@ See `docs/decisions/tech-stack.md` for selection rationale.
 ### Requirement 2 (Advanced)
 
 - [x] DeepEval for recommendation relevance and learning outcomes (Answer Relevancy, Faithfulness, Actionability)
-- [ ] Rerank using learner preference models and success rate data
+- [x] Rerank using learner preference models and success rate data (cross-encoder + profile-based reranking)
 - [x] LLM-as-judge for course quality and prerequisite validation (DeepEval + LangFuse GUI)
 - [ ] Token optimization for personalized learning path generation
-- [ ] Performance testing: real-time recommendations at scale
+- [x] Performance testing: real-time recommendations at scale (locust load tests)
 - [x] Content appropriateness and prerequisite guardrails (input/output sanitization, PII redaction)
 - [x] Build a simple front-end interface
 
@@ -59,7 +59,7 @@ See `docs/decisions/tech-stack.md` for selection rationale.
 
 - [x] Hybrid search combining vector embeddings and keyword retrieval (BM25 sparse + dense + RRF fusion)
 - [x] Dynamic filtering by difficulty level, rating, organization, and skill category
-- [ ] Cross-encoder reranking for improved course recommendation quality
+- [x] Cross-encoder reranking for improved course recommendation quality (fastembed TextCrossEncoder)
 
 ### Learning Path Intelligence
 

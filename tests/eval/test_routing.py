@@ -2,34 +2,23 @@
 
 Each test sends a query through the Chat API (same as Explore page)
 and asserts that the response's `agent` field matches the expected specialist.
-
-To add cases: append to the parametrize list below, or add GT entries
-with `expected_agent` to evals/ground_truth.json.
 """
 
 import pytest
 
-from tests.eval.conftest import chat
+from tests.eval.conftest import (
+    Q_CAREER,
+    Q_COURSE_SEARCH,
+    Q_LEARNING_PATH,
+    Q_SKILL_GAP,
+    chat,
+)
 
-# (query, expected_agent)
-# Minimal set: 1 case per agent.  Add more via parametrize or GT file.
 ROUTING_CASES = [
-    (
-        "What skills am I missing to become a machine learning engineer?",
-        "Skill Gap Analyst",
-    ),
-    (
-        "What career path should I take to become an AI engineer?",
-        "Career Advisor",
-    ),
-    (
-        "Create a learning path for machine learning from beginner to advanced",
-        "Learning Path Designer",
-    ),
-    (
-        "Find me Python programming courses",
-        "Learning Advisor",
-    ),
+    (Q_SKILL_GAP, "Skill Gap Analyst"),
+    (Q_CAREER, "Career Advisor"),
+    (Q_LEARNING_PATH, "Learning Path Designer"),
+    (Q_COURSE_SEARCH, "Learning Advisor"),
 ]
 
 

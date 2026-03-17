@@ -1,0 +1,15 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.15, pytest-9.0.2, pluggy-1.6.0 -- /usr/local/bin/python3.11
+cachedir: .pytest_cache
+rootdir: /app
+plugins: deepeval-3.8.9, rerunfailures-16.1, asyncio-1.3.0, anyio-4.12.1, repeat-0.9.4, xdist-3.8.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 4 items
+
+tests/eval/test_career.py::test_career_json_format PASSED                [ 25%]
+tests/eval/test_career.py::test_career_uses_web_search PASSED            [ 50%]
+tests/eval/test_career.py::test_career_web_search_utilization PASSED     [ 75%]
+tests/eval/test_career.py::test_career_action_plan_structure PASSED      [100%]Running teardown with pytest sessionfinish...
+
+
+======================== 4 passed in 106.01s (0:01:46) =========================

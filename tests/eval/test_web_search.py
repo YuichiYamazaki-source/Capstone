@@ -3,11 +3,20 @@
 Tests that agents which need market data (Skill Gap Analyst, Career Advisor)
 call web_search and reflect its results in output, and that agents which
 should NOT use web search (Learning Path Designer) do not call it.
+
+Uses canonical queries (cached) to avoid redundant API calls.
 """
 
 import pytest
 
-from tests.eval.conftest import chat, extract_json_from_reply
+from tests.eval.conftest import (
+    Q_CAREER_2,
+    Q_LEARNING_PATH,
+    Q_SKILL_GAP,
+    Q_SKILL_GAP_2,
+    chat,
+    extract_json_from_reply,
+)
 
 
 # --- Skill Gap Analyst: web_search required ---
@@ -16,7 +25,7 @@ from tests.eval.conftest import chat, extract_json_from_reply
 @pytest.mark.asyncio
 async def test_skill_gap_uses_web_search():
     """Skill Gap Analyst must call web_search for market skill requirements."""
-    response = await chat("What skills am I missing to become a data engineer?")
+    response = await chat(Q_SKILL_GAP)
     assert response["agent"] == "Skill Gap Analyst"
 
     all_tools = response.get("all_tool_calls", [])
@@ -30,7 +39,7 @@ async def test_skill_gap_uses_web_search():
 @pytest.mark.asyncio
 async def test_skill_gap_web_search_reflected_in_output():
     """Web search results should be reflected in the gaps output."""
-    response = await chat("Analyze my skill gaps for a DevOps engineer role")
+    response = await chat(Q_SKILL_GAP_2)
     assert response["agent"] == "Skill Gap Analyst"
 
     all_tools = response.get("all_tool_calls", [])
@@ -54,7 +63,7 @@ async def test_skill_gap_web_search_reflected_in_output():
 @pytest.mark.asyncio
 async def test_career_uses_web_search():
     """Career Advisor must call web_search for market data."""
-    response = await chat("What career opportunities exist in cloud computing?")
+    response = await chat(Q_CAREER_2)
     assert response["agent"] == "Career Advisor"
 
     all_tools = response.get("all_tool_calls", [])
@@ -68,7 +77,7 @@ async def test_career_uses_web_search():
 @pytest.mark.asyncio
 async def test_career_web_search_reflected_in_output():
     """Web search results should set data_source to 'web_search'."""
-    response = await chat("Should I pursue a career in AI or cybersecurity?")
+    response = await chat(Q_CAREER_2)
     assert response["agent"] == "Career Advisor"
 
     all_tools = response.get("all_tool_calls", [])
@@ -95,9 +104,7 @@ async def test_learning_path_no_web_search():
     get_course_details), not external market data. Calling web_search
     wastes tokens and adds latency without improving path quality.
     """
-    response = await chat(
-        "Create a learning path for machine learning from beginner to advanced"
-    )
+    response = await chat(Q_LEARNING_PATH)
     assert response["agent"] == "Learning Path Designer"
 
     all_tools = response.get("all_tool_calls", [])

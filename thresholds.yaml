@@ -1,0 +1,20 @@
+# Quality gates for CI/CD pipeline.
+# scripts/check_thresholds.py compares eval results against these values.
+
+ir_metrics:
+  min_hit_rate: 0.7
+  min_precision_at_5: 0.3
+  min_recall_at_5: 0.3
+
+latency:
+  max_p95_ms: 30000  # 30 seconds (includes LLM call time)
+
+guardrails:
+  min_pass_rate: 0.9
+
+agent_routing:
+  min_accuracy: 0.8
+
+quality:
+  min_answer_relevancy: 0.5
+  min_faithfulness: 0.5

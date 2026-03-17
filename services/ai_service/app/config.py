@@ -14,5 +14,9 @@ class Settings(BaseSettings):
     openai_model: str = "gpt-4o"
     openai_embedding_model: str = "text-embedding-3-small"
 
+    # Circuit breaker
+    circuit_breaker_failure_threshold: int = 3
+    circuit_breaker_recovery_timeout: float = 30.0
+
 
 settings = Settings()
