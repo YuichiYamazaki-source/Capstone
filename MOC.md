@@ -5,11 +5,24 @@
 
 ---
 
-## 📖 Reference（開発中に参照する）
+## 📖 Docs（設計・リファレンス）
 
-- [[Capstone/ref/Requirements]] — 要件定義（PDF準拠）
-- [[Capstone/ref/Architecture]] — システム設計・アーキテクチャ判断
-- [[Capstone/ref/Tech Stack]] — 技術選定と理由
+- [[Capstone/docs/architecture/system-design]] — システム設計
+- [[Capstone/docs/architecture/production-vs-poc]] — PoC vs Production
+- [[Capstone/docs/decisions/tech-stack]] — 技術選定と理由
+- [[Capstone/docs/decisions/discussion]] — 設計判断ログ
+- [[Capstone/docs/api/api-design]] — API設計
+- [[Capstone/docs/data-flow/ingestion]] — データ投入フロー
+- [[Capstone/docs/data-flow/retrieval]] — 検索・取得フロー
+- [[Capstone/docs/data-flow/dataset-analysis]] — データセット分析
+- [[Capstone/docs/design/ui-design]] — UI/UXデザイン
+- [[Capstone/docs/development-plan]] — 開発フェーズ計画
+- [[Capstone/docs/phase2-notes]] — Phase 2 開発リファレンス
+- [[Capstone/docs/evaluation/metrics]] — 評価メトリクス
+
+## 📋 Requirements
+
+- [[Capstone/requirements/Requirements]] — 要件定義（PDF準拠）
 
 ## 🧠 Knowledge（ナレッジ蓄積）
 

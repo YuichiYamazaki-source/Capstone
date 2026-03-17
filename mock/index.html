@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Finder - Mock</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f5f5;
+      color: #1a1a2e;
+    }
+
+    /* ===== Navigation (shared) ===== */
+    .nav {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 12px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-center { display: flex; gap: 24px; }
+    .nav-center a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 6px 0;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .nav-center a:hover, .nav-center a.active {
+      color: #fff;
+      border-bottom-color: #6c63ff;
+    }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      font-size: 14px;
+    }
+    .nav-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: #6c63ff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600; color: #fff;
+    }
+    .nav-login-btn {
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: none;
+      color: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-login-btn:hover { background: rgba(255,255,255,0.1); border-color: #6c63ff; }
+    .nav-logout-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: none;
+      background: none;
+      color: rgba(255,255,255,0.6);
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .nav-logout-btn:hover { color: #fff; }
+
+    /* ===== Page container ===== */
+    .page { display: none; min-height: calc(100vh - 52px); }
+    .page.active { display: block; }
+
+    /* ===== Onboarding ===== */
+    .onboarding {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 52px);
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      padding: 40px 20px;
+    }
+    .onboarding-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 48px;
+      max-width: 640px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .onboarding-card h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: #1a1a2e;
+    }
+    .onboarding-card .subtitle {
+      color: #666;
+      margin-bottom: 32px;
+      font-size: 15px;
+    }
+    .step-indicator {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+    .step-dot {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: #e0e0e0;
+      transition: background 0.3s;
+    }
+    .step-dot.active { background: #6c63ff; }
+    .step-dot.done { background: #4caf50; }
+
+    .form-group { margin-bottom: 24px; }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 12px;
+      color: #1a1a2e;
+    }
+    .form-group .hint {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      padding: 8px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 20px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fff;
+      user-select: none;
+    }
+    .chip:hover { border-color: #6c63ff; background: #f5f3ff; }
+    .chip.selected { border-color: #6c63ff; background: #6c63ff; color: #fff; }
+
+    .btn-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+    }
+    .btn {
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: #6c63ff; color: #fff; }
+    .btn-primary:hover { background: #5a52d5; }
+    .btn-ghost { background: none; color: #888; }
+    .btn-ghost:hover { color: #6c63ff; }
+    .btn-outline {
+      background: none;
+      border: 2px solid #e0e0e0;
+      color: #666;
+    }
+    .btn-outline:hover { border-color: #6c63ff; color: #6c63ff; }
+
+    /* ===== Home (Hub) ===== */
+    .home { padding: 40px 32px; max-width: 1200px; margin: 0 auto; }
+    .home-header { margin-bottom: 32px; }
+    .home-header h1 { font-size: 28px; margin-bottom: 4px; }
+    .home-header p { color: #666; font-size: 15px; }
+
+    .profile-summary {
+      background: linear-gradient(135deg, #6c63ff, #5a52d5);
+      border-radius: 16px;
+      padding: 24px 32px;
+      color: #fff;
+      margin-bottom: 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .profile-summary h3 { font-size: 16px; margin-bottom: 8px; opacity: 0.9; }
+    .profile-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+    .profile-tag {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .feature-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .feature-card:hover {
+      border-color: #6c63ff;
+      box-shadow: 0 8px 24px rgba(108,99,255,0.15);
+      transform: translateY(-2px);
+    }
+    .feature-card.highlighted {
+      border-color: #6c63ff;
+      background: #faf9ff;
+    }
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 24px;
+    }
+    .feature-icon.purple { background: #ede7f6; color: #6c63ff; }
+    .feature-icon.blue { background: #e3f2fd; color: #1976d2; }
+    .feature-icon.green { background: #e8f5e9; color: #388e3c; }
+    .feature-icon.orange { background: #fff3e0; color: #f57c00; }
+    .feature-card h3 { font-size: 17px; margin-bottom: 8px; }
+    .feature-card p { font-size: 14px; color: #666; line-height: 1.5; }
+    .feature-badge {
+      display: inline-block;
+      background: #6c63ff;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      flex: 1;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .stat-card .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+    .stat-card .stat-label {
+      font-size: 13px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    /* ===== Explore / Consult ===== */
+    .explore { display: flex; height: calc(100vh - 52px); }
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 32px;
+      overflow-y: auto;
+    }
+    .message {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 12px;
+    }
+    .message.ai { flex-direction: row; }
+    .message.user { flex-direction: row-reverse; }
+    .message-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .message.ai .message-avatar { background: #ede7f6; }
+    .message.user .message-avatar { background: #e3f2fd; }
+    .message-bubble {
+      max-width: 70%;
+      padding: 14px 18px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .message.ai .message-bubble {
+      background: #f5f5f5;
+      border-top-left-radius: 4px;
+    }
+    .message.user .message-bubble {
+      background: #6c63ff;
+      color: #fff;
+      border-top-right-radius: 4px;
+    }
+    .chat-input-area {
+      padding: 16px 32px;
+      border-top: 1px solid #eee;
+      display: flex;
+      gap: 12px;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 14px 18px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .chat-input:focus { border-color: #6c63ff; }
+    .chat-send {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #6c63ff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .suggestion-chips {
+      padding: 12px 32px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .suggestion-chip {
+      padding: 8px 16px;
+      background: #f5f3ff;
+      border: 1px solid #d1c4e9;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #6c63ff;
+      transition: all 0.2s;
+    }
+    .suggestion-chip:hover { background: #ede7f6; }
+
+    /* ===== Course Search ===== */
+    .search-page { padding: 32px; max-width: 1200px; margin: 0 auto; }
+    .search-header { margin-bottom: 24px; }
+    .search-bar-row { display: flex; gap: 12px; margin-bottom: 24px; }
+    .search-bar {
+      flex: 1;
+      padding: 14px 18px 14px 48px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #fff url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 16px center no-repeat;
+    }
+    .search-bar:focus { border-color: #6c63ff; }
+
+    .search-layout { display: flex; gap: 24px; }
+    .filter-panel {
+      width: 260px;
+      flex-shrink: 0;
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      height: fit-content;
+    }
+    .filter-panel h3 { font-size: 15px; margin-bottom: 16px; }
+    .filter-section { margin-bottom: 20px; }
+    .filter-section label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .filter-chip {
+      padding: 6px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 16px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-chip:hover { border-color: #6c63ff; }
+    .filter-chip.selected { background: #6c63ff; color: #fff; border-color: #6c63ff; }
+
+    .results-area { flex: 1; }
+    .results-count {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 16px;
+    }
+    .course-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .course-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      transform: translateY(-1px);
+    }
+    .course-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .course-card h3 { font-size: 17px; color: #1a1a2e; }
+    .course-card .org { font-size: 13px; color: #888; margin-bottom: 8px; }
+    .course-card .desc {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .course-meta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .meta-tag {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: #666;
+      background: #f5f5f5;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .rating-badge {
+      background: #fff3e0;
+      color: #f57c00;
+      font-weight: 600;
+    }
+    .level-badge { font-weight: 500; }
+    .level-beginner { background: #e8f5e9; color: #388e3c; }
+    .level-intermediate { background: #e3f2fd; color: #1976d2; }
+    .level-advanced { background: #fce4ec; color: #c62828; }
+    .skill-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .skill-tag {
+      font-size: 11px;
+      padding: 3px 8px;
+      background: #f5f3ff;
+      color: #6c63ff;
+      border-radius: 4px;
+    }
+    .recommend-reason {
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: #f5f3ff;
+      border-left: 3px solid #6c63ff;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: #5a52d5;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 24px;
+    }
+    .page-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .page-btn.active { background: #6c63ff; color: #fff; border-color: #6c63ff; }
+    .page-btn:hover { border-color: #6c63ff; }
+
+    /* ===== Learning Path ===== */
+    .learning-path { padding: 32px; max-width: 1000px; margin: 0 auto; }
+    .path-header { margin-bottom: 32px; }
+    .path-header h1 { font-size: 24px; margin-bottom: 8px; }
+
+    .skill-gap-section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .skill-gap-section h3 { font-size: 17px; margin-bottom: 16px; }
+    .skill-bar-group { margin-bottom: 12px; }
+    .skill-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .skill-bar {
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .skill-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s;
+    }
+    .fill-high { background: #4caf50; }
+    .fill-mid { background: #ff9800; }
+    .fill-low { background: #f44336; }
+
+    .path-timeline { position: relative; padding-left: 32px; }
+    .path-timeline::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #e0e0e0;
+    }
+    .path-step {
+      position: relative;
+      margin-bottom: 24px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .path-step::before {
+      content: '';
+      position: absolute;
+      left: -27px;
+      top: 24px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #6c63ff;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 2px #6c63ff;
+    }
+    .path-step .step-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #6c63ff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .path-step h4 { font-size: 16px; margin-bottom: 4px; }
+    .path-step .step-org { font-size: 13px; color: #888; }
+    .path-step .step-skills {
+      margin-top: 8px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* ===== Profile ===== */
+    .profile-page { padding: 32px; max-width: 800px; margin: 0 auto; }
+    .profile-page h1 { font-size: 24px; margin-bottom: 24px; }
+    .profile-section {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .profile-section h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #1a1a2e;
+    }
+    .profile-field {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .profile-field:last-child { border-bottom: none; }
+    .profile-field-label { font-size: 14px; color: #888; }
+    .profile-field-value { font-size: 14px; font-weight: 500; }
+
+    /* ===== Login / Register ===== */
+    .login-page {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 52px);
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      padding: 40px 20px;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 48px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .login-card h1 { font-size: 24px; margin-bottom: 8px; text-align: center; }
+    .login-card .subtitle { color: #666; margin-bottom: 32px; font-size: 14px; text-align: center; }
+    .auth-tabs {
+      display: flex;
+      border-bottom: 2px solid #e0e0e0;
+      margin-bottom: 24px;
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: #888;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+    .auth-tab.active { color: #6c63ff; border-bottom-color: #6c63ff; }
+    .auth-tab:hover { color: #6c63ff; }
+    .input-group { margin-bottom: 20px; }
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    .input-field {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-field:focus { border-color: #6c63ff; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Navigation ===== -->
+  <nav class="nav">
+    <div class="nav-logo">
+      <span class="material-icons">school</span>
+      Course Finder
+    </div>
+    <div class="nav-center">
+      <a href="#" onclick="showPage('home')" id="nav-home">Home</a>
+      <a href="#" onclick="showPage('explore')" id="nav-explore">Explore</a>
+      <a href="#" onclick="showPage('search')" id="nav-search">Search</a>
+      <a href="#" onclick="showPage('path')" id="nav-path">Learning Path</a>
+      <a href="#" onclick="showPage('profile')" id="nav-profile">Profile</a>
+    </div>
+    <div class="nav-right">
+      <!-- Logged out state -->
+      <div id="nav-auth-guest">
+        <button class="nav-login-btn" onclick="showPage('login')">Login</button>
+      </div>
+      <!-- Logged in state -->
+      <div id="nav-auth-user" style="display:none">
+        <div class="nav-user">
+          <div class="nav-avatar" id="nav-user-initial">L</div>
+          <span id="nav-user-name">Learner</span>
+          <button class="nav-logout-btn" onclick="doLogout()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== Page 1: Onboarding ===== -->
+  <div class="page active" id="page-onboarding">
+    <div class="onboarding">
+      <div class="onboarding-card">
+        <!-- Step 1 -->
+        <div class="onboarding-step active" id="step-1">
+          <div class="step-indicator">
+            <div class="step-dot active"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+          </div>
+          <h1>Welcome to Course Finder</h1>
+          <p class="subtitle">Let us know about you so we can personalize your experience.</p>
+          <div class="form-group">
+            <label>What skills do you already have?</label>
+            <p class="hint">Select all that apply</p>
+            <div class="chip-group">
+              <div class="chip" onclick="this.classList.toggle('selected')">Python</div>
+              <div class="chip" onclick="this.classList.toggle('selected')">Data Analysis</div>
+              <div class="chip" onclick="this.classList.toggle('selected')">Machine Learning</div>
+              <div class="chip" onclick="this.classList.toggle('selected')">SQL</div>
+              <div class="chip" onclick="this.classList.toggle('selected')">JavaScript</div>
+              <div class="chip" onclick="this.classList.toggle('selected')">Cloud Computing</div>
+              <div class="chip" onclick="this.classList.toggle('selected')">Project Management</div>
+              <div class="chip" onclick="this.classList.toggle('selected')">Communication</div>
+              <div class="chip" onclick="this.classList.toggle('selected')">Leadership</div>
+              <div class="chip" onclick="this.classList.toggle('selected')">Cybersecurity</div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-ghost" onclick="skipOnboarding()">Skip for now</button>
+            <button class="btn btn-primary" onclick="nextStep(2)">Next</button>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="onboarding-step" id="step-2" style="display:none">
+          <div class="step-indicator">
+            <div class="step-dot done"></div>
+            <div class="step-dot active"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+          </div>
+          <h1>What brings you here?</h1>
+          <p class="subtitle">Understanding your motivation helps us recommend better.</p>
+          <div class="form-group">
+            <label>Learning Motivation</label>
+            <div class="chip-group">
+              <div class="chip" onclick="selectOne(this)">Career Change</div>
+              <div class="chip" onclick="selectOne(this)">Skill Up at Current Job</div>
+              <div class="chip" onclick="selectOne(this)">Hobby / Personal Interest</div>
+              <div class="chip" onclick="selectOne(this)">Academic / Certification</div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-ghost" onclick="skipOnboarding()">Skip for now</button>
+            <div style="display:flex;gap:12px">
+              <button class="btn btn-outline" onclick="nextStep(1)">Back</button>
+              <button class="btn btn-primary" onclick="nextStep(3)">Next</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="onboarding-step" id="step-3" style="display:none">
+          <div class="step-indicator">
+            <div class="step-dot done"></div>
+            <div class="step-dot done"></div>
+            <div class="step-dot active"></div>
+            <div class="step-dot"></div>
+          </div>
+          <h1>How deep do you want to go?</h1>
+          <p class="subtitle">This helps us calibrate the level of courses we recommend.</p>
+          <div class="form-group">
+            <label>Learning Scope</label>
+            <div class="chip-group">
+              <div class="chip" onclick="selectOne(this)">Just the basics</div>
+              <div class="chip" onclick="selectOne(this)">Up to intermediate</div>
+              <div class="chip" onclick="selectOne(this)">Deep specialization</div>
+              <div class="chip" onclick="selectOne(this)">Not sure yet</div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-ghost" onclick="skipOnboarding()">Skip for now</button>
+            <div style="display:flex;gap:12px">
+              <button class="btn btn-outline" onclick="nextStep(2)">Back</button>
+              <button class="btn btn-primary" onclick="nextStep(4)">Next</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="onboarding-step" id="step-4" style="display:none">
+          <div class="step-indicator">
+            <div class="step-dot done"></div>
+            <div class="step-dot done"></div>
+            <div class="step-dot done"></div>
+            <div class="step-dot active"></div>
+          </div>
+          <h1>How do you like to learn?</h1>
+          <p class="subtitle">Last step! We'll tailor recommendations to your pace.</p>
+          <div class="form-group">
+            <label>Learning Style</label>
+            <div class="chip-group">
+              <div class="chip" onclick="selectOne(this)">Intensive (full-time)</div>
+              <div class="chip" onclick="selectOne(this)">Steady (a few hours/week)</div>
+              <div class="chip" onclick="selectOne(this)">Flexible (my own pace)</div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-ghost" onclick="skipOnboarding()">Skip for now</button>
+            <div style="display:flex;gap:12px">
+              <button class="btn btn-outline" onclick="nextStep(3)">Back</button>
+              <button class="btn btn-primary" onclick="finishOnboarding()">Get Started</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Page 2: Home (Hub) ===== -->
+  <div class="page" id="page-home">
+    <div class="home">
+      <div class="home-header">
+        <h1>Welcome back, Learner</h1>
+        <p>Here's your personalized learning hub.</p>
+      </div>
+
+      <div class="profile-summary">
+        <div>
+          <h3>Your Profile</h3>
+          <div class="profile-tags">
+            <span class="profile-tag">Python</span>
+            <span class="profile-tag">Data Analysis</span>
+            <span class="profile-tag">Career Change</span>
+            <span class="profile-tag">Intermediate Goal</span>
+          </div>
+        </div>
+        <button class="btn btn-ghost" style="color:rgba(255,255,255,0.8)" onclick="showPage('profile')">Edit</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value">6,645</div>
+          <div class="stat-label">Courses Available</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">12</div>
+          <div class="stat-label">Skill Domains</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">298</div>
+          <div class="stat-label">Organizations</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">1,023</div>
+          <div class="stat-label">Specializations</div>
+        </div>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card highlighted" onclick="showPage('explore')">
+          <div class="feature-badge">Recommended for you</div>
+          <div class="feature-icon purple">
+            <span class="material-icons">chat</span>
+          </div>
+          <h3>Explore with AI</h3>
+          <p>Not sure where to start? Chat with our AI advisor to discover courses that match your interests and goals.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('search')">
+          <div class="feature-icon blue">
+            <span class="material-icons">search</span>
+          </div>
+          <h3>Search Courses</h3>
+          <p>Know what you're looking for? Search and filter through our catalog by skills, level, and organization.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('path')">
+          <div class="feature-icon green">
+            <span class="material-icons">route</span>
+          </div>
+          <h3>Learning Path</h3>
+          <p>See your skill gaps and get a structured learning path from beginner to your target level.</p>
+        </div>
+        <div class="feature-card" onclick="showPage('profile')">
+          <div class="feature-icon orange">
+            <span class="material-icons">person</span>
+          </div>
+          <h3>My Profile</h3>
+          <p>Update your skills, goals, and preferences to get better recommendations.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Page 3: Explore / Consult ===== -->
+  <div class="page" id="page-explore">
+    <div class="explore">
+      <div class="chat-area">
+        <div class="chat-messages">
+          <div class="message ai">
+            <div class="message-avatar">
+              <span class="material-icons" style="font-size:20px">smart_toy</span>
+            </div>
+            <div class="message-bubble">
+              Hi! I'm your learning advisor. Based on your profile, I see you have experience with Python and Data Analysis, and you're looking to make a career change.<br><br>
+              What kind of role or field are you interested in moving into? I can help you figure out which skills to build and which courses to take.
+            </div>
+          </div>
+          <div class="message user">
+            <div class="message-avatar">
+              <span class="material-icons" style="font-size:20px">person</span>
+            </div>
+            <div class="message-bubble">
+              I've been doing data analysis in Excel and SQL, but I want to move into machine learning. I'm not sure if I have enough background though.
+            </div>
+          </div>
+          <div class="message ai">
+            <div class="message-avatar">
+              <span class="material-icons" style="font-size:20px">smart_toy</span>
+            </div>
+            <div class="message-bubble">
+              Great goal! With your SQL and data analysis background, you actually have a solid foundation. Here's what I'd suggest:<br><br>
+              <strong>You're ready for:</strong> Intermediate ML courses that build on data skills<br>
+              <strong>You might need first:</strong> Python programming basics and statistics fundamentals<br><br>
+              Would you like me to:<br>
+              1. Show you a learning path from your current skills to ML?<br>
+              2. Search for beginner-friendly ML courses?<br>
+              3. Explore what ML career paths look like?
+            </div>
+          </div>
+        </div>
+        <div class="suggestion-chips">
+          <div class="suggestion-chip">Show me a learning path</div>
+          <div class="suggestion-chip">Search ML courses</div>
+          <div class="suggestion-chip">What ML careers exist?</div>
+          <div class="suggestion-chip">What skills am I missing?</div>
+        </div>
+        <div class="chat-input-area">
+          <input type="text" class="chat-input" placeholder="Ask me anything about your learning journey..." />
+          <button class="chat-send">
+            <span class="material-icons">send</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Page 4: Course Search ===== -->
+  <div class="page" id="page-search">
+    <div class="search-page">
+      <div class="search-header">
+        <h1>Search Courses</h1>
+      </div>
+      <div class="search-bar-row">
+        <input type="text" class="search-bar" placeholder="Search by topic, skill, or describe what you want to learn..." value="machine learning for beginners" />
+        <button class="btn btn-primary">Search</button>
+      </div>
+      <div class="search-layout">
+        <div class="filter-panel">
+          <h3>Filters</h3>
+          <div class="filter-section">
+            <label>Level</label>
+            <div class="filter-chips">
+              <div class="filter-chip selected">Beginner</div>
+              <div class="filter-chip">Intermediate</div>
+              <div class="filter-chip">Advanced</div>
+            </div>
+          </div>
+          <div class="filter-section">
+            <label>Domain</label>
+            <div class="filter-chips">
+              <div class="filter-chip selected">AI & ML</div>
+              <div class="filter-chip">Data & Analytics</div>
+              <div class="filter-chip">Programming</div>
+              <div class="filter-chip">Cloud</div>
+              <div class="filter-chip">Business</div>
+              <div class="filter-chip">Cybersecurity</div>
+            </div>
+          </div>
+          <div class="filter-section">
+            <label>Organization</label>
+            <div class="filter-chips">
+              <div class="filter-chip">Stanford</div>
+              <div class="filter-chip">Google</div>
+              <div class="filter-chip">IBM</div>
+              <div class="filter-chip">AWS</div>
+              <div class="filter-chip">DeepLearning.AI</div>
+            </div>
+          </div>
+        </div>
+        <div class="results-area">
+          <div class="results-count">Showing 3 of 142 courses matching "machine learning for beginners"</div>
+
+          <div class="course-card">
+            <div class="course-card-header">
+              <h3>Machine Learning Specialization</h3>
+              <span class="meta-tag rating-badge">4.9</span>
+            </div>
+            <div class="org">DeepLearning.AI / Stanford University</div>
+            <div class="desc">Master fundamental AI concepts and develop practical machine learning skills in this beginner-friendly program from Andrew Ng.</div>
+            <div class="course-meta">
+              <span class="meta-tag level-badge level-beginner">Beginner</span>
+              <span class="meta-tag">3 course series</span>
+              <span class="meta-tag">2 months</span>
+            </div>
+            <div class="skill-tags">
+              <span class="skill-tag">Machine Learning</span>
+              <span class="skill-tag">Python Programming</span>
+              <span class="skill-tag">Deep Learning</span>
+            </div>
+            <div class="recommend-reason">Matches your goal: Career change into ML. Builds on your existing Python skills.</div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-card-header">
+              <h3>AI For Everyone</h3>
+              <span class="meta-tag rating-badge">4.8</span>
+            </div>
+            <div class="org">DeepLearning.AI</div>
+            <div class="desc">AI is not only for engineers. Learn what AI can realistically do and how it impacts business strategy, workflow, and society.</div>
+            <div class="course-meta">
+              <span class="meta-tag level-badge level-beginner">Beginner</span>
+              <span class="meta-tag">4 modules</span>
+              <span class="meta-tag">6 hours</span>
+            </div>
+            <div class="skill-tags">
+              <span class="skill-tag">Artificial Intelligence (AI)</span>
+              <span class="skill-tag">Machine Learning</span>
+            </div>
+            <div class="recommend-reason">Good starting point to understand the ML landscape before diving into technical courses.</div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-card-header">
+              <h3>Mathematics for Machine Learning and Data Science</h3>
+              <span class="meta-tag rating-badge">4.7</span>
+            </div>
+            <div class="org">DeepLearning.AI</div>
+            <div class="desc">Build the mathematical foundations needed for machine learning: linear algebra, calculus, statistics, and probability.</div>
+            <div class="course-meta">
+              <span class="meta-tag level-badge level-beginner">Beginner</span>
+              <span class="meta-tag">3 course series</span>
+              <span class="meta-tag">3 months</span>
+            </div>
+            <div class="skill-tags">
+              <span class="skill-tag">Machine Learning</span>
+              <span class="skill-tag">Data Analysis</span>
+            </div>
+            <div class="recommend-reason">Fills a potential gap: You have data analysis skills but may need stronger math foundations for ML.</div>
+          </div>
+
+          <div class="pagination">
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">...</button>
+            <button class="page-btn">15</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Page 5: Learning Path ===== -->
+  <div class="page" id="page-path">
+    <div class="learning-path">
+      <div class="path-header">
+        <h1>Your Learning Path to Machine Learning</h1>
+        <p style="color:#666">Based on your current skills and career goal</p>
+      </div>
+
+      <div class="skill-gap-section">
+        <h3>Skill Gap Analysis</h3>
+        <p style="font-size:14px;color:#666;margin-bottom:16px">Your current skills vs. what's needed for a Machine Learning career</p>
+
+        <div class="skill-bar-group">
+          <div class="skill-bar-label">
+            <span>Data Analysis</span>
+            <span style="color:#4caf50;font-weight:600">Strong</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill fill-high" style="width:85%"></div></div>
+        </div>
+        <div class="skill-bar-group">
+          <div class="skill-bar-label">
+            <span>SQL</span>
+            <span style="color:#4caf50;font-weight:600">Strong</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill fill-high" style="width:80%"></div></div>
+        </div>
+        <div class="skill-bar-group">
+          <div class="skill-bar-label">
+            <span>Python Programming</span>
+            <span style="color:#ff9800;font-weight:600">Building</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill fill-mid" style="width:45%"></div></div>
+        </div>
+        <div class="skill-bar-group">
+          <div class="skill-bar-label">
+            <span>Statistics & Probability</span>
+            <span style="color:#ff9800;font-weight:600">Building</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill fill-mid" style="width:35%"></div></div>
+        </div>
+        <div class="skill-bar-group">
+          <div class="skill-bar-label">
+            <span>Machine Learning</span>
+            <span style="color:#f44336;font-weight:600">Gap</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill fill-low" style="width:10%"></div></div>
+        </div>
+        <div class="skill-bar-group">
+          <div class="skill-bar-label">
+            <span>Deep Learning</span>
+            <span style="color:#f44336;font-weight:600">Gap</span>
+          </div>
+          <div class="skill-bar"><div class="skill-bar-fill fill-low" style="width:5%"></div></div>
+        </div>
+      </div>
+
+      <h3 style="margin-bottom:20px">Recommended Course Sequence</h3>
+      <div class="path-timeline">
+        <div class="path-step">
+          <div class="step-label">Step 1 — Foundation</div>
+          <h4>Python for Everybody Specialization</h4>
+          <div class="step-org">University of Michigan</div>
+          <div class="step-skills">
+            <span class="skill-tag">Python Programming</span>
+            <span class="meta-tag level-badge level-beginner">Beginner</span>
+            <span class="meta-tag">5 course series</span>
+          </div>
+        </div>
+        <div class="path-step">
+          <div class="step-label">Step 2 — Statistics</div>
+          <h4>Statistics with Python Specialization</h4>
+          <div class="step-org">University of Michigan</div>
+          <div class="step-skills">
+            <span class="skill-tag">Statistics</span>
+            <span class="skill-tag">Python Programming</span>
+            <span class="meta-tag level-badge level-intermediate">Intermediate</span>
+          </div>
+        </div>
+        <div class="path-step">
+          <div class="step-label">Step 3 — Core ML</div>
+          <h4>Machine Learning Specialization</h4>
+          <div class="step-org">DeepLearning.AI / Stanford</div>
+          <div class="step-skills">
+            <span class="skill-tag">Machine Learning</span>
+            <span class="skill-tag">Deep Learning</span>
+            <span class="meta-tag level-badge level-beginner">Beginner</span>
+          </div>
+        </div>
+        <div class="path-step">
+          <div class="step-label">Step 4 — Advanced</div>
+          <h4>Deep Learning Specialization</h4>
+          <div class="step-org">DeepLearning.AI</div>
+          <div class="step-skills">
+            <span class="skill-tag">Deep Learning</span>
+            <span class="skill-tag">Neural Networks</span>
+            <span class="meta-tag level-badge level-intermediate">Intermediate</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Page 6: Profile ===== -->
+  <div class="page" id="page-profile">
+    <div class="profile-page">
+      <h1>My Profile</h1>
+      <div class="profile-section">
+        <h3>Current Skills</h3>
+        <div class="chip-group" style="padding:4px 0">
+          <div class="chip selected" style="cursor:default">Python</div>
+          <div class="chip selected" style="cursor:default">Data Analysis</div>
+          <div class="chip selected" style="cursor:default">SQL</div>
+          <div class="chip" style="border-style:dashed;color:#888">+ Add skill</div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <h3>Learning Preferences</h3>
+        <div class="profile-field">
+          <span class="profile-field-label">Motivation</span>
+          <span class="profile-field-value">Career Change</span>
+        </div>
+        <div class="profile-field">
+          <span class="profile-field-label">Target Scope</span>
+          <span class="profile-field-value">Up to Intermediate</span>
+        </div>
+        <div class="profile-field">
+          <span class="profile-field-label">Learning Style</span>
+          <span class="profile-field-value">Steady (a few hours/week)</span>
+        </div>
+      </div>
+      <div class="profile-section">
+        <h3>Interest Areas</h3>
+        <div class="chip-group" style="padding:4px 0">
+          <div class="chip selected" style="cursor:default">AI & ML</div>
+          <div class="chip selected" style="cursor:default">Data & Analytics</div>
+          <div class="chip" style="border-style:dashed;color:#888">+ Add area</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:8px">Save Changes</button>
+    </div>
+  </div>
+
+  <!-- ===== Page 7: Login / Register ===== -->
+  <div class="page" id="page-login">
+    <div class="login-page">
+      <div class="login-card">
+        <h1>Course Finder</h1>
+        <p class="subtitle">Sign in to save your profile and get personalized recommendations</p>
+
+        <div class="auth-tabs">
+          <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+          <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-form">
+          <div class="input-group">
+            <label>Email</label>
+            <input type="email" class="input-field" placeholder="your@email.com" />
+          </div>
+          <div class="input-group">
+            <label>Password</label>
+            <input type="password" class="input-field" placeholder="Enter your password" />
+          </div>
+          <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Login</button>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" style="display:none">
+          <div class="input-group">
+            <label>Name</label>
+            <input type="text" class="input-field" placeholder="Your name" />
+          </div>
+          <div class="input-group">
+            <label>Email</label>
+            <input type="email" class="input-field" placeholder="your@email.com" />
+          </div>
+          <div class="input-group">
+            <label>Password</label>
+            <input type="password" class="input-field" placeholder="Create a password" />
+          </div>
+          <button class="btn btn-primary" style="width:100%" onclick="doRegister()">Create Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let isLoggedIn = false;
+
+    function showPage(name) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-center a').forEach(a => a.classList.remove('active'));
+      document.getElementById('page-' + name).classList.add('active');
+      const navLink = document.getElementById('nav-' + name);
+      if (navLink) navLink.classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function nextStep(n) {
+      document.querySelectorAll('.onboarding-step').forEach(s => s.style.display = 'none');
+      document.getElementById('step-' + n).style.display = 'block';
+    }
+
+    function selectOne(el) {
+      el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+      el.classList.toggle('selected');
+    }
+
+    function skipOnboarding() {
+      showPage('home');
+    }
+
+    function finishOnboarding() {
+      showPage('home');
+    }
+
+    function switchAuthTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      if (tab === 'login') {
+        document.querySelectorAll('.auth-tab')[0].classList.add('active');
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('register-form').style.display = 'none';
+      } else {
+        document.querySelectorAll('.auth-tab')[1].classList.add('active');
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('register-form').style.display = 'block';
+      }
+    }
+
+    function updateAuthUI() {
+      document.getElementById('nav-auth-guest').style.display = isLoggedIn ? 'none' : 'block';
+      document.getElementById('nav-auth-user').style.display = isLoggedIn ? 'flex' : 'none';
+    }
+
+    function doLogin() {
+      isLoggedIn = true;
+      updateAuthUI();
+      showPage('home');
+    }
+
+    function doRegister() {
+      isLoggedIn = true;
+      updateAuthUI();
+      showPage('onboarding');
+    }
+
+    function doLogout() {
+      isLoggedIn = false;
+      updateAuthUI();
+      showPage('home');
+    }
+  </script>
+</body>
+</html>

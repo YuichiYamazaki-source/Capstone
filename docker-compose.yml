@@ -1,0 +1,109 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - gateway
+    networks:
+      - app-network
+
+  gateway:
+    build: ./services/gateway
+    ports:
+      - "8000:8000"
+    environment:
+      COURSE_SERVICE_URL: http://course-service:8001
+      USER_SERVICE_URL: http://user-service:8002
+      AI_SERVICE_URL: http://ai-service:8003
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-dev-secret-key-change-in-production}
+    depends_on:
+      - course-service
+      - user-service
+      - ai-service
+    networks:
+      - app-network
+
+  ai-service:
+    build: ./services/ai_service
+    expose:
+      - "8003"
+    env_file:
+      - ./local/.env
+    environment:
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB: course_finder
+      QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o}
+      PHOENIX_COLLECTOR_ENDPOINT: http://phoenix:6006/v1/traces
+      GATEWAY_URL: http://gateway:8000
+    volumes:
+      - ./evals:/app/evals
+    depends_on:
+      - mongo
+      - qdrant
+      - phoenix
+    networks:
+      - app-network
+
+  course-service:
+    build: ./services/course_service
+    expose:
+      - "8001"
+    environment:
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB: course_finder
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  user-service:
+    build: ./services/user_service
+    expose:
+      - "8002"
+    environment:
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB: course_finder
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-dev-secret-key-change-in-production}
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  # ===== Observability =====
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    ports:
+      - "6006:6006"
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:7
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+  qdrant:
+    image: qdrant/qdrant:v1.17.0
+    volumes:
+      - qdrant-data:/qdrant/storage
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+  qdrant-data:
+
+networks:
+  app-network:
+    driver: bridge

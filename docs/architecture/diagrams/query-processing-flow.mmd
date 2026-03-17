@@ -1,0 +1,39 @@
+%% Query Processing Flow — From raw input to execution plan
+%% Shows how complex/ambiguous queries are decomposed
+
+sequenceDiagram
+    actor Student
+    participant FE as Frontend
+    participant GW as Gateway
+    participant NORM as Input Normalizer
+    participant ENTITY as Entity Extractor
+    participant INTENT as Intent Classifier
+    participant DECOMP as Query Decomposer
+    participant PLAN as Execution Planner
+    participant AGENTS as Agent Dispatcher
+
+    Student->>FE: Complex query (text / voice / doc)
+    FE->>GW: POST /api/v1/chat
+
+    Note over NORM: Layer 1: Normalize<br/>(rule-based, <5ms)
+    GW->>NORM: Raw input + user_id + session
+    Note over NORM: - Text cleanup<br/>- Language detection<br/>- Multi-modal → text conversion
+
+    Note over ENTITY: Layer 2: Extract entities<br/>(LLM structured output, ~200ms)
+    NORM->>ENTITY: Normalized text
+    Note over ENTITY: Extract structured fields:<br/>- skills: ["Transformer", "LLM"]<br/>- career_goal: "AI Engineer at Google"<br/>- constraints: {timeline: "6 months"}<br/>- experience: "AI-RAN research"<br/>- difficulty_pref: null
+
+    Note over INTENT: Layer 3: Classify intent<br/>(LLM → SLM in V2, ~100ms)
+    ENTITY->>INTENT: Entities + original text
+    Note over INTENT: Multi-label classification:<br/>- career_guidance: 0.9<br/>- skill_gap_analysis: 0.8<br/>- learning_path: 0.7<br/>- course_search: 0.6<br/>(not mutually exclusive)
+
+    Note over DECOMP: Layer 4: Decompose<br/>(LLM, ~300ms)
+    INTENT->>DECOMP: Intents + entities + text
+    Note over DECOMP: Break into sub-tasks:<br/>1. Map "AI Engineer at Google" → required skills<br/>2. Gap analysis: user skills vs required<br/>3. Find courses for each gap<br/>4. Build 6-month learning path<br/>5. Synthesize recommendation
+
+    Note over PLAN: Layer 5: Plan execution<br/>(rule-based DAG, <5ms)
+    DECOMP->>PLAN: Sub-task list with dependencies
+    Note over PLAN: Build DAG:<br/>CAA(1) → SGA(2) → RA(3) → LPPA(4) → LA(5)<br/>Parallel where possible:<br/>CAA + SGA can run concurrently<br/>if no data dependency
+
+    PLAN->>AGENTS: Execution plan (ordered task list)
+    Note over AGENTS: Execute per plan,<br/>pass outputs between agents

@@ -1,0 +1,120 @@
+%% System Overview — AI Service Internal Architecture
+%% Shows the layered pipeline from input to response
+
+graph TB
+    subgraph Input["Input Layer (Multi-modal Ready)"]
+        TXT[Text Input]
+        VOICE[Voice Input<br/><i>Nice to Have</i>]
+        DOC[Document Upload<br/><i>Nice to Have</i>]
+    end
+
+    subgraph QU["Query Understanding Layer"]
+        NORM[Input Normalizer<br/><small>rule-based</small>]
+        ENTITY[Entity Extractor<br/><small>structured output</small>]
+        INTENT[Intent Classifier<br/><small>LLM → SLM</small>]
+        DECOMP[Query Decomposer<br/><small>LLM</small>]
+    end
+
+    subgraph ORCH["Orchestration Layer"]
+        PLANNER[Execution Planner]
+        DISPATCH[Agent Dispatcher]
+        MERGE[Result Merger]
+    end
+
+    subgraph AGENTS["Agent Layer"]
+        RA[Course Retrieval<br/>Agent]
+        SGA[Skill Gap Analysis<br/>Agent]
+        LPPA[Learning Path Planning<br/>Agent]
+        CAA[Career Alignment<br/>Agent]
+        LA[Learning Advisor<br/>Agent]
+    end
+
+    subgraph TOOLS["Tool Layer (MCP)"]
+        direction LR
+        T_SEM[search_semantic]
+        T_KW[search_keyword]
+        T_FILTER[filter_courses]
+        T_DETAIL[get_course_detail]
+        T_PROFILE[get_user_profile]
+        T_RERANK[rerank_results<br/><i>V2</i>]
+    end
+
+    subgraph RETRIEVAL["Retrieval Layer"]
+        EMBED[Query Embedding<br/><small>text-embedding-3-small</small>]
+        VSEARCH[Vector Search<br/><small>Qdrant</small>]
+        KSEARCH[Keyword Search<br/><small>MongoDB text index</small>]
+        FUSION[Score Fusion<br/><small>RRF</small>]
+        RERANK[Cross-Encoder Rerank<br/><small>V2</small>]
+    end
+
+    subgraph RESPONSE["Response Layer"]
+        CTX[Context Assembly]
+        GEN[Response Generation<br/><small>GPT-4o / GPT-4o-mini</small>]
+        GUARD[Guardrails<br/><small>rule-based → LLM</small>]
+    end
+
+    subgraph DATA["Data Layer"]
+        QDRANT[(Qdrant)]
+        MONGO[(MongoDB)]
+        OPENAI_API[OpenAI API]
+        LOCAL_MODEL[Local Fallback<br/><small>MiniLM / Flan-T5</small>]
+    end
+
+    TXT --> NORM
+    VOICE -.->|STT| NORM
+    DOC -.->|extract text| NORM
+
+    NORM --> ENTITY
+    ENTITY --> INTENT
+    INTENT --> DECOMP
+
+    DECOMP --> PLANNER
+    PLANNER --> DISPATCH
+    DISPATCH --> RA
+    DISPATCH --> SGA
+    DISPATCH --> LPPA
+    DISPATCH --> CAA
+
+    RA --> T_SEM
+    RA --> T_KW
+    RA --> T_FILTER
+    RA --> T_DETAIL
+    SGA --> T_SEM
+    SGA --> T_PROFILE
+    LPPA --> T_SEM
+    LPPA --> T_DETAIL
+    CAA --> T_SEM
+    CAA --> T_PROFILE
+
+    T_SEM --> EMBED
+    T_KW --> KSEARCH
+    EMBED --> VSEARCH
+    VSEARCH --> FUSION
+    KSEARCH --> FUSION
+    FUSION --> RERANK
+    T_RERANK --> RERANK
+
+    VSEARCH --> QDRANT
+    KSEARCH --> MONGO
+    EMBED --> OPENAI_API
+    EMBED -.->|fallback| LOCAL_MODEL
+    T_DETAIL --> MONGO
+    T_FILTER --> MONGO
+    T_PROFILE --> MONGO
+
+    RA --> MERGE
+    SGA --> MERGE
+    LPPA --> MERGE
+    CAA --> MERGE
+    MERGE --> LA
+
+    LA --> CTX
+    CTX --> GEN
+    GEN --> GUARD
+    GEN --> OPENAI_API
+    GUARD --> Output[Response to User]
+
+    classDef nicetohave fill:#f9f,stroke:#333,stroke-dasharray: 5 5
+    classDef v2 fill:#ffd,stroke:#333,stroke-dasharray: 5 5
+    class VOICE,DOC nicetohave
+    class RERANK,T_RERANK v2
