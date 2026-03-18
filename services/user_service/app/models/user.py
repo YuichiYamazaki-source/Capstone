@@ -3,10 +3,17 @@ from datetime import datetime
 from pydantic import BaseModel, EmailStr
 
 
+class SkillEntry(BaseModel):
+    """A skill with self-assessed proficiency level."""
+
+    name: str
+    level: str = "Beginner"
+
+
 class UserProfile(BaseModel):
     """User learning profile with skills and preferences."""
 
-    skills: list[str] = []
+    skills: list[SkillEntry] = []
     motivation: str | None = None
     learning_scope: str | None = None
     learning_style: str | None = None
@@ -41,7 +48,7 @@ class UserResponse(BaseModel):
 class ProfileUpdate(BaseModel):
     """Request body for partial profile updates."""
 
-    skills: list[str] | None = None
+    skills: list[SkillEntry] | None = None
     motivation: str | None = None
     learning_scope: str | None = None
     learning_style: str | None = None

@@ -6,6 +6,7 @@ from app.services.course_service import (
     get_course_by_id,
     get_filter_options,
     search_courses,
+    search_skills,
 )
 
 router = APIRouter()
@@ -79,6 +80,15 @@ async def get_course(course_id: str):
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
     return course
+
+
+@router.get("/filters/skills")
+async def skill_search(
+    q: str = Query("", min_length=0),
+    limit: int = Query(20, ge=1, le=100),
+):
+    """Search skills by prefix, ranked by course frequency."""
+    return await search_skills(query=q, limit=limit)
 
 
 @router.get("/filters/options", response_model=FilterOptions)

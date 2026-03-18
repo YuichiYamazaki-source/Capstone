@@ -158,6 +158,35 @@ async def get_course_by_id(course_id: str) -> Course | None:
     return _doc_to_course(doc)
 
 
+async def search_skills(
+    query: str = "", limit: int = 20
+) -> list[dict]:
+    """Search skills by prefix, ranked by frequency across courses.
+
+    Args:
+        query: Partial skill name to match (case-insensitive).
+        limit: Maximum number of skills to return.
+
+    Returns:
+        List of dicts with skill name and course count, sorted by frequency.
+    """
+    db = _get_db()
+    pipeline: list[dict] = [
+        {"$unwind": "$skills"},
+    ]
+    if query:
+        pipeline.append(
+            {"$match": {"skills": re.compile(re.escape(query), re.IGNORECASE)}}
+        )
+    pipeline.extend([
+        {"$group": {"_id": "$skills", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+        {"$limit": limit},
+        {"$project": {"_id": 0, "skill": "$_id", "count": 1}},
+    ])
+    return await db.courses.aggregate(pipeline).to_list(length=limit)
+
+
 async def get_filter_options() -> FilterOptions:
     """Retrieve distinct filter values for levels, organizations, and skills."""
     db = _get_db()

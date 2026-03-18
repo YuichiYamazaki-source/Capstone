@@ -5,20 +5,18 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Chip from "@mui/material/Chip";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Alert from "@mui/material/Alert";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useAuth } from "../../contexts/AuthContext";
 import { getProfile, updateProfile } from "./api";
+import ProfileWizard from "./ProfileWizard";
 
 export default function Profile() {
   const { user, updateUser } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
-  const [editing, setEditing] = useState(false);
-  const [editData, setEditData] = useState({});
+  const [wizardOpen, setWizardOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -40,38 +38,19 @@ export default function Profile() {
     }
   };
 
-  const startEdit = () => {
-    setEditData({
-      skills: profile?.profile?.skills?.join(", ") || "",
-      motivation: profile?.profile?.motivation || "",
-      learning_scope: profile?.profile?.learning_scope || "",
-      learning_style: profile?.profile?.learning_style || "",
-      interest_areas: profile?.profile?.interest_areas?.join(", ") || "",
-    });
-    setEditing(true);
-  };
-
-  const handleSave = async () => {
-    setSaving(true);
-    setMessage("");
-    try {
-      const payload = {
-        skills: editData.skills ? editData.skills.split(",").map((s) => s.trim()).filter(Boolean) : [],
-        motivation: editData.motivation || null,
-        learning_scope: editData.learning_scope || null,
-        learning_style: editData.learning_style || null,
-        interest_areas: editData.interest_areas ? editData.interest_areas.split(",").map((s) => s.trim()).filter(Boolean) : [],
-      };
-      const data = await updateProfile(payload);
-      setProfile(data);
-      updateUser({ ...user, profile: data.profile });
-      setEditing(false);
-      setMessage("Profile updated!");
-    } catch {
-      setMessage("Failed to update profile");
-    } finally {
-      setSaving(false);
-    }
+  const handleSave = async (answers) => {
+    const payload = {
+      skills: answers.skills || [],
+      motivation: answers.motivation || null,
+      learning_scope: answers.learning_scope || null,
+      learning_style: answers.learning_style || null,
+      interest_areas: answers.interest_areas || [],
+    };
+    const data = await updateProfile(payload);
+    setProfile(data);
+    updateUser({ ...user, profile: data.profile });
+    setWizardOpen(false);
+    setMessage("Profile updated!");
   };
 
   if (loading) {
@@ -108,72 +87,46 @@ export default function Profile() {
           <Typography variant="subtitle2" fontWeight={600}>
             Learning Profile
           </Typography>
-          {!editing && (
-            <Button size="small" onClick={startEdit}>
-              Edit
-            </Button>
-          )}
+          <Button size="small" onClick={() => setWizardOpen(true)}>
+            Edit
+          </Button>
         </Box>
 
-        {editing ? (
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <TextField
-              label="Skills (comma-separated)"
-              value={editData.skills}
-              onChange={(e) => setEditData({ ...editData, skills: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label="Motivation"
-              value={editData.motivation}
-              onChange={(e) => setEditData({ ...editData, motivation: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label="Learning Scope"
-              value={editData.learning_scope}
-              onChange={(e) => setEditData({ ...editData, learning_scope: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label="Learning Style"
-              value={editData.learning_style}
-              onChange={(e) => setEditData({ ...editData, learning_style: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label="Interest Areas (comma-separated)"
-              value={editData.interest_areas}
-              onChange={(e) => setEditData({ ...editData, interest_areas: e.target.value })}
-              fullWidth
-            />
-            <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
-              <Button onClick={() => setEditing(false)}>Cancel</Button>
-              <Button variant="contained" onClick={handleSave} disabled={saving}>
-                {saving ? "Saving..." : "Save"}
-              </Button>
-            </Box>
-          </Box>
-        ) : (
-          <>
-            <ProfileField label="Skills" value={
-              profile?.profile?.skills?.length > 0
-                ? <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
-                    {profile.profile.skills.map((s) => <Chip key={s} label={s} size="small" />)}
-                  </Box>
-                : "Not set"
-            } />
-            <ProfileField label="Motivation" value={profile?.profile?.motivation || "Not set"} />
-            <ProfileField label="Learning Scope" value={profile?.profile?.learning_scope || "Not set"} />
-            <ProfileField label="Learning Style" value={profile?.profile?.learning_style || "Not set"} />
-            <ProfileField label="Interest Areas" value={
-              profile?.profile?.interest_areas?.length > 0
-                ? profile.profile.interest_areas.join(", ")
-                : "Not set"
-            } />
-          </>
-        )}
+        <ProfileField label="Skills" value={
+          profile?.profile?.skills?.length > 0
+            ? <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+                {profile.profile.skills.map((s) => {
+                  const name = typeof s === "string" ? s : s.name;
+                  const level = typeof s === "string" ? null : s.level;
+                  return (
+                    <Chip
+                      key={name}
+                      label={level ? `${name} (${level})` : name}
+                      size="small"
+                    />
+                  );
+                })}
+              </Box>
+            : "Not set"
+        } />
+        <ProfileField label="Motivation" value={profile?.profile?.motivation || "Not set"} />
+        <ProfileField label="Learning Scope" value={profile?.profile?.learning_scope || "Not set"} />
+        <ProfileField label="Learning Style" value={profile?.profile?.learning_style || "Not set"} />
+        <ProfileField label="Interest Areas" value={
+          profile?.profile?.interest_areas?.length > 0
+            ? <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+                {profile.profile.interest_areas.map((s) => <Chip key={s} label={s} size="small" />)}
+              </Box>
+            : "Not set"
+        } />
       </Paper>
+
+      <ProfileWizard
+        open={wizardOpen}
+        onClose={() => setWizardOpen(false)}
+        onSave={handleSave}
+        initialProfile={profile?.profile}
+      />
     </Box>
   );
 }
@@ -182,7 +135,7 @@ function ProfileField({ label, value }) {
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", py: 1.5, borderBottom: "1px solid #f0f0f0", "&:last-child": { borderBottom: "none" } }}>
       <Typography variant="body2" color="text.secondary">{label}</Typography>
-      <Typography variant="body2" fontWeight={500}>{value}</Typography>
+      <Typography variant="body2" fontWeight={500} component="div">{value}</Typography>
     </Box>
   );
 }

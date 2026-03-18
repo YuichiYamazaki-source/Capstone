@@ -27,7 +27,7 @@ import { LEVEL_COLORS } from "../../constants/colors";
 
 function scoreMatch(course, profile) {
   let score = 0;
-  const userSkills = (profile.skills || []).map((s) => s.toLowerCase());
+  const userSkills = (profile.skills || []).map((s) => (typeof s === "string" ? s : s.name).toLowerCase());
   const courseSkills = (course.skills || []).map((s) => s.toLowerCase());
   const overlap = courseSkills.filter((s) =>
     userSkills.some((us) => s.includes(us) || us.includes(s))
@@ -140,9 +140,12 @@ export default function Home() {
               </Button>
             </Box>
             <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap", mb: 1 }}>
-              {profile.skills.map((s) => (
-                <Chip key={s} label={s} size="small" sx={{ bgcolor: "rgba(255,255,255,0.2)", color: "#fff", fontSize: 11 }} />
-              ))}
+              {profile.skills.map((s) => {
+                const name = typeof s === "string" ? s : s.name;
+                return (
+                  <Chip key={name} label={name} size="small" sx={{ bgcolor: "rgba(255,255,255,0.2)", color: "#fff", fontSize: 11 }} />
+                );
+              })}
             </Box>
             <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
               {profile.motivation && <Chip label={`Goal: ${profile.motivation}`} size="small" sx={{ bgcolor: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.9)", fontSize: 11 }} />}

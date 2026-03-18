@@ -8,6 +8,7 @@ from passlib.context import CryptContext
 from app.config import settings
 from app.models.user import (
     ProfileUpdate,
+    SkillEntry,
     TokenResponse,
     UserCreate,
     UserProfile,
@@ -64,11 +65,19 @@ def _create_token(user_id: str) -> str:
 
 
 def _user_response(doc: dict) -> UserResponse:
+    profile_data = doc.get("profile", {})
+    # Migrate old list[str] skills to list[SkillEntry]
+    raw_skills = profile_data.get("skills", [])
+    if raw_skills and isinstance(raw_skills[0], str):
+        profile_data = {
+            **profile_data,
+            "skills": [{"name": s, "level": "Beginner"} for s in raw_skills],
+        }
     return UserResponse(
         id=str(doc["_id"]),
         email=doc["email"],
         name=doc["name"],
-        profile=UserProfile(**doc.get("profile", {})),
+        profile=UserProfile(**profile_data),
         created_at=doc["created_at"],
     )
 

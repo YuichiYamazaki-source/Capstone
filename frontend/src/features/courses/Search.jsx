@@ -31,7 +31,7 @@ function scoreMatch(course, profile) {
 
   let score = 0;
   const reasons = [];
-  const userSkills = profile.skills.map((s) => s.toLowerCase());
+  const userSkills = profile.skills.map((s) => (typeof s === "string" ? s : s.name).toLowerCase());
   const courseSkills = (course.skills || []).map((s) => s.toLowerCase());
 
   const overlap = courseSkills.filter((s) =>

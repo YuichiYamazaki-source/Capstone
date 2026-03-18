@@ -43,6 +43,12 @@ async def search_courses(request: Request):
     return await _proxy_get("/courses/search", request)
 
 
+@router.get("/filters/skills")
+async def skill_search(request: Request):
+    """Proxy skill search to the course service."""
+    return await _proxy_get("/filters/skills", request)
+
+
 @router.get("/filters/options")
 async def filter_options(request: Request):
     """Proxy filter options request to the course service."""

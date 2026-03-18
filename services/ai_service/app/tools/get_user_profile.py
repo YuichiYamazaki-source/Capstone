@@ -32,9 +32,18 @@ async def get_user_profile(user_id: str) -> str:  # LLM-facing: changes affect m
         return f"[ERROR] get_user_profile: No user found with ID '{user_id}'."
 
     profile = doc.get("profile", {})
+    raw_skills = profile.get("skills", [])
+    if raw_skills and isinstance(raw_skills[0], dict):
+        skills_str = ", ".join(
+            f"{s['name']} ({s.get('level', 'N/A')})" for s in raw_skills
+        )
+    elif raw_skills:
+        skills_str = ", ".join(raw_skills)
+    else:
+        skills_str = "None listed"
     info = [
         f"Name: {doc.get('name', 'N/A')}",
-        f"Skills: {', '.join(profile.get('skills', [])) or 'None listed'}",
+        f"Skills: {skills_str}",
         f"Motivation: {profile.get('motivation') or 'Not specified'}",
         f"Learning Scope: {profile.get('learning_scope') or 'Not specified'}",
         f"Learning Style: {profile.get('learning_style') or 'Not specified'}",

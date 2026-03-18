@@ -1,5 +1,6 @@
 """Update user profile fields in MongoDB."""
 
+import json
 import logging
 
 from agents import function_tool
@@ -14,7 +15,7 @@ logger = logging.getLogger("ai-service.tools.update_user_profile")
 @function_tool
 async def update_user_profile(
     user_id: str,
-    skills: list[str] | None = None,
+    skills_json: str | None = None,
     motivation: str | None = None,
     interest_areas: list[str] | None = None,
 ) -> str:  # LLM-facing: changes affect model behavior
@@ -24,7 +25,7 @@ async def update_user_profile(
 
     Args:
         user_id: The user's ID.
-        skills: Updated list of skills (replaces existing).
+        skills_json: JSON array of skills. Each element: {"name": "Python", "level": "Beginner|Intermediate|Advanced"}.
         motivation: Updated motivation/goal statement.
         interest_areas: Updated list of interest areas (replaces existing).
     """
@@ -32,7 +33,11 @@ async def update_user_profile(
     db = get_db()
 
     update_fields: dict = {}
-    if skills is not None:
+    if skills_json is not None:
+        try:
+            skills = json.loads(skills_json)
+        except json.JSONDecodeError:
+            return "Invalid skills_json format. Must be a JSON array."
         update_fields["profile.skills"] = skills
     if motivation is not None:
         update_fields["profile.motivation"] = motivation
