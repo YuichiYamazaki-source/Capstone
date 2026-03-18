@@ -1,0 +1,28 @@
+%% Web Search Tool Architecture
+%% Matches actual web_search.py
+
+graph LR
+    AGENT["Specialist Agent<br/><small>Skill Gap / Career</small>"]
+
+    subgraph WebSearch["web_search tool"]
+        direction TB
+        CALL["OpenAI Responses API<br/><small>+ web_search_preview tool</small><br/><small>Model: gpt-4o-mini</small>"]
+        RETRY["Retry Logic<br/><small>max 2 attempts<br/>exponential backoff</small>"]
+    end
+
+    SUMMARY["Summarized<br/>Market Data"]
+
+    COMBINE["Agent combines<br/>web data +<br/>retrieve_courses results"]
+
+    AGENT -->|"query: e.g. 'ML Engineer<br/>required skills 2025'"| CALL
+    CALL -.->|"on failure"| RETRY
+    CALL --> SUMMARY
+    SUMMARY --> COMBINE
+
+    classDef agent fill:#ede9fe,stroke:#8b5cf6,color:#4c1d95
+    classDef tool fill:#fef3c7,stroke:#f59e0b,color:#78350f
+    classDef result fill:#d1fae5,stroke:#10b981,color:#064e3b
+
+    class AGENT agent
+    class CALL,RETRY tool
+    class SUMMARY,COMBINE result

@@ -1,0 +1,136 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
+  <diagram id="rag-query" name="RAG Query Pipeline">
+    <mxGraphModel dx="1300" dy="1100" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="1200" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- === ROW 1: User Query (y=30) === -->
+        <mxCell id="query" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=14;fontColor=#000000;fontStyle=1;" value="User Query" vertex="1">
+          <mxGeometry x="520" y="30" width="160" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- === ROW 2: fan-out Python steps (y=140) === -->
+        <mxCell id="build-dense" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=12;fontColor=#000000;fontStyle=1;" value="Build Dense Text&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Python: query as-is&lt;/font&gt;" vertex="1">
+          <mxGeometry x="60" y="140" width="190" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="build-filter" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=11;fontColor=#000000;fontStyle=1;" value="Build Filter&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Python: level, min_rating, organization&lt;/font&gt;" vertex="1">
+          <mxGeometry x="490" y="140" width="220" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="build-bm25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=12;fontColor=#000000;fontStyle=1;" value="Build BM25 Text&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Python: query + skill + level&lt;/font&gt;" vertex="1">
+          <mxGeometry x="960" y="140" width="200" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- === ROW 3: Embedding (y=260) === -->
+        <mxCell id="embed" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontColor=#000000;fontStyle=1;" value="Embedding&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;OpenAI text-embedding-3-small&lt;br&gt;1,536 dims&lt;/font&gt;" vertex="1">
+          <mxGeometry x="60" y="260" width="190" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- === Fallback notes (left column, y=400 y=480) === -->
+        <mxCell id="fb-bm25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=11;fontColor=#000000;dashed=1;" value="Fallback 1: BM25-only&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;when OpenAI embedding fails&lt;br&gt;weights [1.0]&lt;/font&gt;" vertex="1">
+          <mxGeometry x="60" y="400" width="190" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fb-mongo" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=11;fontColor=#000000;dashed=1;" value="Fallback 2: MongoDB text search&lt;br&gt;&lt;font style=&quot;font-size:9px&quot;&gt;when Qdrant is down&lt;br&gt;$text + textScore&lt;/font&gt;" vertex="1">
+          <mxGeometry x="60" y="470" width="190" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- === Qdrant Container (y=400, h=380) === -->
+        <mxCell id="qdrant-group" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;verticalAlign=top;fontStyle=1;fontSize=13;spacingTop=5;container=1;collapsible=0;fontColor=#000000;" value="Qdrant Query API (single call)" vertex="1">
+          <mxGeometry x="310" y="400" width="860" height="350" as="geometry" />
+        </mxCell>
+
+        <!-- Qdrant Row 1: Prefetches (y=40) -->
+        <mxCell id="dense-prefetch" parent="qdrant-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontColor=#000000;fontStyle=1;" value="Prefetch: Dense&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;HNSW cosine similarity&lt;br&gt;weight 1.5 · limit 30&lt;/font&gt;" vertex="1">
+          <mxGeometry x="30" y="40" width="220" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="bm25-prefetch" parent="qdrant-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontColor=#000000;fontStyle=1;" value="Prefetch: BM25&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Tokenize + IDF scoring&lt;br&gt;weight 1.2 · limit 30&lt;/font&gt;" vertex="1">
+          <mxGeometry x="590" y="40" width="220" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Qdrant Row 1.5: Filter note (y=120) -->
+        <mxCell id="filter-note" parent="qdrant-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;" value="Payload filters applied to both prefetches" vertex="1">
+          <mxGeometry x="270" y="120" width="270" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Qdrant Row 2: RRF (y=180) -->
+        <mxCell id="rrf" parent="qdrant-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontColor=#000000;fontStyle=1;" value="RRF Fusion&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Reciprocal Rank Fusion&lt;br&gt;weights [1.2, 1.5]&lt;/font&gt;" vertex="1">
+          <mxGeometry x="290" y="180" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Qdrant Row 2: Top-K (y=185, right of RRF) -->
+        <mxCell id="topk" parent="qdrant-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=12;fontColor=#000000;fontStyle=1;" value="Top-K Results&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;with payload&lt;/font&gt;" vertex="1">
+          <mxGeometry x="620" y="190" width="160" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Qdrant internal arrows -->
+        <mxCell id="qi1" edge="1" parent="qdrant-group" source="dense-prefetch" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" target="rrf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qi2" edge="1" parent="qdrant-group" source="bm25-prefetch" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.8;entryY=0;entryDx=0;entryDy=0;" target="rrf">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qi3" edge="1" parent="qdrant-group" source="rrf" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="topk">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- === Reranker (y=830) === -->
+        <mxCell id="reranker" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontColor=#000000;fontStyle=1;" value="Cross-Encoder Rerank&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Local: all-MiniLM-L6-v2 (384 dims)&lt;br&gt;cosine similarity re-scoring&lt;/font&gt;" vertex="1">
+          <mxGeometry x="470" y="830" width="260" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- === Agent Context (y=960) === -->
+        <mxCell id="results" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=14;fontColor=#000000;fontStyle=1;" value="Agent Context&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;formatted course list&lt;/font&gt;" vertex="1">
+          <mxGeometry x="500" y="960" width="200" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ========== ARROWS ========== -->
+
+        <!-- Query → 3-way fan-out -->
+        <mxCell id="a1" edge="1" parent="1" source="query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="build-dense">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" edge="1" parent="1" source="query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="build-filter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" edge="1" parent="1" source="query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="build-bm25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Build Dense → Embedding -->
+        <mxCell id="a4" edge="1" parent="1" source="build-dense" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="embed">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Embedding → Dense Prefetch (cross-container, down then right) -->
+        <mxCell id="a5" edge="1" parent="1" source="embed" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="dense-prefetch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Build Filter → Qdrant container top (dashed) -->
+        <mxCell id="a7" edge="1" parent="1" source="build-filter" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="qdrant-group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Build BM25 → BM25 Prefetch (cross-container) -->
+        <mxCell id="a6" edge="1" parent="1" source="build-bm25" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="bm25-prefetch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Top-K → Reranker (cross-container) -->
+        <mxCell id="a8" edge="1" parent="1" source="topk" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="reranker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Reranker → Agent Context -->
+        <mxCell id="a9" edge="1" parent="1" source="reranker" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="results">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

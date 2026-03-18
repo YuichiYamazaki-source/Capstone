@@ -1,11 +1,11 @@
-# Coursera Course Dataset 2024 - Analysis Summary
+# Data Flow — Course Dataset & Pipeline
 
 Source: `data/coursera_course_2024.csv`
 Analysis notebook: `data/explore.ipynb`
 
 ---
 
-## 1. Overview
+## 1. Dataset Overview
 
 - **Rows**: 6,645 courses
 - **Columns**: 14
@@ -197,3 +197,159 @@ Ratings are concentrated in 4.5-5.0 range. Very few courses below 4.0.
 4. **Rating inflation**: Mean 4.62 with very small variance. Rating alone is weak for differentiating quality.
 5. **Organization concentration**: Top 20 orgs = 46.5% of courses. Results may be biased toward large providers.
 6. **Snapshot bias**: 2024 data only. No temporal trend available.
+
+---
+
+# Ingestion Pipeline
+
+## Phase 2: CSV → MongoDB
+
+```
+coursera_course_2024.csv (6,645 courses)
+  │
+  ▼
+scripts/ingest_courses.py
+  │  --sample 100 (default) or --all
+  │  Field mapping: CSV columns → MongoDB fields
+  │  Type conversion: rating (str→float), skills (str→list)
+  │  Placeholder detection: "Rating not found" → null
+  │  Adds skills_lower[] for case-insensitive filtering
+  │
+  ▼
+MongoDB (course_finder.courses)
+  │  Indexes: title, level, organization, skills
+  │
+  ▼
+Course Service (FastAPI + Motor async driver)
+  │  GET /courses — list with filters
+  │  GET /courses/search?q= — regex search
+  │  GET /courses/{id} — by ObjectId
+  │  GET /filters/options — distinct values
+  │
+  ▼
+Gateway (:8000) → Frontend (:5173)
+```
+
+## Phase 3: MongoDB → Qdrant
+
+```
+MongoDB (course_finder.courses)
+  │
+  ▼
+Embedding Service
+  │  Primary: OpenAI text-embedding-3-small (1536 dims)
+  │  Fallback: sentence-transformers/all-MiniLM-L6-v2 (384 dims)
+  │  Input: title + description + skills (concatenated)
+  │
+  ▼
+Qdrant (course_vectors collection)
+  │  Payload: course_id (reference back to MongoDB)
+  │  Index: HNSW (default)
+  │
+  ▼
+AI Service (:8003)
+  │  Semantic search: query → embed → Qdrant → top-K courses
+  │  RAG: top-K + query → LLM → contextual response
+```
+
+## Error Handling
+
+| Failure Point | PoC Behavior | Production Behavior |
+|---------------|-------------|-------------------|
+| CSV parse error | Skip row, log warning | Skip row, alert on error rate threshold |
+| MongoDB connection failure | Service won't start (lifespan) | Retry with backoff, health check fails |
+| Embedding API timeout | Fall back to local MiniLM model | Circuit breaker → local model → log |
+| Qdrant unavailable | Degrade to keyword search (MongoDB regex) | Circuit breaker → keyword fallback → alert |
+
+---
+
+# Retrieval Pipeline
+
+## Structured Search (Phase 2 — Current)
+
+```
+User types search query or applies filters
+  │
+  ▼
+Frontend (React)
+  │  Debounced input → API call
+  │
+  ▼
+Vite Proxy (/api → gateway:8000)
+  │
+  ▼
+Gateway (FastAPI :8000)
+  │  Route: /api/v1/courses or /api/v1/courses/search
+  │  JWT validation (optional, for personalized results)
+  │
+  ▼
+Course Service (FastAPI :8001)
+  │  Build MongoDB query:
+  │    - Text search: regex on title, description, skills
+  │    - Level filter: case-insensitive exact match
+  │    - Organization filter: case-insensitive partial match
+  │    - Rating filter: $gte comparison
+  │    - Skills filter: $in on skills_lower array
+  │  Pagination: skip(offset).limit(limit)
+  │
+  ▼
+MongoDB
+  │  Uses indexes for level, organization, skills
+  │  count_documents for total, find for results
+  │
+  ▼
+Response: { courses: [...], total, limit, offset }
+  │
+  ▼
+Frontend renders CourseCard grid (3 columns, 12 per page)
+```
+
+## Semantic Search (Phase 3 — Planned)
+
+```
+User enters natural language query
+  (e.g., "I want to learn machine learning for healthcare")
+  │
+  ▼
+Frontend → Gateway → AI Service (:8003)
+  │
+  ▼
+AI Service: Query Understanding
+  │  Extract intent, entities, constraints
+  │  Agent orchestration (OpenAI Agents SDK)
+  │
+  ▼
+Embedding: query → OpenAI text-embedding-3-small → vector
+  │
+  ▼
+Qdrant: vector similarity search → top-K course IDs
+  │  Filters: level, organization (metadata filtering)
+  │
+  ▼
+MongoDB: Fetch full course documents by IDs
+  │
+  ▼
+RAG: courses + user query + user profile → LLM
+  │  Generate: explanations, recommendations, learning path
+  │
+  ▼
+Response: structured recommendation with reasoning
+  │
+  ▼
+Frontend renders personalized results with "Why recommended" reasons
+```
+
+## Graceful Degradation Chain
+
+```
+Semantic Search (Qdrant + LLM)
+  │ fails?
+  ▼
+Vector Search Only (Qdrant, no LLM reasoning)
+  │ fails?
+  ▼
+Keyword Search (MongoDB regex — Phase 2 behavior)
+  │ fails?
+  ▼
+Error message to user
+```

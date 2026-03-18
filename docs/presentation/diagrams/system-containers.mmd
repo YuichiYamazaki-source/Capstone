@@ -1,0 +1,54 @@
+%% System Architecture — Docker Compose Container View
+%% Matches actual docker-compose.yml
+
+graph LR
+    subgraph Docker Compose
+        direction LR
+        subgraph Frontend
+            FE["Frontend<br/><small>React + Vite + MUI</small><br/><small>:5173</small>"]
+        end
+
+        subgraph Backend
+            direction TB
+            GW["Gateway<br/><small>FastAPI</small><br/><small>:8000</small>"]
+            CS["Course Service<br/><small>FastAPI</small><br/><small>:8001</small>"]
+            US["User Service<br/><small>FastAPI</small><br/><small>:8002</small>"]
+            AI["AI Service<br/><small>FastAPI + OpenAI Agents SDK</small><br/><small>:8003</small>"]
+        end
+
+        subgraph Data Layer
+            direction TB
+            MONGO[("MongoDB<br/><small>:27017</small>")]
+            QDRANT[("Qdrant<br/><small>:6333</small>")]
+        end
+    end
+
+    subgraph External
+        OPENAI["OpenAI API<br/><small>LLM + Embedding</small>"]
+        LANGFUSE["LangFuse<br/><small>Observability</small>"]
+    end
+
+    FE -->|"Vite Proxy /api"| GW
+    GW --> CS
+    GW --> US
+    GW --> AI
+    CS --> MONGO
+    US --> MONGO
+    AI --> QDRANT
+    AI --> MONGO
+    AI --> OPENAI
+    AI -.-> LANGFUSE
+
+    classDef frontend fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
+    classDef gateway fill:#e0e7ff,stroke:#6366f1,color:#312e81
+    classDef service fill:#ede9fe,stroke:#8b5cf6,color:#4c1d95
+    classDef ai fill:#cffafe,stroke:#06b6d4,color:#164e63
+    classDef data fill:#d1fae5,stroke:#10b981,color:#064e3b
+    classDef external fill:#fef3c7,stroke:#f59e0b,color:#78350f
+
+    class FE frontend
+    class GW gateway
+    class CS,US service
+    class AI ai
+    class MONGO,QDRANT data
+    class OPENAI,LANGFUSE external

@@ -1,0 +1,70 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
+  <diagram id="rag-indexing" name="RAG Indexing Pipeline">
+    <mxGraphModel dx="865" dy="684" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="csv" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=14;fontColor=#000000;fontStyle=1;" value="CSV&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:11px&quot;&gt;6,645 courses&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="200" x="400" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="parse" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=13;fontColor=#000000;fontStyle=1;" value="Parse &amp; Normalize&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;rating, skills, level · dedup by title&lt;br&gt;Domain classification (10 domains)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="280" x="360" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="mongodb" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontColor=#000000;size=12;" value="&lt;b&gt;MongoDB&lt;/b&gt;&lt;br&gt;courses collection&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;+ text index [title, description, skills]&lt;/font&gt;" vertex="1">
+          <mxGeometry height="85" width="260" x="370" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="no-chunk" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;" value="No chunking — each course = 1 document&lt;br&gt;(metadata is short enough)" vertex="1">
+          <mxGeometry height="40" width="210" x="660" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="text-dense" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=12;fontColor=#000000;fontStyle=1;" value="Build Dense Text&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Python: title | description&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="200" x="60" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="text-bm25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=12;fontColor=#000000;fontStyle=1;" value="Build BM25 Text&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Python: title + description + skills&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="210" x="740" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="embed" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontColor=#000000;fontStyle=1;" value="Embedding&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;OpenAI text-embedding-3-small&lt;br&gt;1,536 dims&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="200" x="60" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="qdrant-group" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;verticalAlign=top;fontStyle=1;fontSize=13;spacingTop=5;container=1;collapsible=0;fontColor=#000000;" value="Qdrant (collection: courses)" vertex="1">
+          <mxGeometry height="280" width="530" x="350" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="bm25-tok" parent="qdrant-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontColor=#000000;fontStyle=1;" value="BM25 Tokenize + IDF&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Qdrant built-in tokenizer&lt;br&gt;IDF modifier&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="200" x="310" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="qdrant-dense" parent="qdrant-group" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=13;fontColor=#000000;size=12;" value="&lt;b&gt;Vector Store&lt;/b&gt;&lt;br&gt;dense (1,536 dims)" vertex="1">
+          <mxGeometry height="70" width="190" x="20" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="qdrant-sparse" parent="qdrant-group" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=13;fontColor=#000000;size=12;" value="&lt;b&gt;Inverted Index&lt;/b&gt;&lt;br&gt;sparse (BM25)" vertex="1">
+          <mxGeometry height="70" width="190" x="310" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="qdrant-note" parent="qdrant-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;" value="Payload: mongo_id, title, organization, level, rating, skills, url" vertex="1">
+          <mxGeometry height="30" width="430" x="50" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="aq1" edge="1" parent="qdrant-group" source="bm25-tok" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;entryX=0.528;entryY=-0.022;entryDx=0;entryDy=0;entryPerimeter=0;" target="qdrant-sparse">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" edge="1" parent="1" source="csv" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="parse">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" edge="1" parent="1" source="parse" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="mongodb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" edge="1" parent="1" source="mongodb" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="text-dense">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" edge="1" parent="1" source="mongodb" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="text-bm25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" edge="1" parent="1" source="text-dense" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="embed">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" edge="1" parent="1" source="embed" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" target="qdrant-dense">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a7" edge="1" parent="1" source="text-bm25" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="bm25-tok">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

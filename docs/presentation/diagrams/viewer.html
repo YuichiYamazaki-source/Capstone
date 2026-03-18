@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Draw.io Diagram Viewer</title>
+  <style>
+    body { margin: 0; padding: 16px; background: #f8fafc; font-family: Inter, sans-serif; }
+    h1 { font-size: 18px; color: #1e293b; margin: 0 0 8px 0; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+    .tab { padding: 6px 14px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer;
+           background: #fff; font-size: 13px; color: #475569; }
+    .tab.active { background: #3b82f6; color: #fff; border-color: #3b82f6; }
+    .diagram-container { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+                         padding: 8px; min-height: 500px; }
+    .mxgraph { max-width: 100%; }
+  </style>
+</head>
+<body>
+  <h1 id="diagram-title">Draw.io Diagram Viewer</h1>
+  <div class="tabs" id="tabs"></div>
+  <div class="diagram-container" id="container"></div>
+
+  <script>
+    const defined = {};
+    const diagrams = {};
+
+    function registerDiagram(name, label, xml) {
+      diagrams[name] = { label, xml };
+    }
+
+    function showDiagram(name) {
+      const d = diagrams[name];
+      if (!d) return;
+      document.getElementById('diagram-title').textContent = d.label;
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.name === name));
+      const container = document.getElementById('container');
+      const escaped = d.xml.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      container.innerHTML = '<div class="mxgraph" data-mxgraph=\'{"highlight":"#0000ff","nav":true,"resize":true,"toolbar":"zoom layers lightbox","xml":"' + btoa(unescape(encodeURIComponent(d.xml))) + '"}\'></div>';
+      // Re-init viewer
+      if (window.GraphViewer) {
+        GraphViewer.processElements();
+      }
+    }
+
+    function buildTabs() {
+      const tabsEl = document.getElementById('tabs');
+      tabsEl.innerHTML = '';
+      for (const [name, d] of Object.entries(diagrams)) {
+        const btn = document.createElement('button');
+        btn.className = 'tab';
+        btn.dataset.name = name;
+        btn.textContent = d.label;
+        btn.onclick = () => showDiagram(name);
+        tabsEl.appendChild(btn);
+      }
+    }
+  </script>
+
+  <!-- Diagram data files will be loaded here -->
+  <script src="data/system-containers.js"></script>
+  <script src="data/system-endpoints.js"></script>
+  <script src="data/agent-overview.js"></script>
+  <script src="data/rag-indexing.js"></script>
+  <script src="data/rag-query.js"></script>
+
+  <script src="https://viewer.diagrams.net/js/viewer-static.min.js"></script>
+  <script>
+    buildTabs();
+    // Show first diagram
+    const first = Object.keys(diagrams)[0];
+    if (first) showDiagram(first);
+  </script>
+</body>
+</html>

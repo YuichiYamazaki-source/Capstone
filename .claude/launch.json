@@ -4,8 +4,16 @@
     {
       "name": "mock",
       "runtimeExecutable": "C:\\Users\\yuila\\miniconda3\\python.exe",
-      "runtimeArgs": ["-m", "http.server", "3000", "--directory", "mock"],
-      "port": 3000
+      "runtimeArgs": ["-m", "http.server", "3001", "--directory", "mock"],
+      "port": 3001,
+      "autoPort": false
+    },
+    {
+      "name": "diagrams",
+      "runtimeExecutable": "C:\\Users\\yuila\\miniconda3\\python.exe",
+      "runtimeArgs": ["-m", "http.server", "3002", "--directory", "docs/presentation/diagrams"],
+      "port": 3002,
+      "autoPort": false
     },
     {
       "name": "frontend",

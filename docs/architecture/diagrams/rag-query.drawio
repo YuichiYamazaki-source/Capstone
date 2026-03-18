@@ -1,0 +1,108 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
+  <diagram id="rag-query" name="RAG Query Pipeline">
+    <mxGraphModel dx="865" dy="684" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1200" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="query" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=14;fontColor=#000000;fontStyle=1;" value="User Query" vertex="1">
+          <mxGeometry height="45" width="160" x="440" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="payload-filter" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=12;fontColor=#000000;fontStyle=1;" value="Extract Filter + Query&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;LLM extracts: search text, level, min_rating, organization, skill&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="300" x="370" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="no-chunk" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;" value="No chunking — single query string" vertex="1">
+          <mxGeometry height="25" width="190" x="720" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="embed" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontColor=#000000;fontStyle=1;" value="Tokenize + Embedding&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;OpenAI BPE tokenizer&lt;br&gt;text-embedding-3-small → 1,536 dims&lt;/font&gt;" vertex="1">
+          <mxGeometry height="65" width="240" x="50" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="filter-params" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=12;fontColor=#000000;fontStyle=1;" value="Payload Filter&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;level, min_rating, organization&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="200" x="420" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="build-bm25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=12;fontColor=#000000;fontStyle=1;" value="BM25 Query&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Python: query + skill + level&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="200" x="780" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="dense-search" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontColor=#000000;fontStyle=1;" value="Dense Search&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Qdrant HNSW cosine&lt;br&gt;weight 1.5 · limit 30&lt;/font&gt;" vertex="1">
+          <mxGeometry height="65" width="240" x="50" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="bm25-search" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontColor=#000000;fontStyle=1;" value="BM25 Tokenize + Search&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Qdrant built-in tokenizer + IDF&lt;br&gt;weight 1.2 · limit 30&lt;/font&gt;" vertex="1">
+          <mxGeometry height="65" width="240" x="760" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="filter-applied" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;" value="filter applied to both searches" vertex="1">
+          <mxGeometry height="25" width="220" x="410" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="rrf" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontColor=#000000;fontStyle=1;" value="RRF Fusion&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Qdrant: Reciprocal Rank Fusion&lt;br&gt;weights [BM25=1.2, Dense=1.5]&lt;/font&gt;" vertex="1">
+          <mxGeometry height="65" width="260" x="390" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="reranker" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontColor=#000000;fontStyle=1;" value="Cross-Encoder Rerank&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Local: all-MiniLM-L6-v2 (384 dims)&lt;br&gt;cosine similarity re-scoring&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="240" x="400" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="results" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=14;fontColor=#000000;fontStyle=1;" value="Agent Context&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;formatted course list&lt;/font&gt;" vertex="1">
+          <mxGeometry height="45" width="200" x="420" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="fb-bm25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;" value="Fallback 1: BM25-only&lt;br&gt;when OpenAI embedding fails · weights [1.0]" vertex="1">
+          <mxGeometry height="35" width="240" x="720" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="fb-mongo" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;" value="Fallback 2: MongoDB $text search&lt;br&gt;when Qdrant is down · textScore sorting" vertex="1">
+          <mxGeometry height="35" width="240" x="720" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" edge="1" parent="1" source="query" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="payload-filter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" edge="1" parent="1" source="payload-filter" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="embed">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="430" y="220" />
+              <mxPoint x="170" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a3" edge="1" parent="1" source="payload-filter" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="filter-params">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" edge="1" parent="1" source="payload-filter" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="build-bm25">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="220" />
+              <mxPoint x="880" y="220" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a5" edge="1" parent="1" source="embed" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="dense-search">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" edge="1" parent="1" source="build-bm25" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="bm25-search">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a7" edge="1" parent="1" source="filter-params" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="dense-search">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a8" edge="1" parent="1" source="filter-params" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="bm25-search">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a9" edge="1" parent="1" source="dense-search" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2;entryY=0;entryDx=0;entryDy=0;" target="rrf">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="530" />
+              <mxPoint x="442" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a10" edge="1" parent="1" source="bm25-search" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.8;entryY=0;entryDx=0;entryDy=0;" target="rrf">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="530" />
+              <mxPoint x="598" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a11" edge="1" parent="1" source="rrf" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="reranker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a12" edge="1" parent="1" source="reranker" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="results">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

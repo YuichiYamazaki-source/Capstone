@@ -1,0 +1,48 @@
+%% System Architecture — API Endpoint Map
+%% Matches actual router implementations
+
+graph LR
+    CLIENT["Browser<br/><small>:5173</small>"]
+
+    subgraph GW["Gateway :8000"]
+        direction TB
+        GW_CHAT["POST /api/chat"]
+        GW_ANALYZE["POST /api/analyze"]
+        GW_COURSES["GET /api/courses"]
+        GW_COURSE_ID["GET /api/courses/:id"]
+        GW_USERS["POST /api/users"]
+        GW_PROFILE["GET /api/users/:id/profile"]
+        GW_HEALTH["GET /health"]
+    end
+
+    subgraph AI["AI Service :8003"]
+        direction TB
+        AI_CHAT["POST /chat"]
+        AI_ANALYZE["POST /analyze"]
+        AI_SKILL["POST /analyze/skill-gap"]
+        AI_CAREER["POST /analyze/career"]
+        AI_PATH["POST /analyze/learning-path"]
+    end
+
+    subgraph CS["Course :8001"]
+        CS_API["CRUD + text search<br/>+ filters"]
+    end
+
+    subgraph US["User :8002"]
+        US_API["Profile CRUD<br/>+ preferences"]
+    end
+
+    CLIENT -->|"Vite Proxy /api"| GW
+    GW_CHAT --> AI_CHAT
+    GW_ANALYZE --> AI_ANALYZE
+    GW_COURSES --> CS_API
+    GW_COURSE_ID --> CS_API
+    GW_USERS --> US_API
+    GW_PROFILE --> US_API
+
+    classDef gw fill:#e0e7ff,stroke:#6366f1,color:#312e81
+    classDef ai fill:#cffafe,stroke:#06b6d4,color:#164e63
+    classDef svc fill:#ede9fe,stroke:#8b5cf6,color:#4c1d95
+    class GW_CHAT,GW_ANALYZE,GW_COURSES,GW_COURSE_ID,GW_USERS,GW_PROFILE,GW_HEALTH gw
+    class AI_CHAT,AI_ANALYZE,AI_SKILL,AI_CAREER,AI_PATH ai
+    class CS_API,US_API svc

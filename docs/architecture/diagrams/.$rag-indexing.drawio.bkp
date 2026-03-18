@@ -1,0 +1,115 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
+  <diagram id="rag-indexing" name="RAG Indexing Pipeline">
+    <mxGraphModel dx="1000" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1000" pageHeight="1400" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" parent="1" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];fillColor=none;strokeColor=none;fontColor=#000000;fontSize=18;fontStyle=1;" value="RAG Indexing Pipeline" vertex="1">
+          <mxGeometry x="40" y="30" width="300" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- CSV Source -->
+        <mxCell id="csv" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontColor=#000000;" value="&lt;b&gt;CSV&lt;/b&gt;&lt;br&gt;6,645 courses" vertex="1">
+          <mxGeometry x="370" y="100" width="160" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Step 1: ingest_courses.py -->
+        <mxCell id="ingest-group" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;verticalAlign=top;fontStyle=1;fontSize=12;spacingTop=5;container=1;collapsible=0;fontColor=#000000;" value="ingest_courses.py" vertex="1">
+          <mxGeometry x="130" y="220" width="640" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="parse" parent="ingest-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=11;fontColor=#000000;" value="&lt;b&gt;Parse &amp; Normalize&lt;/b&gt;&lt;br&gt;rating, skills, level&lt;br&gt;dedup by title" vertex="1">
+          <mxGeometry x="20" y="50" width="170" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="domain" parent="ingest-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=11;fontColor=#000000;" value="&lt;b&gt;Domain Classification&lt;/b&gt;&lt;br&gt;10 domains&lt;br&gt;(keyword-based mapping)" vertex="1">
+          <mxGeometry x="240" y="50" width="170" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="textindex" parent="ingest-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=11;fontColor=#000000;" value="&lt;b&gt;Create Text Index&lt;/b&gt;&lt;br&gt;[title, description, skills]&lt;br&gt;(fallback search)" vertex="1">
+          <mxGeometry x="460" y="50" width="160" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Internal arrows in ingest -->
+        <mxCell id="ig1" edge="1" parent="ingest-group" source="parse" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="domain">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ig2" edge="1" parent="ingest-group" source="domain" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="textindex">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Stratified sampling note -->
+        <mxCell id="sample-note" parent="ingest-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;" value="Stratified sampling&lt;br&gt;Level × Domain" vertex="1">
+          <mxGeometry x="20" y="140" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- MongoDB -->
+        <mxCell id="mongodb" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontColor=#000000;size=12;" value="&lt;b&gt;MongoDB&lt;/b&gt;&lt;br&gt;courses collection" vertex="1">
+          <mxGeometry x="350" y="490" width="200" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- Step 2: generate_embeddings.py -->
+        <mxCell id="embed-group" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;verticalAlign=top;fontStyle=1;fontSize=12;spacingTop=5;container=1;collapsible=0;fontColor=#000000;" value="generate_embeddings.py" vertex="1">
+          <mxGeometry x="100" y="640" width="700" height="200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dense" parent="embed-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=11;fontColor=#000000;" value="&lt;b&gt;Dense Embedding&lt;/b&gt;&lt;br&gt;OpenAI text-embedding-3-small&lt;br&gt;Input: title | description&lt;br&gt;1,536 dims" vertex="1">
+          <mxGeometry x="30" y="50" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="bm25" parent="embed-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=11;fontColor=#000000;" value="&lt;b&gt;BM25 Sparse Vector&lt;/b&gt;&lt;br&gt;Qdrant built-in (IDF modifier)&lt;br&gt;Input: title + description + skills" vertex="1">
+          <mxGeometry x="310" y="50" width="220" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="payload-note" parent="embed-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;align=left;spacingLeft=8;" value="&lt;b&gt;Payload per point:&lt;/b&gt;&lt;br&gt;mongo_id, title, organization,&lt;br&gt;level, rating, skills, url" vertex="1">
+          <mxGeometry x="560" y="50" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Batch note -->
+        <mxCell id="batch-note" parent="embed-group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;" value="batch=50, concurrency=5" vertex="1">
+          <mxGeometry x="30" y="150" width="150" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Qdrant -->
+        <mxCell id="qdrant" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontColor=#000000;size=12;" value="&lt;b&gt;Qdrant&lt;/b&gt;&lt;br&gt;Dense + BM25 + Payload" vertex="1">
+          <mxGeometry x="330" y="920" width="240" height="75" as="geometry" />
+        </mxCell>
+
+        <!-- OpenAI API (external) -->
+        <mxCell id="openai" parent="1" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#000000;fontSize=11;" value="&lt;b&gt;OpenAI API&lt;/b&gt;&lt;br&gt;text-embedding-3-small" vertex="1">
+          <mxGeometry x="810" y="700" width="150" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ========== ARROWS ========== -->
+
+        <!-- CSV → ingest -->
+        <mxCell id="a1" edge="1" parent="1" source="csv" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="ingest-group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ingest → MongoDB -->
+        <mxCell id="a2" edge="1" parent="1" source="ingest-group" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="mongodb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- MongoDB → embed-group -->
+        <mxCell id="a3" edge="1" parent="1" source="mongodb" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="embed-group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- embed-group → Qdrant -->
+        <mxCell id="a4" edge="1" parent="1" source="embed-group" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="qdrant">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Dense → OpenAI API -->
+        <mxCell id="a5" edge="1" parent="1" source="dense" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" target="openai">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

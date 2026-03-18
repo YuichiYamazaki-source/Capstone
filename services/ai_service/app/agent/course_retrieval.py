@@ -71,7 +71,7 @@ async def retrieve_courses(
         return f"[ERROR] retrieve_courses: {e}"
 
     # Cross-encoder reranking for improved relevance
-    # Run in thread to avoid blocking the async event loop (CPU-bound embedding)
+    # Run in thread to avoid blocking the async event loop (CPU-bound)
     if results and RERANK_ENABLED:
         try:
             results = await asyncio.to_thread(
@@ -86,7 +86,7 @@ async def retrieve_courses(
     elif results:
         results = results[:top_k]
 
-    # Collect reranked courses for API response (CourseCard data)
+    # Collect courses AFTER reranking so API response matches agent output
     add_collected_courses(results)
 
     # Record retrieval method for evaluation metrics

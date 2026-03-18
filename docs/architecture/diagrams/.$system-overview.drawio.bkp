@@ -1,0 +1,259 @@
+<mxfile host="app.diagrams.net" modified="2026-03-16T00:00:00.000Z" agent="Claude" version="21.0.0">
+  <diagram id="system-overview" name="System Overview">
+    <mxGraphModel dx="1800" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ========== INPUT LAYER ========== -->
+        <mxCell id="input-group" value="Input Layer (Multi-modal Ready)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontStyle=1;fontSize=13;spacingTop=5;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="30" width="500" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="input-text" value="&lt;b&gt;Text Input&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="input-group">
+          <mxGeometry x="20" y="40" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="input-voice" value="&lt;b&gt;Voice Input&lt;/b&gt;&lt;br&gt;&lt;i&gt;Nice to Have&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeDasharray=5 5;" vertex="1" parent="input-group">
+          <mxGeometry x="180" y="40" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="input-doc" value="&lt;b&gt;Doc Upload&lt;/b&gt;&lt;br&gt;&lt;i&gt;Nice to Have&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;strokeDasharray=5 5;" vertex="1" parent="input-group">
+          <mxGeometry x="350" y="40" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ========== QUERY UNDERSTANDING LAYER ========== -->
+        <mxCell id="qu-group" value="Query Understanding Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;fontStyle=1;fontSize=13;spacingTop=5;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="150" width="700" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="qu-norm" value="&lt;b&gt;Input Normalizer&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;rule-based&lt;br&gt;&amp;lt;5ms&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="qu-group">
+          <mxGeometry x="10" y="40" width="140" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="qu-entity" value="&lt;b&gt;Entity Extractor&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;LLM structured output&lt;br&gt;~200ms&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="qu-group">
+          <mxGeometry x="180" y="40" width="150" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="qu-intent" value="&lt;b&gt;Intent Classifier&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;V1: LLM → V2: SLM&lt;br&gt;~100ms&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="qu-group">
+          <mxGeometry x="360" y="40" width="150" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="qu-decomp" value="&lt;b&gt;Query Decomposer&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;LLM (complex only)&lt;br&gt;~300ms&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="qu-group">
+          <mxGeometry x="540" y="40" width="150" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- QU internal arrows -->
+        <mxCell id="qu-e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="qu-norm" target="qu-entity" parent="qu-group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qu-e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="qu-entity" target="qu-intent" parent="qu-group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qu-e3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="qu-intent" target="qu-decomp" parent="qu-group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ========== ORCHESTRATION LAYER ========== -->
+        <mxCell id="orch-group" value="Orchestration Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;verticalAlign=top;fontStyle=1;fontSize=13;spacingTop=5;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="290" width="700" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-planner" value="&lt;b&gt;Execution Planner&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Build DAG from sub-tasks&lt;br&gt;rule-based, &amp;lt;5ms&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="orch-group">
+          <mxGeometry x="20" y="40" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-dispatch" value="&lt;b&gt;Agent Dispatcher&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Execute DAG, pass context&lt;br&gt;parallel where possible&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="orch-group">
+          <mxGeometry x="260" y="40" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-merge" value="&lt;b&gt;Result Merger&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Aggregate agent outputs&lt;br&gt;deduplicate courses&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="orch-group">
+          <mxGeometry x="500" y="40" width="180" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-e1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="orch-planner" target="orch-dispatch" parent="orch-group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="orch-e2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="orch-dispatch" target="orch-merge" parent="orch-group">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ========== AGENT LAYER ========== -->
+        <mxCell id="agent-group" value="Agent Layer (OpenAI Agents SDK)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontStyle=1;fontSize=13;spacingTop=5;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="420" width="700" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-ra" value="&lt;b&gt;Course Retrieval&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Semantic + keyword&lt;br&gt;search, filter&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="agent-group">
+          <mxGeometry x="10" y="45" width="120" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-sga" value="&lt;b&gt;Skill Gap&lt;br&gt;Analysis&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Profile vs required&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="agent-group">
+          <mxGeometry x="150" y="45" width="120" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-lppa" value="&lt;b&gt;Learning Path&lt;br&gt;Planning&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Sequencing, prereqs&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="agent-group">
+          <mxGeometry x="290" y="45" width="120" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-caa" value="&lt;b&gt;Career&lt;br&gt;Alignment&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Career → skill map&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="agent-group">
+          <mxGeometry x="430" y="45" width="120" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="agent-la" value="&lt;b&gt;Learning&lt;br&gt;Advisor&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Final synthesizer&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b6d7a8;strokeColor=#82b366;strokeWidth=2;" vertex="1" parent="agent-group">
+          <mxGeometry x="570" y="45" width="120" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- ========== TOOL LAYER (MCP) ========== -->
+        <mxCell id="tool-group" value="Tool Layer (MCP Server)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=13;spacingTop=5;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="560" width="700" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="tool-sem" value="&lt;b&gt;search_semantic&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666;" vertex="1" parent="tool-group">
+          <mxGeometry x="10" y="40" width="120" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="tool-kw" value="&lt;b&gt;search_keyword&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666;" vertex="1" parent="tool-group">
+          <mxGeometry x="140" y="40" width="120" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="tool-filter" value="&lt;b&gt;filter_courses&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666;" vertex="1" parent="tool-group">
+          <mxGeometry x="270" y="40" width="120" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="tool-detail" value="&lt;b&gt;get_course_detail&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666;" vertex="1" parent="tool-group">
+          <mxGeometry x="400" y="40" width="130" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="tool-profile" value="&lt;b&gt;get_user_profile&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666;" vertex="1" parent="tool-group">
+          <mxGeometry x="540" y="40" width="130" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ========== RETRIEVAL LAYER ========== -->
+        <mxCell id="ret-group" value="Retrieval Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontStyle=1;fontSize=13;spacingTop=5;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="680" width="700" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ret-embed" value="&lt;b&gt;Query Embedding&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;text-embedding-3-small&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="ret-group">
+          <mxGeometry x="10" y="40" width="160" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="ret-vsearch" value="&lt;b&gt;Vector Search&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Qdrant cosine&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="ret-group">
+          <mxGeometry x="190" y="40" width="120" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="ret-ksearch" value="&lt;b&gt;Keyword Search&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;MongoDB text index&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="ret-group">
+          <mxGeometry x="330" y="40" width="120" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="ret-fusion" value="&lt;b&gt;Score Fusion&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;RRF (V1)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="ret-group">
+          <mxGeometry x="470" y="40" width="100" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="ret-rerank" value="&lt;b&gt;Reranker&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Cross-encoder (V2)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeDasharray=5 5;" vertex="1" parent="ret-group">
+          <mxGeometry x="590" y="40" width="100" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ========== RESPONSE LAYER ========== -->
+        <mxCell id="resp-group" value="Response Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontStyle=1;fontSize=13;spacingTop=5;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="810" width="500" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="resp-ctx" value="&lt;b&gt;Context Assembly&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="resp-group">
+          <mxGeometry x="20" y="40" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="resp-gen" value="&lt;b&gt;Response Generation&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;GPT-4o / GPT-4o-mini&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="resp-group">
+          <mxGeometry x="180" y="40" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="resp-guard" value="&lt;b&gt;Guardrails&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;V1: rules → V2: LLM&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="resp-group">
+          <mxGeometry x="370" y="40" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ========== DATA LAYER ========== -->
+        <mxCell id="data-group" value="Data Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;verticalAlign=top;fontStyle=1;fontSize=13;spacingTop=5;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="930" width="700" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="data-qdrant" value="&lt;b&gt;Qdrant&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Vector DB&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="data-group">
+          <mxGeometry x="30" y="30" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="data-mongo" value="&lt;b&gt;MongoDB&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Document DB&lt;/font&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="data-group">
+          <mxGeometry x="180" y="30" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="data-openai" value="&lt;b&gt;OpenAI API&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;Embedding + LLM&lt;/font&gt;" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="data-group">
+          <mxGeometry x="370" y="25" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="data-local" value="&lt;b&gt;Local Fallback&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#666&quot;&gt;MiniLM / Flan-T5&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeDasharray=5 5;" vertex="1" parent="data-group">
+          <mxGeometry x="560" y="35" width="130" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- ========== INTER-LAYER ARROWS ========== -->
+        <!-- Input → QU -->
+        <mxCell id="e-input-qu" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="input-text" target="qu-norm" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- QU → Orchestration -->
+        <mxCell id="e-qu-orch" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="qu-decomp" target="orch-planner" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Orchestration → Agent -->
+        <mxCell id="e-orch-agent" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="orch-dispatch" target="agent-group" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Agent → Merge -->
+        <mxCell id="e-agent-merge" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;" edge="1" source="agent-group" target="orch-merge" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="475" />
+              <mxPoint x="770" y="355" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Merge → LA -->
+        <mxCell id="e-merge-la" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="orch-merge" target="agent-la" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="355" />
+              <mxPoint x="720" y="430" />
+              <mxPoint x="670" y="430" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Agent → Tools -->
+        <mxCell id="e-agent-tool" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="agent-group" target="tool-group" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tools → Retrieval -->
+        <mxCell id="e-tool-ret" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="tool-group" target="ret-group" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- LA → Response -->
+        <mxCell id="e-la-resp" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="agent-la" target="resp-group" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="630" y="540" />
+              <mxPoint x="630" y="550" />
+              <mxPoint x="20" y="550" />
+              <mxPoint x="20" y="855" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Retrieval → Data -->
+        <mxCell id="e-ret-data" style="edgeStyle=orthogonalEdgeStyle;rounded=1;" edge="1" source="ret-group" target="data-group" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Response → Data (LLM call) -->
+        <mxCell id="e-resp-data" style="edgeStyle=orthogonalEdgeStyle;rounded=1;dashed=1;" edge="1" source="resp-gen" target="data-openai" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ========== VERSION LEGEND ========== -->
+        <mxCell id="legend" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#999;container=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="560" y="810" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="&lt;b&gt;Legend&lt;/b&gt;" style="text;html=1;align=center;" vertex="1" parent="legend">
+          <mxGeometry x="50" y="5" width="80" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-v1" value="" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="30" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-v1-text" value="V1 (Phase 3)" style="text;html=1;align=left;" vertex="1" parent="legend">
+          <mxGeometry x="40" y="27" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-v2" value="" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeDasharray=5 5;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="52" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-v2-text" value="V2 (Phase 4)" style="text;html=1;align=left;" vertex="1" parent="legend">
+          <mxGeometry x="40" y="49" width="100" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-nth" value="" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;strokeDasharray=5 5;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="74" width="20" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-nth-text" value="Nice to Have" style="text;html=1;align=left;" vertex="1" parent="legend">
+          <mxGeometry x="40" y="71" width="100" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
