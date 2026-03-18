@@ -277,7 +277,11 @@
       "Bash(git diff:*)",
       "Bash(git rebase:*)",
       "Bash(GIT_EDITOR=true git rebase --continue)",
-      "Bash(find C:/Users/yuila/Documents/FDE2ndBatchTraning/Capstone/services/user_service -type f -name *.py)"
+      "Bash(find C:/Users/yuila/Documents/FDE2ndBatchTraning/Capstone/services/user_service -type f -name *.py)",
+      "Bash(xargs head:*)",
+      "Bash(ls -la /c/Users/yuila/Documents/FDE2ndBatchTraning/Capstone/services/*/app/)",
+      "Read(//c/Program Files/draw.io/**)",
+      "Read(//c/Program Files \\(x86\\)/draw.io/**)"
     ]
   }
 }
