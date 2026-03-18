@@ -269,7 +269,14 @@
       "Bash(grep -r \"timeout\\\\|error\\\\|catch\\\\|finally\" /c/Users/yuila/Documents/FDE2ndBatchTraning/Capstone/frontend/src --include=*.jsx --include=*.js)",
       "Bash(xargs cat:*)",
       "Bash(grep -r \"axios\\\\|client\\\\|timeout\" /c/Users/yuila/Documents/FDE2ndBatchTraning/Capstone/frontend --include=*.jsx --include=*.js --include=*.json)",
-      "Bash(echo \"docs/presentation/~$*\")"
+      "Bash(echo \"docs/presentation/~$*\")",
+      "Bash(wc:*)",
+      "Bash(find /home/yuila/projects/FDE2ndBatchTraning/Capstone/services/ai_service/app -name \"*.py\" -exec grep -l \"BaseModel\\\\|Field\\\\|ValidationError\" {})",
+      "Bash(git push:*)",
+      "Bash(find /home/yuila/projects/FDE2ndBatchTraning/Capstone -name .env* -o -name *.env)",
+      "Bash(git diff:*)",
+      "Bash(git rebase:*)",
+      "Bash(GIT_EDITOR=true git rebase --continue)"
     ]
   }
 }

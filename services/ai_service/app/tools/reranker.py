@@ -1,104 +1,11 @@
-"""Cross-encoder-style and profile-based reranking for course search results.
+"""Profile-based reranking for course search results.
 
-Two reranking strategies:
-  1. Embedding-based: Uses fastembed TextEmbedding to compute query-document
-     cosine similarity and re-score results (lightweight cross-encoder alternative).
-  2. Profile-based: Boosts courses matching user skills/interests and
-     weights by success rate (rating).
+Boosts courses matching user skills/interests and weights by success rate (rating).
 """
 
 import logging
 
-import numpy as np
-from fastembed import TextEmbedding
-
 logger = logging.getLogger("ai-service.tools.reranker")
-
-# Lazy-loaded embedding model for reranking
-_rerank_model: TextEmbedding | None = None
-_RERANK_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-
-
-def _get_rerank_model() -> TextEmbedding:
-    """Return the reranking embedding model, loading on first call."""
-    global _rerank_model
-    if _rerank_model is None:
-        logger.info(
-            "Loading reranking model",
-            extra={"model": _RERANK_MODEL_NAME},
-        )
-        _rerank_model = TextEmbedding(model_name=_RERANK_MODEL_NAME)
-        logger.info("Reranking model loaded")
-    return _rerank_model
-
-
-def _cosine_similarity(a: np.ndarray, b: np.ndarray) -> float:
-    """Compute cosine similarity between two vectors."""
-    dot = np.dot(a, b)
-    norm = np.linalg.norm(a) * np.linalg.norm(b)
-    if norm == 0:
-        return 0.0
-    return float(dot / norm)
-
-
-def cross_encoder_rerank(
-    query: str,
-    courses: list[dict],
-    top_k: int = 10,
-) -> list[dict]:
-    """Rerank courses using embedding-based similarity scoring.
-
-    Embeds both the query and each course document with a local model,
-    then sorts by cosine similarity. This provides a cross-encoder-like
-    reranking effect using a lightweight bi-encoder.
-
-    Args:
-        query: User search query.
-        courses: List of course dicts from hybrid search.
-        top_k: Maximum number of results to return.
-
-    Returns:
-        Reranked list of course dicts.
-    """
-    if not courses:
-        return courses
-
-    model = _get_rerank_model()
-
-    # Build documents: title + skills summary for richer context
-    documents = []
-    for c in courses:
-        parts = [c.get("title", "")]
-        skills = c.get("skills", [])
-        if skills:
-            parts.append(" ".join(skills[:5]))
-        documents.append(" | ".join(parts))
-
-    # Embed query and all documents
-    all_texts = [query] + documents
-    embeddings = list(model.embed(all_texts))
-
-    query_emb = np.array(embeddings[0])
-    doc_embs = [np.array(e) for e in embeddings[1:]]
-
-    # Score by cosine similarity
-    scored = []
-    for course, doc_emb in zip(courses, doc_embs, strict=True):
-        score = _cosine_similarity(query_emb, doc_emb)
-        scored.append((course, score))
-
-    scored.sort(key=lambda x: x[1], reverse=True)
-    reranked = [c for c, _s in scored[:top_k]]
-
-    logger.info(
-        "Reranked courses",
-        extra={
-            "query": query[:80],
-            "input_count": len(courses),
-            "output_count": len(reranked),
-        },
-    )
-    return reranked
 
 
 def profile_rerank(
