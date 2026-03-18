@@ -34,7 +34,7 @@
         <mxCell id="rrf" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontColor=#000000;fontStyle=1;" value="RRF Fusion&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Qdrant: Reciprocal Rank Fusion&lt;br&gt;weights [BM25=1.2, Dense=1.5]&lt;/font&gt;" vertex="1">
           <mxGeometry height="65" width="260" x="390" y="560" as="geometry" />
         </mxCell>
-        <mxCell id="reranker" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontColor=#000000;fontStyle=1;" value="Cross-Encoder Rerank&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Local: all-MiniLM-L6-v2 (384 dims)&lt;br&gt;cosine similarity re-scoring&lt;/font&gt;" vertex="1">
+        <mxCell id="reranker" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontColor=#000000;fontStyle=1;" value="&lt;strike&gt;Cross-Encoder Rerank&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Local: all-MiniLM-L6-v2 (384 dims)&lt;br&gt;cosine similarity re-scoring&lt;/font&gt;&lt;/strike&gt;" vertex="1">
           <mxGeometry height="60" width="240" x="400" y="700" as="geometry" />
         </mxCell>
         <mxCell id="results" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=14;fontColor=#000000;fontStyle=1;" value="Agent Context&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;formatted course list&lt;/font&gt;" vertex="1">

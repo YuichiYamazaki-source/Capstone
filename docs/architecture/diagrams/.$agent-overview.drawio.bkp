@@ -1,102 +1,147 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
   <diagram id="agent-overview" name="Agent Overview: Requirements → Implementation">
-    <mxGraphModel dx="923" dy="729" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1200" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="900" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+
+        <!-- ===== LEFT: Requirements (5 Agents) ===== -->
+        <!-- Header -->
         <mxCell id="req-header" parent="1" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#000000;fontSize=15;fontStyle=1;" value="Requirements" vertex="1">
-          <mxGeometry height="30" width="200" x="60" y="30" as="geometry" />
+          <mxGeometry x="60" y="30" width="200" height="30" as="geometry" />
         </mxCell>
+
+        <!-- 5 requirement agents (center x=160) -->
         <mxCell id="req-la" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#000000;fontStyle=1;" value="Learning Advisor Agent" vertex="1">
-          <mxGeometry height="40" width="220" x="50" y="100" as="geometry" />
+          <mxGeometry x="50" y="100" width="220" height="40" as="geometry" />
         </mxCell>
+
         <mxCell id="req-cr" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#000000;fontStyle=1;" value="Course Retrieval Agent" vertex="1">
-          <mxGeometry height="40" width="220" x="50" y="620" as="geometry" />
+          <mxGeometry x="50" y="200" width="220" height="40" as="geometry" />
         </mxCell>
+
         <mxCell id="req-sg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#000000;fontStyle=1;" value="Skill Gap Analysis Agent" vertex="1">
-          <mxGeometry height="40" width="220" x="50" y="300" as="geometry" />
+          <mxGeometry x="50" y="300" width="220" height="40" as="geometry" />
         </mxCell>
+
         <mxCell id="req-lp" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#000000;fontStyle=1;" value="Learning Path Planning Agent" vertex="1">
-          <mxGeometry height="40" width="220" x="50" y="400" as="geometry" />
+          <mxGeometry x="50" y="400" width="220" height="40" as="geometry" />
         </mxCell>
+
         <mxCell id="req-ca" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#000000;fontStyle=1;" value="Career Alignment Agent" vertex="1">
-          <mxGeometry height="40" width="220" x="50" y="500" as="geometry" />
+          <mxGeometry x="50" y="500" width="220" height="40" as="geometry" />
         </mxCell>
+
+        <!-- ===== RIGHT: Implementation ===== -->
+        <!-- Header -->
         <mxCell id="impl-header" parent="1" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#000000;fontSize=15;fontStyle=1;" value="Implementation" vertex="1">
-          <mxGeometry height="30" width="250" x="700" y="30" as="geometry" />
+          <mxGeometry x="700" y="30" width="250" height="30" as="geometry" />
         </mxCell>
+
+        <!-- LLM subheader -->
         <mxCell id="llm-label" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#000000;fontSize=12;fontStyle=1;" value="LLM (gpt-4o via OpenAI Agents SDK)" vertex="1">
-          <mxGeometry height="20" width="280" x="685" y="77.5" as="geometry" />
+          <mxGeometry x="660" y="70" width="280" height="20" as="geometry" />
         </mxCell>
+
+        <!-- 4 LLM implementations (center x=810) -->
         <mxCell id="impl-la" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b6d7a8;strokeColor=#82b366;fontSize=12;fontColor=#000000;fontStyle=1;strokeWidth=2;" value="Learning Advisor&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Router Agent · handoff to sub-agents&lt;/font&gt;" vertex="1">
-          <mxGeometry height="45" width="260" x="680" y="97.5" as="geometry" />
+          <mxGeometry x="680" y="100" width="260" height="45" as="geometry" />
         </mxCell>
+
         <mxCell id="impl-sg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontColor=#000000;fontStyle=1;" value="Skill Gap Analyst&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Sub-Agent · analyzes user skills vs target&lt;/font&gt;" vertex="1">
-          <mxGeometry height="45" width="260" x="680" y="297.5" as="geometry" />
+          <mxGeometry x="680" y="300" width="260" height="45" as="geometry" />
         </mxCell>
+
         <mxCell id="impl-lp" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontColor=#000000;fontStyle=1;" value="Learning Path Designer&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Sub-Agent · gpt-4o (temp=0.3)&lt;/font&gt;" vertex="1">
-          <mxGeometry height="45" width="260" x="680" y="397.5" as="geometry" />
+          <mxGeometry x="680" y="400" width="260" height="45" as="geometry" />
         </mxCell>
+
         <mxCell id="impl-ca" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontColor=#000000;fontStyle=1;" value="Career Advisor&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Sub-Agent · career path guidance&lt;/font&gt;" vertex="1">
-          <mxGeometry height="45" width="260" x="680" y="497.5" as="geometry" />
+          <mxGeometry x="680" y="500" width="260" height="45" as="geometry" />
         </mxCell>
+
+        <!-- Tools subheader -->
         <mxCell id="tools-label" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#000000;fontSize=12;fontStyle=1;" value="@function_tool (shared by all LLMs)" vertex="1">
-          <mxGeometry height="20" width="280" x="660" y="590" as="geometry" />
+          <mxGeometry x="660" y="590" width="280" height="20" as="geometry" />
         </mxCell>
+
+        <!-- 5 Tools (center x=810) -->
         <mxCell id="impl-retrieve" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=11;fontColor=#000000;fontStyle=1;" value="retrieve_courses&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Hybrid Search (BM25+Dense+RRF)&lt;/font&gt;" vertex="1">
-          <mxGeometry height="40" width="200" x="660" y="620" as="geometry" />
+          <mxGeometry x="660" y="620" width="200" height="40" as="geometry" />
         </mxCell>
+
         <mxCell id="impl-detail" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=11;fontColor=#000000;fontStyle=1;" value="get_course_details" vertex="1">
-          <mxGeometry height="40" width="140" x="680" y="680" as="geometry" />
+          <mxGeometry x="880" y="620" width="140" height="40" as="geometry" />
         </mxCell>
+
         <mxCell id="impl-profile" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=11;fontColor=#000000;fontStyle=1;" value="get_user_profile" vertex="1">
-          <mxGeometry height="40" width="140" x="660" y="740" as="geometry" />
+          <mxGeometry x="660" y="680" width="140" height="40" as="geometry" />
         </mxCell>
+
         <mxCell id="impl-update" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=11;fontColor=#000000;fontStyle=1;" value="update_user_profile" vertex="1">
-          <mxGeometry height="40" width="140" x="820" y="740" as="geometry" />
+          <mxGeometry x="820" y="680" width="140" height="40" as="geometry" />
         </mxCell>
+
         <mxCell id="impl-web" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=11;fontColor=#000000;fontStyle=1;" value="web_search" vertex="1">
-          <mxGeometry height="40" width="110" x="980" y="740" as="geometry" />
+          <mxGeometry x="980" y="680" width="110" height="40" as="geometry" />
         </mxCell>
+
+        <!-- ===== MAPPING ARROWS ===== -->
+
+        <!-- req-la → impl-la (1:1) -->
         <mxCell id="m1" edge="1" parent="1" source="req-la" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="impl-la">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+
+        <!-- req-cr → impl-retrieve + impl-detail (1:Tool) -->
         <mxCell id="m2a" edge="1" parent="1" source="req-cr" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="impl-retrieve">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="320" y="640" />
-              <mxPoint x="320" y="570" />
-              <mxPoint x="600" y="570" />
-              <mxPoint x="600" y="640" />
+              <mxPoint x="400" y="220" />
+              <mxPoint x="400" y="640" />
             </Array>
           </mxGeometry>
         </mxCell>
+
         <mxCell id="m2b" edge="1" parent="1" source="req-cr" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="impl-detail">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="320" y="640" />
-              <mxPoint x="320" y="700" />
+              <mxPoint x="420" y="220" />
+              <mxPoint x="420" y="640" />
             </Array>
           </mxGeometry>
         </mxCell>
+
+        <!-- req-sg → impl-sg (1:1) -->
         <mxCell id="m3" edge="1" parent="1" source="req-sg" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="impl-sg">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+
+        <!-- req-lp → impl-lp (1:1) -->
         <mxCell id="m4" edge="1" parent="1" source="req-lp" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="impl-lp">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+
+        <!-- req-ca → impl-ca (1:1) -->
         <mxCell id="m5" edge="1" parent="1" source="req-ca" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="impl-ca">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+
+        <!-- ===== DESIGN DECISION NOTE ===== -->
         <mxCell id="decision-note" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontColor=#000000;align=left;spacingLeft=10;spacingRight=10;" value="&lt;b&gt;Design Decision: Course Retrieval Agent → Tool&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Course retrieval is &quot;search execution&quot; not &quot;reasoning&quot;&lt;br&gt;→ No LLM judgment needed → Tool化&lt;br&gt;→ All 4 LLMs share the same tools&lt;br&gt;→ Avoids unnecessary agent handoff overhead&lt;/font&gt;" vertex="1">
-          <mxGeometry height="80" width="290" x="240" y="180" as="geometry" />
+          <mxGeometry x="330" y="140" width="290" height="80" as="geometry" />
         </mxCell>
+
+        <!-- ===== TOOL OWNERSHIP NOTE ===== -->
         <mxCell id="tool-note" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;align=left;spacingLeft=8;" value="&lt;b&gt;Tool assignment per LLM:&lt;/b&gt;&lt;br&gt;LA: retrieve, profile, update, web&lt;br&gt;SGA: retrieve, profile, web&lt;br&gt;CA: retrieve, profile, web&lt;br&gt;LPD: retrieve, detail, profile" vertex="1">
-          <mxGeometry height="65" width="250" x="640" y="187.5" as="geometry" />
+          <mxGeometry x="330" y="620" width="250" height="65" as="geometry" />
         </mxCell>
+
+        <!-- Handoff note -->
         <mxCell id="handoff-note" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;" value="LA handoffs to SGA/LPD/CA&lt;br&gt;via OpenAI Agents SDK" vertex="1">
-          <mxGeometry height="35" width="160" x="380" y="70" as="geometry" />
+          <mxGeometry x="500" y="370" width="160" height="35" as="geometry" />
         </mxCell>
+
       </root>
     </mxGraphModel>
   </diagram>

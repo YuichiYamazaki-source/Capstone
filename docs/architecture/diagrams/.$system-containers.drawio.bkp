@@ -1,66 +1,101 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
   <diagram id="system-containers" name="Container View">
-    <mxGraphModel dx="1065" dy="842" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="1200" background="#FFFFFF" math="0" shadow="0">
+    <mxGraphModel dx="1200" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="1200" background="#FFFFFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+
+        <!-- ===== Docker Compose boundary (dashed) ===== -->
         <mxCell id="docker-boundary" parent="1" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 4;strokeColor=#b85450;strokeWidth=2;fillColor=none;fontColor=#000000;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=5;align=left;spacingLeft=10;" value="Docker Compose (app-network)" vertex="1">
-          <mxGeometry height="680" width="960" x="30" y="120" as="geometry" />
+          <mxGeometry x="30" y="120" width="960" height="680" as="geometry" />
         </mxCell>
+
+        <!-- ===== Row 0: Browser (outside Docker) ===== -->
         <mxCell id="browser" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=14;fontColor=#000000;fontStyle=1;" value="Browser&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;localhost:5173&lt;/font&gt;" vertex="1">
-          <mxGeometry height="50" width="180" x="420" y="30" as="geometry" />
+          <mxGeometry x="420" y="30" width="180" height="50" as="geometry" />
         </mxCell>
+
+        <!-- ===== Row 1: Frontend (Docker, exposed) ===== -->
         <mxCell id="frontend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontColor=#000000;fontStyle=1;" value="Frontend&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;React + Vite + MUI&lt;br&gt;:5173 (exposed)&lt;/font&gt;" vertex="1">
-          <mxGeometry height="65" width="200" x="410" y="160" as="geometry" />
+          <mxGeometry x="410" y="160" width="200" height="65" as="geometry" />
         </mxCell>
+
+        <!-- Vite proxy note -->
         <mxCell id="vite-note" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;" value="Vite Proxy: /api/* → gateway:8000" vertex="1">
-          <mxGeometry height="25" width="220" x="650" y="175" as="geometry" />
+          <mxGeometry x="650" y="175" width="220" height="25" as="geometry" />
         </mxCell>
+
+        <!-- ===== Row 2: Gateway (Docker, exposed) ===== -->
         <mxCell id="gateway" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontColor=#000000;fontStyle=1;" value="Gateway&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;FastAPI&lt;br&gt;:8000 (exposed)&lt;/font&gt;" vertex="1">
-          <mxGeometry height="65" width="180" x="420" y="300" as="geometry" />
+          <mxGeometry x="420" y="300" width="180" height="65" as="geometry" />
         </mxCell>
+
+        <!-- ===== Row 3: Microservices (Docker, internal only) ===== -->
         <mxCell id="course-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontColor=#000000;fontStyle=1;" value="Course Service&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;FastAPI · :8001&lt;br&gt;internal only&lt;/font&gt;" vertex="1">
-          <mxGeometry height="65" width="180" x="60" y="440" as="geometry" />
+          <mxGeometry x="60" y="440" width="180" height="65" as="geometry" />
         </mxCell>
+
         <mxCell id="user-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontColor=#000000;fontStyle=1;" value="User Service&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;FastAPI · :8002&lt;br&gt;internal only&lt;/font&gt;" vertex="1">
-          <mxGeometry height="65" width="180" x="420" y="440" as="geometry" />
+          <mxGeometry x="420" y="440" width="180" height="65" as="geometry" />
         </mxCell>
+
         <mxCell id="ai-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontColor=#000000;fontStyle=1;" value="AI Service&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;FastAPI + Agents SDK · :8003&lt;br&gt;internal only&lt;/font&gt;" vertex="1">
-          <mxGeometry height="65" width="210" x="750" y="440" as="geometry" />
+          <mxGeometry x="750" y="440" width="210" height="65" as="geometry" />
         </mxCell>
+
+        <!-- ===== Row 4: Databases (Docker, exposed for scripts) ===== -->
         <mxCell id="mongodb" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontColor=#000000;size=12;" value="&lt;b&gt;MongoDB&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;:27017 (exposed)&lt;br&gt;volume: mongo-data&lt;/font&gt;" vertex="1">
-          <mxGeometry height="80" width="190" x="200" y="600" as="geometry" />
+          <mxGeometry x="200" y="600" width="190" height="80" as="geometry" />
         </mxCell>
+
         <mxCell id="qdrant" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=13;fontColor=#000000;size=12;" value="&lt;b&gt;Qdrant&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;:6333/:6334 (exposed)&lt;br&gt;volume: qdrant-data&lt;/font&gt;" vertex="1">
-          <mxGeometry height="80" width="190" x="660" y="600" as="geometry" />
+          <mxGeometry x="660" y="600" width="190" height="80" as="geometry" />
         </mxCell>
+
+        <!-- ===== External Services (outside Docker) ===== -->
         <mxCell id="openai" parent="1" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#000000;fontSize=12;fontStyle=1;" value="OpenAI API&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;LLM + Embedding&lt;/font&gt;" vertex="1">
-          <mxGeometry height="70" width="160" x="1060" y="400" as="geometry" />
+          <mxGeometry x="1060" y="400" width="160" height="70" as="geometry" />
         </mxCell>
+
         <mxCell id="langfuse" parent="1" style="shape=cloud;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#000000;fontSize=12;fontStyle=1;" value="LangFuse Cloud&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Observability&lt;/font&gt;" vertex="1">
-          <mxGeometry height="70" width="160" x="1060" y="510" as="geometry" />
+          <mxGeometry x="1060" y="510" width="160" height="70" as="geometry" />
         </mxCell>
+
+        <!-- ===== Local Host scripts (outside Docker) ===== -->
         <mxCell id="local-label" parent="1" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 4;strokeColor=#333333;strokeWidth=2;fillColor=none;fontColor=#000000;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=5;align=left;spacingLeft=10;" value="Local Host (miniconda Python)" vertex="1">
-          <mxGeometry height="120" width="600" x="30" y="860" as="geometry" />
+          <mxGeometry x="30" y="860" width="600" height="120" as="geometry" />
         </mxCell>
+
         <mxCell id="script-ingest" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=11;fontColor=#000000;fontStyle=1;" value="ingest_courses.py&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;CSV → MongoDB&lt;/font&gt;" vertex="1">
-          <mxGeometry height="45" width="160" x="60" y="900" as="geometry" />
+          <mxGeometry x="60" y="900" width="160" height="45" as="geometry" />
         </mxCell>
+
         <mxCell id="script-embed" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=11;fontColor=#000000;fontStyle=1;" value="generate_embeddings.py&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;MongoDB → Qdrant&lt;/font&gt;" vertex="1">
-          <mxGeometry height="45" width="180" x="260" y="900" as="geometry" />
+          <mxGeometry x="260" y="900" width="180" height="45" as="geometry" />
         </mxCell>
+
         <mxCell id="script-seed" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=11;fontColor=#000000;fontStyle=1;" value="seed_users.py&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;test data&lt;/font&gt;" vertex="1">
-          <mxGeometry height="45" width="130" x="480" y="900" as="geometry" />
+          <mxGeometry x="480" y="900" width="130" height="45" as="geometry" />
         </mxCell>
+
+        <!-- localhost access note -->
         <mxCell id="localhost-note" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;" value="Scripts access DBs via localhost exposed ports (27017, 6333)" vertex="1">
-          <mxGeometry height="25" width="310" x="660" y="910" as="geometry" />
+          <mxGeometry x="660" y="910" width="310" height="25" as="geometry" />
         </mxCell>
+
+        <!-- ========== ARROWS ========== -->
+
+        <!-- Browser → Frontend -->
         <mxCell id="e1" edge="1" parent="1" source="browser" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="frontend">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+
+        <!-- Frontend → Gateway -->
         <mxCell id="e2" edge="1" parent="1" source="frontend" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="gateway">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+
+        <!-- Gateway → 3 services (fan-out) -->
         <mxCell id="e3" edge="1" parent="1" source="gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="course-svc">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
@@ -69,9 +104,11 @@
             </Array>
           </mxGeometry>
         </mxCell>
+
         <mxCell id="e4" edge="1" parent="1" source="gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;" target="user-svc">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+
         <mxCell id="e5" edge="1" parent="1" source="gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="ai-svc">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
@@ -80,39 +117,44 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e6" edge="1" parent="1" source="course-svc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="mongodb">
+
+        <!-- Services → DBs -->
+        <mxCell id="e6" edge="1" parent="1" source="course-svc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.3;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="mongodb">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e7" edge="1" parent="1" source="user-svc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="mongodb">
+
+        <mxCell id="e7" edge="1" parent="1" source="user-svc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.7;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="mongodb">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="510" y="550" />
-              <mxPoint x="295" y="550" />
+              <mxPoint x="510" y="560" />
+              <mxPoint x="333" y="560" />
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="e8" edge="1" parent="1" source="ai-svc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="mongodb">
+
+        <mxCell id="e8" edge="1" parent="1" source="ai-svc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.3;exitY=1;exitDx=0;exitDy=0;entryX=0.8;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="mongodb">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="813" y="550" />
-              <mxPoint x="295" y="550" />
+              <mxPoint x="813" y="560" />
+              <mxPoint x="352" y="560" />
             </Array>
           </mxGeometry>
         </mxCell>
+
         <mxCell id="e9" edge="1" parent="1" source="ai-svc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.7;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="qdrant">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="897" y="570" />
-              <mxPoint x="755" y="570" />
-            </Array>
-          </mxGeometry>
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
+
+        <!-- AI Service → External Services -->
         <mxCell id="e10" edge="1" parent="1" source="ai-svc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" target="openai">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+
         <mxCell id="e11" edge="1" parent="1" source="ai-svc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;dashed=1;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" target="langfuse">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+
+        <!-- Local scripts → DBs (dashed, via localhost) -->
         <mxCell id="e12" edge="1" parent="1" source="script-ingest" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;dashed=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.2;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" target="mongodb">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
@@ -121,9 +163,11 @@
             </Array>
           </mxGeometry>
         </mxCell>
+
         <mxCell id="e13" edge="1" parent="1" source="script-embed" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;dashed=1;exitX=0.3;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" target="mongodb">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
+
         <mxCell id="e14" edge="1" parent="1" source="script-embed" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;dashed=1;exitX=0.7;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" target="qdrant">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
@@ -132,6 +176,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
+
       </root>
     </mxGraphModel>
   </diagram>

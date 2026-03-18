@@ -276,7 +276,8 @@
       "Bash(find /home/yuila/projects/FDE2ndBatchTraning/Capstone -name .env* -o -name *.env)",
       "Bash(git diff:*)",
       "Bash(git rebase:*)",
-      "Bash(GIT_EDITOR=true git rebase --continue)"
+      "Bash(GIT_EDITOR=true git rebase --continue)",
+      "Bash(find C:/Users/yuila/Documents/FDE2ndBatchTraning/Capstone/services/user_service -type f -name *.py)"
     ]
   }
 }

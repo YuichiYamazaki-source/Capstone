@@ -304,7 +304,7 @@ Response: { courses: [...], total, limit, offset }
 Frontend renders CourseCard grid (3 columns, 12 per page)
 ```
 
-## Semantic Search (Phase 3 — Planned)
+## Semantic Search (Phase 3 — Implemented)
 
 ```
 User enters natural language query
@@ -314,42 +314,89 @@ User enters natural language query
 Frontend → Gateway → AI Service (:8003)
   │
   ▼
-AI Service: Query Understanding
-  │  Extract intent, entities, constraints
-  │  Agent orchestration (OpenAI Agents SDK)
+LLM (Learning Advisor Agent)
+  │  Reads user profile (skills, level, interests) from MongoDB
+  │  Extracts: search text, level, min_rating, organization, skill
+  │  Calls retrieve_courses @function_tool
   │
   ▼
-Embedding: query → OpenAI text-embedding-3-small → vector
+Hybrid Search (single Qdrant Query API call)
+  │
+  ├─ Dense: query → OpenAI text-embedding-3-small (1,536 dims)
+  │    → Qdrant HNSW cosine similarity (weight 1.5, limit 30)
+  │
+  ├─ BM25: query + skill + level → Qdrant built-in tokenizer + IDF
+  │    (weight 1.2, limit 30)
+  │
+  ├─ Payload Filter: level, min_rating, organization
+  │    applied to both prefetches
+  │
+  └─ RRF Fusion: weights [BM25=1.2, Dense=1.5]
+     → Top-K results with payload
   │
   ▼
-Qdrant: vector similarity search → top-K course IDs
-  │  Filters: level, organization (metadata filtering)
+Cross-Encoder Rerank (optional, RERANK_ENABLED flag)
+  │  Model: all-MiniLM-L6-v2 (384 dims, local CPU)
+  │  Method: Bi-Encoder cosine similarity (not true Cross-Encoder)
+  │  See "Reranker Analysis" below for evaluation notes
   │
   ▼
-MongoDB: Fetch full course documents by IDs
+LLM generates contextual response with course recommendations
   │
   ▼
-RAG: courses + user query + user profile → LLM
-  │  Generate: explanations, recommendations, learning path
-  │
-  ▼
-Response: structured recommendation with reasoning
-  │
-  ▼
-Frontend renders personalized results with "Why recommended" reasons
+Frontend renders personalized results
 ```
+
+## Reranker Analysis
+
+### Current Implementation
+
+The reranker uses `all-MiniLM-L6-v2` (384 dims) as a Bi-Encoder:
+- Embeds query and each candidate document separately
+- Scores by cosine similarity between the two embeddings
+- Re-sorts the Hybrid Search results
+
+This is **not a true Cross-Encoder**. A Cross-Encoder takes `(query, document)` as a single
+input pair and outputs a relevance score, allowing the model's attention to directly compare
+both texts. The current Bi-Encoder approach embeds them independently.
+
+### Why Reranking May Not Add Value in This Architecture
+
+1. **LLM already optimizes the query**: The agent reads the user profile (skills, level,
+   interests) and constructs a targeted search query. The Hybrid Search results are already
+   personalized at query construction time.
+
+2. **Hybrid Search is already two-stage**: BM25 (keyword precision) + Dense (semantic
+   relevance) with RRF fusion provide strong ranking out of the box.
+
+3. **Payload Filters pre-narrow results**: Level, rating, and organization filters eliminate
+   irrelevant candidates before ranking even begins.
+
+4. **Dimension mismatch risk**: The search uses OpenAI embeddings (1,536 dims) for ranking,
+   then the reranker re-evaluates with MiniLM (384 dims) — a completely different embedding
+   space. This can demote results that were correctly ranked by the primary model.
+
+5. **Eval observation**: In testing, disabling the reranker sometimes produced equal or better
+   results, suggesting the additional re-scoring step may be counterproductive.
+
+### Recommendation
+
+- Keep `RERANK_ENABLED=false` as default unless eval metrics prove otherwise
+- If reranking is needed in the future, implement a true Cross-Encoder
+  (e.g., `cross-encoder/ms-marco-MiniLM-L-6-v2`) instead of the current Bi-Encoder approach
+- Consider the latency/Docker-image-size trade-off (torch dependency ≈ +500MB-1GB)
 
 ## Graceful Degradation Chain
 
 ```
-Semantic Search (Qdrant + LLM)
-  │ fails?
-  ▼
-Vector Search Only (Qdrant, no LLM reasoning)
-  │ fails?
-  ▼
-Keyword Search (MongoDB regex — Phase 2 behavior)
-  │ fails?
-  ▼
-Error message to user
+1. Hybrid Search (BM25 + Dense + RRF via Qdrant)
+   │ OpenAI embedding fails?
+   ▼
+2. BM25-only Search (Qdrant, weights [1.0])
+   │ Qdrant unavailable?
+   ▼
+3. MongoDB Text Search ($text + textScore)
+   │ MongoDB unavailable?
+   ▼
+4. Error message to user
 ```

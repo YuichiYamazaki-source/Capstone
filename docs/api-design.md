@@ -5,35 +5,201 @@
 - **PoC**: `http://localhost:8000/api/v1`
 - **Production**: `https://{domain}/api/v1`
 
+All endpoints below are prefixed with `/api/v1` via the Gateway.
+
 ## Authentication
 
-All protected endpoints require `Authorization: Bearer <JWT>` header.
-JWT is issued by User Service on login/register and validated by Gateway middleware.
+Protected endpoints require `Authorization: Bearer <JWT>` header.
+JWT is issued by User Service on login/register and forwarded by Gateway as `x-user-id` header to downstream services.
 
-## Endpoints
+---
 
-### Course Service (via Gateway)
+## Frontend → Gateway (Vite Proxy)
+
+The React frontend uses Axios with `baseURL: /api/v1`. Vite dev server proxies `/api/*` to `http://gateway:8000`.
+
+### Frontend API Modules
+
+| Module | File | Endpoints Used |
+|--------|------|----------------|
+| Auth | `features/auth/api.js` | `POST /auth/register`, `POST /auth/login` |
+| Courses | `features/courses/api.js` | `GET /courses`, `GET /courses/search`, `GET /filters/options` |
+| Profile | `features/profile/api.js` | `GET /users/profile`, `PUT /users/profile` |
+| Chat | `Explore.jsx` (direct) | `POST /chat` |
+| Analysis | `Analysis.jsx` (direct) | `GET /analyze/results/{user_id}`, `POST /analyze/*` |
+
+### Frontend Key Behaviors
+
+- JWT stored in `localStorage`, auto-injected by Axios interceptor
+- 401 response → auto-redirect to `/login` (except auth endpoints)
+- Chat: sends `message`, `history` (max 20), `user_id`, `conversation_id`
+- Analysis: loads saved results on mount, runs individual analyses on demand
+
+---
+
+## Gateway Endpoints
+
+The Gateway proxies all requests to downstream services. No business logic.
+
+### AI Endpoints → AI Service (:8003)
+
+| Method | Path | Auth | Timeout | Description |
+|--------|------|:----:|--------:|-------------|
+| POST | `/chat` | JWT | 180s | Chat with Learning Advisor agent |
+| POST | `/analyze` | JWT | 180s | Run all 3 analyses in parallel |
+| POST | `/analyze/skill-gap` | JWT | 120s | Skill gap analysis only |
+| POST | `/analyze/career` | JWT | 120s | Career path analysis only |
+| POST | `/analyze/learning-path` | JWT | 120s | Learning path design only |
+| GET | `/analyze/results/{user_id}` | JWT | 10s | Retrieve saved analysis results |
+
+### Course Endpoints → Course Service (:8001)
 
 | Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/courses` | Optional | List courses with filters |
-| GET | `/courses/search` | Optional | Search courses by keyword |
-| GET | `/courses/{id}` | Optional | Get course by ID |
-| GET | `/filters/options` | No | Get available filter values |
+|--------|------|:----:|-------------|
+| GET | `/courses` | Optional | List courses with filters and pagination |
+| GET | `/courses/search` | Optional | Text search on courses |
+| GET | `/courses/{course_id}` | Optional | Get single course by ObjectId |
+| GET | `/filters/skills` | Optional | Search skills by prefix (ranked by frequency) |
+| GET | `/filters/options` | Optional | Available filter values (levels, orgs, skills) |
 
-#### GET /courses
+### User Endpoints → User Service (:8002)
+
+| Method | Path | Auth | Description |
+|--------|------|:----:|-------------|
+| POST | `/auth/register` | No | Register new user, returns JWT |
+| POST | `/auth/login` | No | Login, returns JWT |
+| GET | `/users/profile` | JWT | Get authenticated user profile |
+| PUT | `/users/profile` | JWT | Update user profile (partial) |
+
+### Health Check
+
+| Method | Path | Auth | Description |
+|--------|------|:----:|-------------|
+| GET | `/health` | No | Gateway health status |
+
+---
+
+## AI Service Endpoints
+
+### POST /chat
+
+Process a message through the Learning Advisor agent pipeline.
+
+Request:
+```json
+{
+  "message": "I want to learn ML for healthcare",
+  "user_id": "507f1f77bcf86cd799439011",
+  "conversation_id": "optional-session-id",
+  "history": [
+    {"role": "user", "content": "..."},
+    {"role": "assistant", "content": "..."}
+  ]
+}
+```
+
+| Field | Type | Required | Constraints |
+|-------|------|:--------:|-------------|
+| `message` | string | Yes | 1-2000 chars |
+| `user_id` | string | No | Valid MongoDB ObjectId |
+| `conversation_id` | string | No | Session tracking |
+| `history` | HistoryMessage[] | No | Max 20 messages |
+
+Response:
+```json
+{
+  "reply": "Based on your background in...",
+  "conversation_id": "...",
+  "agent": "Learning Advisor",
+  "tool_calls": ["retrieve_courses"],
+  "retrieval_tool_calls": ["retrieve_courses"],
+  "retrieval_args": {"query": "ML healthcare", "level": "Beginner"},
+  "all_tool_calls": ["get_user_profile", "retrieve_courses"],
+  "latency_ms": 3200.5,
+  "courses": [{"title": "...", "url": "...", ...}]
+}
+```
+
+### POST /analyze
+
+Run all 3 sub-agents (Skill Gap, Career, Learning Path) in parallel.
+
+Request:
+```json
+{
+  "user_id": "507f1f77bcf86cd799439011"
+}
+```
+
+Response (`AnalyzeResponse`):
+```json
+{
+  "skill_gap": {"result": {...}, "evidence": "...", "latency_ms": 5200},
+  "career": {"result": {...}, "evidence": "...", "latency_ms": 4800},
+  "learning_path": {"result": {...}, "evidence": "...", "latency_ms": 6100}
+}
+```
+
+### POST /analyze/skill-gap, /analyze/career, /analyze/learning-path
+
+Run a single analysis agent.
+
+Request: same as `/analyze`
+
+Response (`SingleAnalyzeResponse`):
+```json
+{
+  "result": {...},
+  "evidence": "Human-readable explanation of the analysis",
+  "latency_ms": 5200
+}
+```
+
+### GET /analyze/results/{user_id}
+
+Retrieve previously saved analysis results.
+
+Response (`SavedAnalysisResponse`):
+```json
+{
+  "skill_gap": {"result": {...}, "evidence": "...", "latency_ms": 0} | null,
+  "career": {"result": {...}, "evidence": "...", "latency_ms": 0} | null,
+  "learning_path": {"result": {...}, "evidence": "...", "latency_ms": 0} | null
+}
+```
+
+### GET /health
+
+Response:
+```json
+{
+  "status": "ok | degraded",
+  "service": "ai-service",
+  "checks": {
+    "mongodb": "ok",
+    "qdrant": "ok (1 collections)"
+  }
+}
+```
+
+---
+
+## Course Service Endpoints
+
+### GET /courses
 
 Query parameters:
+
 | Param | Type | Default | Description |
 |-------|------|---------|-------------|
 | `level` | string | — | Filter by difficulty level |
 | `organization` | string | — | Filter by organization |
 | `min_rating` | float | — | Minimum rating threshold |
 | `skills` | string[] | — | Filter by skills (OR match) |
-| `limit` | int | 20 | Results per page |
+| `limit` | int | 20 | Results per page (1-100) |
 | `offset` | int | 0 | Pagination offset |
 
-Response: `CourseListResponse`
+Response (`CourseListResponse`):
 ```json
 {
   "courses": [
@@ -60,18 +226,35 @@ Response: `CourseListResponse`
 }
 ```
 
-#### GET /courses/search
+### GET /courses/search
 
-Query parameters:
 | Param | Type | Default | Description |
 |-------|------|---------|-------------|
-| `q` | string | required | Search query |
-| `limit` | int | 20 | Results per page |
+| `q` | string | required | Search query (min 1 char) |
+| `limit` | int | 20 | Results per page (1-100) |
 | `offset` | int | 0 | Pagination offset |
 
-Response: `CourseListResponse` (same as above)
+Response: same as `GET /courses`
 
-#### GET /filters/options
+### GET /courses/{course_id}
+
+Path parameter: MongoDB ObjectId. Returns 404 if not found.
+
+### GET /filters/skills
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| `q` | string | — | Prefix search |
+| `limit` | int | 20 | Max results (1-100) |
+
+Response:
+```json
+{
+  "skills": ["Python Programming", "Python", "PyTorch"]
+}
+```
+
+### GET /filters/options
 
 Response:
 ```json
@@ -82,16 +265,11 @@ Response:
 }
 ```
 
-### User Service (via Gateway)
+---
 
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/auth/register` | No | Register new user |
-| POST | `/auth/login` | No | Login and get JWT |
-| GET | `/users/profile` | Yes | Get current user profile |
-| PUT | `/users/profile` | Yes | Update user profile |
+## User Service Endpoints
 
-#### POST /auth/register
+### POST /auth/register
 
 Request:
 ```json
@@ -102,7 +280,7 @@ Request:
 }
 ```
 
-Response:
+Response (`TokenResponse`):
 ```json
 {
   "access_token": "eyJ...",
@@ -115,7 +293,7 @@ Response:
 }
 ```
 
-#### POST /auth/login
+### POST /auth/login
 
 Request:
 ```json
@@ -127,9 +305,11 @@ Request:
 
 Response: same as register
 
-#### GET /users/profile
+### GET /users/profile
 
-Response:
+Requires `x-user-id` header (set by Gateway from JWT).
+
+Response (`UserResponse`):
 ```json
 {
   "id": "...",
@@ -142,9 +322,11 @@ Response:
 }
 ```
 
-#### PUT /users/profile
+### PUT /users/profile
 
-Request: partial update of profile fields
+Partial update of profile fields.
+
+Request:
 ```json
 {
   "interests": ["AI", "Cloud Computing"],
@@ -152,54 +334,9 @@ Request: partial update of profile fields
 }
 ```
 
-### AI Service (Phase 3 — Planned)
+Response: updated `UserResponse`
 
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/chat` | Yes | AI consultation chat |
-| POST | `/recommend` | Yes | Get personalized recommendations |
-| GET | `/recommend/paths` | Yes | Get recommended learning paths |
-
-#### POST /chat
-
-Request:
-```json
-{
-  "message": "I want to learn ML for healthcare",
-  "conversation_id": "optional-session-id"
-}
-```
-
-Response:
-```json
-{
-  "reply": "Based on your background in...",
-  "courses": [...],
-  "conversation_id": "..."
-}
-```
-
-#### POST /recommend
-
-Request:
-```json
-{
-  "limit": 10
-}
-```
-
-Response:
-```json
-{
-  "recommendations": [
-    {
-      "course": { ... },
-      "score": 0.92,
-      "reasons": ["Matches your interest in AI", "Fits your skill level"]
-    }
-  ]
-}
-```
+---
 
 ## Error Responses
 
@@ -217,7 +354,7 @@ All errors follow a consistent format:
 | 404 | Resource not found |
 | 422 | Validation error (Pydantic) |
 | 500 | Internal server error |
-| 503 | Service unavailable (DB connection failure) |
+| 503 | Service unavailable (DB connection failure, AI service unreachable) |
 
 ## Design Principles
 
@@ -226,3 +363,4 @@ All errors follow a consistent format:
 3. **Pagination**: All list endpoints support limit/offset
 4. **Graceful degradation**: AI endpoints fall back to keyword search if vector DB unavailable
 5. **Consistent errors**: Uniform error response format across all services
+6. **Timeout tiering**: Chat (180s) > Analysis (120s) > CRUD (10s default)

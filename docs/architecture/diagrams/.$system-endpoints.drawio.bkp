@@ -1,0 +1,185 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
+  <diagram id="system-endpoints" name="API Endpoint Map">
+    <mxGraphModel dx="1200" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1300" pageHeight="1000" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ===== LEFT: Frontend Pages (x center=130) ===== -->
+        <mxCell id="fe-label" parent="1" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#000000;fontSize=13;fontStyle=1;" value="Frontend Pages" vertex="1">
+          <mxGeometry x="30" y="20" width="200" height="25" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fe-login" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#000000;fontStyle=1;" value="/login" vertex="1">
+          <mxGeometry x="60" y="70" width="140" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fe-onboarding" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#000000;fontStyle=1;" value="/onboarding" vertex="1">
+          <mxGeometry x="60" y="140" width="140" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fe-home" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#000000;fontStyle=1;" value="/ (Home)" vertex="1">
+          <mxGeometry x="60" y="210" width="140" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fe-search" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#000000;fontStyle=1;" value="/search" vertex="1">
+          <mxGeometry x="60" y="280" width="140" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fe-explore" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#000000;fontStyle=1;" value="/explore (Chat)" vertex="1">
+          <mxGeometry x="60" y="350" width="140" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fe-analysis" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#000000;fontStyle=1;" value="/analysis" vertex="1">
+          <mxGeometry x="60" y="420" width="140" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="fe-profile" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontColor=#000000;fontStyle=1;" value="/profile" vertex="1">
+          <mxGeometry x="60" y="490" width="140" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ===== CENTER: Gateway (x center=520) ===== -->
+        <mxCell id="gw" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=14;fontColor=#000000;fontStyle=1;" value="API Gateway :8000&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;/api/v1 · JWT validation · route dispatch&lt;/font&gt;" vertex="1">
+          <mxGeometry x="370" y="20" width="300" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Gateway endpoints grouped by service color -->
+
+        <!-- User Service endpoints (purple) -->
+        <mxCell id="gw-register" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;POST&lt;/b&gt; /auth/register" vertex="1">
+          <mxGeometry x="380" y="100" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-login" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;POST&lt;/b&gt; /auth/login" vertex="1">
+          <mxGeometry x="380" y="135" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-get-profile" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;GET&lt;/b&gt; /users/profile" vertex="1">
+          <mxGeometry x="380" y="170" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-put-profile" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;PUT&lt;/b&gt; /users/profile" vertex="1">
+          <mxGeometry x="380" y="205" width="200" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- Course Service endpoints (yellow) -->
+        <mxCell id="gw-courses" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;GET&lt;/b&gt; /courses" vertex="1">
+          <mxGeometry x="380" y="270" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-search" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;GET&lt;/b&gt; /courses/search?q=" vertex="1">
+          <mxGeometry x="380" y="305" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-course-id" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;GET&lt;/b&gt; /courses/{id}" vertex="1">
+          <mxGeometry x="380" y="340" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-skills" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;GET&lt;/b&gt; /filters/skills?q=" vertex="1">
+          <mxGeometry x="380" y="375" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-options" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;GET&lt;/b&gt; /filters/options" vertex="1">
+          <mxGeometry x="380" y="410" width="200" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- AI Service endpoints (green) -->
+        <mxCell id="gw-chat" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;POST&lt;/b&gt; /chat" vertex="1">
+          <mxGeometry x="380" y="475" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-analyze" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;POST&lt;/b&gt; /analyze" vertex="1">
+          <mxGeometry x="380" y="510" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-sg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;POST&lt;/b&gt; /analyze/skill-gap" vertex="1">
+          <mxGeometry x="380" y="545" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-career" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;POST&lt;/b&gt; /analyze/career" vertex="1">
+          <mxGeometry x="380" y="580" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-lp" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;POST&lt;/b&gt; /analyze/learning-path" vertex="1">
+          <mxGeometry x="380" y="615" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-results" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontColor=#000000;align=left;spacingLeft=8;" value="&lt;b&gt;GET&lt;/b&gt; /analyze/results/{user_id}" vertex="1">
+          <mxGeometry x="380" y="650" width="200" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- ===== RIGHT: Backend Services (x center=850) ===== -->
+        <mxCell id="svc-label" parent="1" style="text;html=1;align=center;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#000000;fontSize=13;fontStyle=1;" value="Backend Services" vertex="1">
+          <mxGeometry x="730" y="20" width="200" height="25" as="geometry" />
+        </mxCell>
+
+        <mxCell id="user-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=13;fontColor=#000000;fontStyle=1;" value="User Service :8002&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Auth + Profile CRUD&lt;br&gt;MongoDB users collection&lt;/font&gt;" vertex="1">
+          <mxGeometry x="720" y="120" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="course-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;fontColor=#000000;fontStyle=1;" value="Course Service :8001&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Course CRUD + Search + Filters&lt;br&gt;MongoDB courses collection&lt;/font&gt;" vertex="1">
+          <mxGeometry x="720" y="310" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ai-svc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;fontColor=#000000;fontStyle=1;" value="AI Service :8003&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;LLM Agents + RAG Pipeline&lt;br&gt;MongoDB + Qdrant + OpenAI&lt;/font&gt;" vertex="1">
+          <mxGeometry x="720" y="530" width="220" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ARROWS: Frontend → Gateway endpoints ===== -->
+
+        <!-- /login → auth endpoints -->
+        <mxCell id="f1" edge="1" parent="1" source="fe-login" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="gw-register">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- /onboarding → filters/skills + PUT profile -->
+        <mxCell id="f2a" edge="1" parent="1" source="fe-onboarding" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="gw-put-profile">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f2b" edge="1" parent="1" source="fe-onboarding" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="gw-skills">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- / (Home) → GET /courses -->
+        <mxCell id="f3" edge="1" parent="1" source="fe-home" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="gw-courses">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- /search → courses + search + options -->
+        <mxCell id="f4" edge="1" parent="1" source="fe-search" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="gw-search">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- /explore → POST /chat -->
+        <mxCell id="f5" edge="1" parent="1" source="fe-explore" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="gw-chat">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- /analysis → analyze endpoints -->
+        <mxCell id="f6" edge="1" parent="1" source="fe-analysis" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="gw-sg">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- /profile → GET/PUT profile + skills -->
+        <mxCell id="f7" edge="1" parent="1" source="fe-profile" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="gw-get-profile">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ===== ARROWS: Gateway endpoints → Backend Services ===== -->
+
+        <!-- Purple endpoints → User Service -->
+        <mxCell id="s1" edge="1" parent="1" source="gw-register" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" target="user-svc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" edge="1" parent="1" source="gw-put-profile" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" target="user-svc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Yellow endpoints → Course Service -->
+        <mxCell id="s3" edge="1" parent="1" source="gw-courses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" target="course-svc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s4" edge="1" parent="1" source="gw-options" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" target="course-svc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Green endpoints → AI Service -->
+        <mxCell id="s5" edge="1" parent="1" source="gw-chat" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" target="ai-svc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s6" edge="1" parent="1" source="gw-results" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" target="ai-svc">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

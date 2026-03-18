@@ -1,0 +1,85 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
+  <diagram id="data-mongodb" name="MongoDB Schema &amp; Access">
+    <mxGraphModel dx="1100" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="900" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- DB header -->
+        <mxCell id="db" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=15;fontColor=#000000;size=12;fontStyle=1;" value="MongoDB (course_finder)&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;Motor async · maxPool=10 · timeout=5s&lt;/font&gt;" vertex="1">
+          <mxGeometry x="350" y="30" width="300" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ===== courses collection (left, center x=250) ===== -->
+        <mxCell id="courses-label" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontColor=#000000;fontStyle=1;" value="courses collection" vertex="1">
+          <mxGeometry x="80" y="140" width="340" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Schema -->
+        <mxCell id="courses-schema" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;fontColor=#000000;align=left;spacingLeft=10;spacingRight=10;" value="&lt;b&gt;Document Schema:&lt;/b&gt;&lt;br&gt;title: string&lt;br&gt;description: string&lt;br&gt;organization: string&lt;br&gt;instructor: string&lt;br&gt;level: string (Beginner/Intermediate/Advanced)&lt;br&gt;rating: float | null&lt;br&gt;num_reviews: int | null&lt;br&gt;enrolled: string | null&lt;br&gt;skills: string[]&lt;br&gt;skills_lower: string[] (case-insensitive)&lt;br&gt;modules: string&lt;br&gt;schedule: string | null&lt;br&gt;url: string&lt;br&gt;satisfaction_rate: string | null" vertex="1">
+          <mxGeometry x="80" y="190" width="340" height="230" as="geometry" />
+        </mxCell>
+
+        <!-- Indexes -->
+        <mxCell id="courses-idx" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;align=left;spacingLeft=10;" value="&lt;b&gt;Indexes:&lt;/b&gt;&lt;br&gt;text [title, description, skills] (fallback search)&lt;br&gt;single: title, level, organization, skills" vertex="1">
+          <mxGeometry x="80" y="435" width="340" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ===== users collection (right, center x=750) ===== -->
+        <mxCell id="users-label" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=14;fontColor=#000000;fontStyle=1;" value="users collection" vertex="1">
+          <mxGeometry x="580" y="140" width="340" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- Schema -->
+        <mxCell id="users-schema" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=10;fontColor=#000000;align=left;spacingLeft=10;spacingRight=10;" value="&lt;b&gt;Document Schema:&lt;/b&gt;&lt;br&gt;_id: ObjectId&lt;br&gt;email: string (unique)&lt;br&gt;hashed_password: string&lt;br&gt;name: string&lt;br&gt;profile:&lt;br&gt;  skills: [{name: str, level: str}]&lt;br&gt;  motivation: string | null&lt;br&gt;  learning_scope: string | null&lt;br&gt;  learning_style: string | null&lt;br&gt;  interest_areas: string[]&lt;br&gt;created_at: datetime&lt;br&gt;updated_at: datetime" vertex="1">
+          <mxGeometry x="580" y="190" width="340" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Indexes -->
+        <mxCell id="users-idx" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;fontColor=#000000;dashed=1;align=left;spacingLeft=10;" value="&lt;b&gt;Indexes:&lt;/b&gt;&lt;br&gt;unique: email" vertex="1">
+          <mxGeometry x="580" y="405" width="340" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ===== Access Patterns (bottom) ===== -->
+        <mxCell id="access-label" parent="1" style="text;html=1;align=left;verticalAlign=middle;fillColor=none;strokeColor=none;fontColor=#000000;fontSize=13;fontStyle=1;" value="Access Patterns" vertex="1">
+          <mxGeometry x="80" y="520" width="200" height="25" as="geometry" />
+        </mxCell>
+
+        <!-- Course Service → courses -->
+        <mxCell id="acc-course" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontColor=#000000;fontStyle=1;" value="Course Service :8001&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;find, count, aggregate, distinct&lt;br&gt;filters: level, organization, rating, skills_lower&lt;br&gt;pagination: skip().limit()&lt;/font&gt;" vertex="1">
+          <mxGeometry x="60" y="560" width="260" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- User Service → users -->
+        <mxCell id="acc-user" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontColor=#000000;fontStyle=1;" value="User Service :8002&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;insert_one, find_one, update_one&lt;br&gt;lookup: email (login), _id (profile)&lt;/font&gt;" vertex="1">
+          <mxGeometry x="600" y="560" width="260" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- AI Service → both -->
+        <mxCell id="acc-ai" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontColor=#000000;fontStyle=1;" value="AI Service :8003&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;courses: $text fallback search (when Qdrant down)&lt;br&gt;users: get_user_profile / update_user_profile tools&lt;/font&gt;" vertex="1">
+          <mxGeometry x="300" y="660" width="310" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Local scripts -->
+        <mxCell id="acc-scripts" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#333333;fontSize=11;fontColor=#000000;fontStyle=1;" value="Local Scripts&lt;br&gt;&lt;font style=&quot;font-weight:normal;font-size:10px&quot;&gt;ingest_courses.py: bulk insert + text index creation&lt;br&gt;generate_embeddings.py: read all for embedding&lt;br&gt;seed_users.py: insert test users&lt;/font&gt;" vertex="1">
+          <mxGeometry x="300" y="750" width="310" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- Arrows: services → collections -->
+        <mxCell id="ac1" edge="1" parent="1" source="acc-course" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="courses-idx">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ac2" edge="1" parent="1" source="acc-user" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="users-idx">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ac3" edge="1" parent="1" source="acc-ai" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;dashed=1;exitX=0.2;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="courses-idx">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ac4" edge="1" parent="1" source="acc-ai" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#000000;strokeWidth=2;dashed=1;exitX=0.8;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="users-idx">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -43,7 +43,7 @@
 │  ┌──────────────┐                                       │
 │  │  AI Service  │ ── OpenAI Agents SDK                  │
 │  │  :8003       │ ── RAG Pipeline                       │
-│  └──────────────┘ ── 5 Agents                           │
+│  └──────────────┘ ── 4 LLMs + 5 Tools                    │
 │                                                          │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -58,7 +58,7 @@
 | **User Service** | 8002 | Auth (register/login), profile CRUD. MongoDB `users` collection |
 | **MongoDB** | 27017 | Document store for courses and users |
 | **Qdrant** | 6333 | Vector store for course embeddings |
-| **AI Service** | 8003 | LLM orchestration, RAG pipeline, 5 Agents |
+| **AI Service** | 8003 | LLM orchestration, RAG pipeline, 4 LLMs + 5 Tools |
 
 ## Communication Flow
 
@@ -105,178 +105,121 @@ Browser → Frontend (:5173)
 
 | Diagram | File | Description |
 |---------|------|-------------|
-| System Overview | [diagrams/system-overview.drawio](diagrams/system-overview.drawio) | Layered pipeline from input to response |
-| Query Processing Flow | [diagrams/query-processing-flow.drawio](diagrams/query-processing-flow.drawio) | Step-by-step complex query handling |
-| Version Evolution | [diagrams/version-evolution.drawio](diagrams/version-evolution.drawio) | Component decisions + version mapping |
+| System Overview | [diagrams/system-overview.drawio](diagrams/system-overview.drawio) | Full system map with all components |
+| Agent Overview | [diagrams/agent-overview.drawio](diagrams/agent-overview.drawio) | Requirements → Implementation mapping |
+| RAG Indexing | [diagrams/rag-indexing.drawio](diagrams/rag-indexing.drawio) | CSV → MongoDB → Qdrant pipeline |
+| RAG Query | [diagrams/rag-query.drawio](diagrams/rag-query.drawio) | Query-time retrieval pipeline |
+| Container View | [diagrams/system-containers.drawio](diagrams/system-containers.drawio) | Docker / local host boundary |
+
+## Requirements → Implementation Mapping
+
+The requirements define 5 agents. The implementation uses **4 LLMs + 5 shared tools**:
+
+| Requirements Agent | Implementation | Form | Rationale |
+|---|---|---|---|
+| Learning Advisor Agent | **Learning Advisor** | LLM (Router) | Routes to sub-agents via handoff |
+| Course Retrieval Agent | **retrieve_courses + get_course_details** | Tool | Search execution, not reasoning → no LLM needed |
+| Skill Gap Analysis Agent | **Skill Gap Analyst** | LLM (Sub-Agent) | Requires reasoning about user skills vs goals |
+| Learning Path Planning Agent | **Learning Path Designer** | LLM (Sub-Agent) | Requires reasoning about course ordering |
+| Career Alignment Agent | **Career Advisor** | LLM (Sub-Agent) | Requires reasoning about career paths |
+
+**Key design decision**: Course Retrieval was converted from Agent to Tool because:
+- Course retrieval is "search execution" not "reasoning" — no LLM judgment needed
+- All 4 LLMs share the same tools, avoiding unnecessary agent handoff overhead
+- Hybrid Search (BM25 + Dense + RRF) handles the retrieval logic entirely
 
 ## Pipeline Overview
 
 ```
-User Input (text)
+User Message
    │
    ▼
 ┌──────────────────────────────────────────────────────┐
-│  Query Understanding Layer                           │
-│  ┌─────────┐  ┌──────────┐  ┌────────┐  ┌────────┐ │
-│  │Normalize│→ │ Entity   │→ │Intent  │→ │Decompose│ │
-│  │(rules)  │  │Extract   │  │Classify│  │(LLM)   │ │
-│  │<5ms     │  │(LLM)     │  │(LLM)   │  │~300ms  │ │
-│  │$0       │  │~200ms    │  │~100ms  │  │skip if │ │
-│  └─────────┘  └──────────┘  └────────┘  │simple  │ │
-│                                          └────────┘ │
+│  Input Guardrails                                    │
+│  Injection detection · Topic relevance · PII redaction│
 └──────────────────────────────────────────────────────┘
    │
    ▼
 ┌──────────────────────────────────────────────────────┐
-│  Orchestration Layer                                 │
-│  Execution Planner (DAG) → Agent Dispatcher          │
-│  → Result Merger                                     │
+│  OpenAI Agents SDK (Runner.run)                      │
+│                                                      │
+│  Learning Advisor (Router, gpt-4o)                   │
+│     │ handoff                                        │
+│     ├── Skill Gap Analyst (gpt-4o)                   │
+│     ├── Career Advisor (gpt-4o)                      │
+│     └── Learning Path Designer (gpt-4o, temp=0.3)    │
+│                                                      │
+│  @function_tool (shared by all LLMs):                │
+│     retrieve_courses · get_course_details            │
+│     get_user_profile · update_user_profile           │
+│     web_search                                       │
 └──────────────────────────────────────────────────────┘
    │
    ▼
 ┌──────────────────────────────────────────────────────┐
-│  Agent Layer (OpenAI Agents SDK)                     │
-│  ┌─────────┐ ┌─────────┐ ┌──────────┐ ┌──────────┐│
-│  │Retrieval│ │Skill Gap│ │Learn Path│ │Career    ││
-│  │Agent    │ │Agent    │ │Agent     │ │Alignment ││
-│  └─────────┘ └─────────┘ └──────────┘ └──────────┘│
-│                    ↓ all outputs merge ↓            │
-│              ┌──────────────────────┐               │
-│              │ Learning Advisor     │               │
-│              │ (final synthesizer)  │               │
-│              └──────────────────────┘               │
-└──────────────────────────────────────────────────────┘
-   │                         │
-   ▼                         ▼
-┌─────────────────┐  ┌───────────────────────────────┐
-│ Tool Layer      │  │ Response Layer                 │
-│ search_semantic │  │ Context Assembly → LLM Gen     │
-│ search_keyword  │  │ → Guardrails → Output          │
-│ filter_courses  │  └───────────────────────────────┘
-│ get_course_detail│
-│ get_user_profile│
-│ rerank          │
-└─────────────────┘
-   │
-   ▼
-┌──────────────────────────────────────────────────────┐
-│ Retrieval Layer                                      │
-│ Embed → Vector Search (Qdrant) ─┐                   │
-│                                  ├→ RRF Fusion       │
-│ Keyword Search (MongoDB) ───────┘   → Rerank        │
+│  Output Guardrails                                   │
+│  PII redaction · Stack trace removal                 │
 └──────────────────────────────────────────────────────┘
    │
    ▼
-┌──────────────────────────────────────────────────────┐
-│ Data Layer                                           │
-│ Qdrant │ MongoDB │ OpenAI API                        │
-└──────────────────────────────────────────────────────┘
+  Response to User
 ```
 
-## Query Understanding Layer
+## How It Works
 
-### Step 1: Input Normalizer (rule-based)
-Whitespace/encoding normalization, language detection (en/ja). Latency <5ms, cost $0.
+1. **User sends a message** via chat UI
+2. **Input Guardrails** check for injection, off-topic, PII
+3. **Learning Advisor** (Router) receives the message and decides:
+   - Answer directly (simple questions)
+   - Handoff to a sub-agent (specialized tasks)
+4. **Sub-agent** executes using its assigned tools, then returns control to Learning Advisor
+5. **Learning Advisor** synthesizes the final response
+6. **Output Guardrails** redact any PII or stack traces
+7. **Response** returned to user
 
-### Step 2: Entity Extractor (LLM structured output)
-Extracts structured fields from free-form text using GPT-4o-mini with JSON mode:
-
-```json
-{
-  "skills_mentioned": ["Transformer", "AI-RAN", "LLM"],
-  "career_goal": "AI Engineer at Google",
-  "experience": "AI-RAN research (university)",
-  "desired_focus": "LLM research and development",
-  "constraints": { "timeline": "6 months" },
-  "difficulty_pref": null,
-  "ambiguity_score": 0.2
-}
-```
-
-Latency ~200ms, cost ~$0.0003/req.
-
-### Step 3: Intent Classifier (multi-label)
-Outputs confidence scores for all intents simultaneously (not mutually exclusive):
-
-| Intent | Threshold | Triggers Agent |
-|--------|-----------|----------------|
-| `course_search` | ≥ 0.5 | Course Retrieval |
-| `skill_gap_analysis` | ≥ 0.5 | Skill Gap Analysis |
-| `learning_path` | ≥ 0.5 | Learning Path Planning |
-| `career_guidance` | ≥ 0.5 | Career Alignment |
-| `clarification_needed` | ≥ 0.7 | → Ask follow-up question |
-
-Latency ~100ms (LLM), cost ~$0.0002.
-
-### Step 4: Query Decomposer (LLM, conditional)
-Activated only when multiple intents detected or ambiguity is moderate (0.3-0.7).
-**Skipped** for simple queries (single intent ≥ 0.5, ambiguity < 0.3) — saves ~300ms for ~60-70% of queries.
+The LLM itself handles intent classification, entity extraction, and query construction
+— no separate classifier/decomposer pipeline. This is simpler and leverages the LLM's
+native ability to understand user intent from conversation context.
 
 ---
 
-## Orchestration Layer
+## LLM × Tool Matrix
 
-### Execution Planner
-Converts sub-tasks into a DAG with dependency tracking. **Rule-based**, not LLM.
+| Tool | Learning Advisor | Skill Gap Analyst | Career Advisor | Learning Path Designer |
+|------|:----------------:|:-----------------:|:--------------:|:---------------------:|
+| `retrieve_courses` | ✅ | ✅ | ✅ | ✅ |
+| `get_course_details` | — | — | — | ✅ |
+| `get_user_profile` | ✅ | ✅ | ✅ | ✅ |
+| `update_user_profile` | ✅ | — | — | — |
+| `web_search` | ✅ | ✅ | ✅ | — |
 
-```
-Complex query example:
-  CAA ──┐
-        ├──→ RA ──→ LPPA ──→ LA
-  SGA ──┘
+## LLM Descriptions
 
-  CAA ∥ SGA (parallel)  →  RA  →  LPPA  →  LA (always last)
-```
-
-### Agent Dispatcher
-Executes the DAG, passing context between agents. Parallel execution via asyncio.
-
-### Result Merger
-Aggregates outputs from all agents, deduplicates courses, formats for the Learning Advisor.
+- **Learning Advisor** (Router): Orchestrator. Handles general queries directly, delegates specialized tasks via handoff. Has all tools except `get_course_details`.
+- **Skill Gap Analyst** (Sub-Agent): Compares user's current skills against target role requirements. Identifies gaps and recommends courses to fill them.
+- **Learning Path Designer** (Sub-Agent): Designs structured multi-step learning paths with prerequisite ordering. Uses `get_course_details` for detailed course info. `temp=0.3` for more deterministic outputs.
+- **Career Advisor** (Sub-Agent): Provides career path guidance, researches job market requirements, recommends courses aligned with career goals.
 
 ---
 
-## Agent Layer
+## Retrieval Pipeline (inside retrieve_courses)
 
-### Agent × Tool Matrix
+See [RAG Query diagram](diagrams/rag-query.drawio) for the visual flow.
 
-| Tool | Retrieval | Skill Gap | Learning Path | Career | Advisor |
-|------|:---------:|:---------:|:-------------:|:------:|:-------:|
-| `search_semantic` | ✅ | ✅ | ✅ | ✅ | — |
-| `search_keyword` | ✅ | — | — | — | — |
-| `filter_courses` | ✅ | — | — | — | — |
-| `get_course_detail` | ✅ | — | ✅ | — | — |
-| `get_user_profile` | — | ✅ | — | ✅ | — |
-| `rerank` | ✅ | — | — | — | — |
+1. **Extract Filter + Query**: LLM extracts search text + structured filters (level, min_rating, organization, skill)
+2. **Embedding**: OpenAI text-embedding-3-small (1,536 dims)
+3. **Hybrid Search** (single Qdrant API call):
+   - Prefetch: Dense (HNSW cosine, weight 1.5, limit 30)
+   - Prefetch: BM25 (Qdrant built-in tokenizer + IDF, weight 1.2, limit 30)
+   - Payload Filter applied to both prefetches
+   - RRF Fusion: weights [BM25=1.2, Dense=1.5]
+4. **Cross-Encoder Rerank** (optional): all-MiniLM-L6-v2, local CPU — see [Reranker Analysis](../data-flow.md#reranker-analysis)
+5. **Fallback chain**: Hybrid → BM25-only → MongoDB text search
 
-### Agent Descriptions
+## Graceful Degradation
 
-- **Course Retrieval Agent**: Semantic + keyword search, filtering, hybrid score fusion.
-- **Skill Gap Analysis Agent**: Compares user profile skills against required skills for a goal. Outputs missing skill list.
-- **Learning Path Planning Agent**: Orders courses by prerequisite dependencies, difficulty progression, and skill coverage.
-- **Career Alignment Agent**: Maps career goals to required skill sets using domain knowledge.
-- **Learning Advisor Agent**: No tools. Synthesizes merged outputs into final natural language response.
-
----
-
-## Component Specs
-
-| Component | Implementation | Latency | Cost |
-|-----------|---------------|---------|------|
-| Input Normalizer | Rule-based | <5ms | $0 |
-| Entity Extractor | GPT-4o-mini | ~200ms | ~$0.0003 |
-| Intent Classifier | GPT-4o-mini | ~100ms | ~$0.0002 |
-| Query Decomposer | GPT-4o-mini (skip if simple) | ~300ms | ~$0.0005 |
-| Retrieval | Hybrid (Vector+Keyword) + RRF + Rerank | ~100ms | ~$0.00002 |
-| Agent Reasoning | GPT-4o-mini | ~500-800ms | ~$0.005/agent |
-| Response Gen | GPT-4o-mini | ~400ms | ~$0.003 |
-| Guardrails | Rule-based | <5ms | $0 |
-
-## Per-Query Cost & Latency Estimates
-
-| Query Type | Example | Latency | Cost | Agents Used |
-|------------|---------|:-------:|:----:|:-----------:|
-| **Simple** | "machine learning courses" | ~1.0s | ~$0.004 | RA → LA |
-| **Moderate** | "I want to become a data scientist" | ~2.0s | ~$0.012 | SGA → RA → LPPA → LA |
-| **Complex** | "Google AI Engineer, 6 months, LLM R&D..." | ~2.9s | ~$0.020 | CAA ∥ SGA → RA → LPPA → LA |
-| **Ambiguous** | "何から学習したらいいかわからない" | ~0.4s | ~$0.001 | None (clarifying Q) |
+| Failure | Fallback | Mechanism |
+|---------|----------|-----------|
+| OpenAI embedding timeout | BM25-only search (Qdrant) | Circuit breaker (3 failures → 30s recovery) |
+| Qdrant unavailable | MongoDB $text search | Circuit breaker + exception handler |
+| OpenAI LLM timeout | Error message to user | httpx timeout (180s for chat) |
