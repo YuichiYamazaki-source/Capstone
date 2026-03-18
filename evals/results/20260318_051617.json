@@ -1,0 +1,1199 @@
+{
+  "timestamp": "2026-03-18T05:08:43.124658+00:00",
+  "version": "v4.1-rerank-off",
+  "ir_metrics": {
+    "total_cases": 17,
+    "avg_hit_rate": 0.7059,
+    "avg_precision_at_5": 0.1647,
+    "avg_recall_at_5": 0.1295,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.1429,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Basic Programming in Python II",
+          "Python Data Representations",
+          "Introduction to Scripting in Python Specialization",
+          "An Introduction to Interactive Programming in Python (Part 1)",
+          "Programming in Python: A Hands-on Introduction Specialization"
+        ],
+        "expected_titles": [
+          "Python for Everybody Specialization",
+          "Programming for Everybody (Getting Started with Python)",
+          "Introduction to Scripting in Python Specialization",
+          "Automating Real-World Tasks with Python",
+          "Python: A Guided Journey from Introduction to Application Specialization",
+          "Introduction to Python Functions",
+          "Capstone: Retrieving, Processing, and Visualizing Data with Python"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.1429,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Math for AI beginner part 1 Linear Algebra",
+          "Machine Learning: an overview",
+          "Machine Learning Specialization",
+          "Cloud Virtualization, Containers and APIs",
+          "Microsoft Azure Machine Learning"
+        ],
+        "expected_titles": [
+          "Supervised Machine Learning: Regression and Classification",
+          "Introduction to Embedded Machine Learning",
+          "Introduction to Machine Learning on AWS",
+          "Machine Learning: Theory and Hands-on Practice with Python Specialization",
+          "Applying Machine Learning to your Data with Google Cloud",
+          "Supervised Machine Learning: Classification",
+          "Microsoft Azure Machine Learning"
+        ]
+      },
+      {
+        "id": "gt-04",
+        "query": "cybersecurity courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.4,
+        "recall_at_5": 0.2,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Foundations of Cybersecurity",
+          "Cybersecurity Job Search and Interviews: Getting Started",
+          "Introduction to Cybersecurity Careers",
+          "Introduction to Cybersecurity Essentials",
+          "Advanced Cybersecurity"
+        ],
+        "expected_titles": [
+          "Foundations of Cybersecurity",
+          "Advanced Cybersecurity",
+          "IBM Cybersecurity Analyst Assessment",
+          "Certified in Cybersecurity Specialization",
+          "Cybersecurity in Healthcare (Hospitals & Care Centres)",
+          "Homeland Security and Cybersecurity Future",
+          "Introduction to Cybersecurity & Risk Management Specialization",
+          "Microsoft Cybersecurity Analyst Professional Certificate",
+          "Automated Cyber Security Incident Response",
+          "Cybersecurity for Data Science"
+        ]
+      },
+      {
+        "id": "gt-05",
+        "query": "I want to transition from backend development to data science",
+        "hit_rate": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 5,
+        "retrieved_titles": [
+          "Analyze Data",
+          "Calculus for Machine Learning and Data Science",
+          "Data Science Methods for Quality Improvement Specialization",
+          "Linear Algebra for Machine Learning and Data Science",
+          "Data Analysis with Python Specialization"
+        ],
+        "expected_titles": [
+          "Data Science Fundamentals with Python and SQL Specialization",
+          "Data Science Specialization",
+          "Executive Data Science Specialization",
+          "Applied Data Science Capstone",
+          "Data Science Foundations: Statistical Inference Specialization",
+          "Data Science as a Field",
+          "Learn SQL Basics for Data Science Specialization",
+          "Tools for Data Science"
+        ]
+      },
+      {
+        "id": "gt-06",
+        "query": "deep learning courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.2,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Deep Learning Methods for Healthcare",
+          "Introduction to Deep Learning & Neural Networks with Keras",
+          "Deep Learning and Reinforcement Learning",
+          "Neural Networks and Deep Learning",
+          "Deep Learning for Healthcare Specialization"
+        ],
+        "expected_titles": [
+          "Deep Learning with Keras and Tensorflow",
+          "Deep Learning and Reinforcement Learning",
+          "Deep Learning - Computer Vision for Beginners Using PyTorch",
+          "Probabilistic Deep Learning with TensorFlow 2",
+          "Explainable deep learning models for healthcare - CDSS 3"
+        ]
+      },
+      {
+        "id": "gt-08",
+        "query": "cloud computing and AWS",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.4,
+        "recall_at_5": 0.2222,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Amazon EC2 Basics",
+          "AWS Cloud Practitioner Essentials",
+          "Cloud Essentials for Business Leaders - Education",
+          "AWS Cloud Technical Essentials",
+          "Cloud and AWS Basics"
+        ],
+        "expected_titles": [
+          "AWS Cloud Technical Essentials",
+          "Architecting Solutions on AWS",
+          "Automation in the AWS Cloud",
+          "AWS Cloud Practitioner Certification Specialization",
+          "Introduction to AWS Cloud Careers",
+          "Cloud and AWS Basics",
+          "AWS Fundamentals Specialization",
+          "DevOps on AWS Specialization",
+          "Data Engineering on AWS - Foundations"
+        ]
+      },
+      {
+        "id": "gt-10",
+        "query": "JavaScript web development",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.1667,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Build Website with HTML, JavaScript, AngularJS, and React Specialization",
+          "Web Applications for Everybody Specialization",
+          "Fullstack Web Development",
+          "HTML, CSS, and Javascript for Web Developers Specialization",
+          "HTML, CSS, and Javascript for Web Developers"
+        ],
+        "expected_titles": [
+          "JavaScript Basics",
+          "Introduction to HTML, CSS, & JavaScript",
+          "Introduction to Javascript and Ajax: Building Web Apps",
+          "Fullstack Web Development",
+          "Frontend Development Specialization",
+          "Responsive Website Development and Design Specialization"
+        ]
+      },
+      {
+        "id": "gt-11",
+        "query": "I need to understand how to protect healthcare systems from cyber attacks",
+        "hit_rate": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 0,
+        "retrieved_titles": [],
+        "expected_titles": [
+          "Cybersecurity in Healthcare (Hospitals & Care Centres)",
+          "Foundations of Cybersecurity",
+          "Health Informatics for Healthcare Professionals",
+          "Advanced Cybersecurity",
+          "Assets, Threats, and Vulnerabilities",
+          "Connect and Protect: Networks and Network Security"
+        ]
+      },
+      {
+        "id": "gt-12",
+        "query": "courses about prompt engineering and ChatGPT",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.4,
+        "recall_at_5": 0.4,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "AI Foundations: Prompt Engineering with ChatGPT",
+          "Prompt Engineering Specialization",
+          "ChatGPT Advanced Data Analysis",
+          "Prompt Engineering for ChatGPT",
+          "ChatGPT for Project Management: Execution, Tracking, Success"
+        ],
+        "expected_titles": [
+          "Prompt Engineering Specialization",
+          "ChatGPT: Master Free AI Tools to Supercharge Productivity Specialization",
+          "ChatGPT for Project Management: Execution, Tracking, Success",
+          "Advanced Data Analysis with ChatGPT",
+          "ChatGPT + Zapier: Automate Email Replies with AI"
+        ]
+      },
+      {
+        "id": "gt-13",
+        "query": "How can I build AI applications for production environments?",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.25,
+        "retrieved_count": 5,
+        "retrieved_titles": [
+          "AI Workflow: AI in Production",
+          "IBM AI Product Manager Professional Certificate",
+          "Production Machine Learning Systems",
+          "Generative AI: Supercharge Your Product Management Career",
+          "AI & ML Applications in Oil and Gas Industry"
+        ],
+        "expected_titles": [
+          "AI Workflow: AI in Production",
+          "Developing AI Applications with Python and Flask",
+          "AI for Web Developers Specialization",
+          "Generative AI for Data Engineers  Specialization"
+        ]
+      },
+      {
+        "id": "gt-14",
+        "query": "data visualization and analytics courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.1429,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Data Visualization",
+          "Business Intelligence and Visual Analytics",
+          "SAS Visual Business Analytics Professional Certificate",
+          "Data Analysis and Visualization Foundations Specialization",
+          "Data Understanding and Visualization"
+        ],
+        "expected_titles": [
+          "Data Analysis and Visualization Foundations Specialization",
+          "Data Visualization Capstone",
+          "Data Visualization and Communication with Tableau",
+          "Data Visualization with Python & R for Engineers",
+          "Data Analysis and Presentation Skills: the PwC Approach Final Project",
+          "Exploratory Data Analysis for the Public Sector with ggplot",
+          "Communicating Data Science Results"
+        ]
+      },
+      {
+        "id": "gt-15",
+        "query": "beginner AI courses",
+        "hit_rate": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Math for AI beginner part 1 Linear Algebra",
+          "AI for Education (Basic)",
+          "Practical Python for AI Coding 1",
+          "Automated Report Generation with Generative AI",
+          "Practical Python for AI Coding 2"
+        ],
+        "expected_titles": [
+          "AI For Everyone",
+          "AI and Disaster Management",
+          "AI for Web Developers Specialization",
+          "Business Implications of AI: A Nano-course",
+          "AI and Climate Change",
+          "AI For Business Specialization",
+          "Responsible AI in the Generative AI Era",
+          "Generative AI in Business Specialization"
+        ]
+      },
+      {
+        "id": "gt-16",
+        "query": "I want to explore the intersection of AI and healthcare",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.1667,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "AI in Healthcare Capstone",
+          "Trustworthy AI for Healthcare Management",
+          "AI in Healthcare Specialization",
+          "Evaluations of AI Applications in Healthcare",
+          "Generative AI for Healthcare Students and Professionals"
+        ],
+        "expected_titles": [
+          "Generative AI for Healthcare Students and Professionals",
+          "Explainable deep learning models for healthcare - CDSS 3",
+          "AI and Disaster Management",
+          "Health Informatics for Healthcare Professionals",
+          "Cybersecurity in Healthcare (Hospitals & Care Centres)",
+          "The Data Science of Health Informatics"
+        ]
+      },
+      {
+        "id": "gt-17",
+        "query": "Linux and security",
+        "hit_rate": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 0,
+        "retrieved_titles": [],
+        "expected_titles": [
+          "Linux for Security Experts",
+          "Enterprise System Management and Security",
+          "Linux for Developers",
+          "Linux Basics: The Command Line Interface - 6",
+          "Linux System Administration with IBM Power Systems",
+          "Fundamentals of Computer Network Security Specialization",
+          "Introduction to Network Security"
+        ]
+      },
+      {
+        "id": "gt-18",
+        "query": "UX design courses",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "UX Design in Practice: Accessibility and Collaboration",
+          "Foundations of User Experience (UX) Design",
+          "Document Design",
+          "User Experience Research and Design Specialization",
+          "Information Design"
+        ],
+        "expected_titles": [
+          "Google UX Design Professional Certificate",
+          "Start the UX Design Process: Empathize, Define, and Ideate",
+          "Design a User Experience for Social Good & Prepare for Jobs"
+        ]
+      },
+      {
+        "id": "gt-19",
+        "query": "What courses can help me prepare for AWS certification?",
+        "hit_rate": 1.0,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.1667,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "AWS Cloud Solutions Architect  Professional Certificate",
+          "AWS Cloud Practitioner Certification Specialization",
+          "AWS Solutions Architect - Associate Specialization",
+          "AWS Services",
+          "AWS Certified Solutions Architect"
+        ],
+        "expected_titles": [
+          "AWS Cloud Practitioner Certification Specialization",
+          "Exam Prep MLS-C01: AWS Certified Specialty Machine Learning Specialization",
+          "AWS Cloud Technical Essentials",
+          "AWS Fundamentals Specialization",
+          "Architecting Solutions on AWS",
+          "Introduction to AWS Cloud Careers"
+        ]
+      },
+      {
+        "id": "gt-20",
+        "query": "intermediate level data science courses with good ratings",
+        "hit_rate": 0.0,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Machine Learning with Apache Spark",
+          "Building Cloud Computing Solutions at Scale Specialization",
+          "Analyze Data",
+          "Cloud Data Engineering",
+          "Data Science Methods for Quality Improvement Specialization"
+        ],
+        "expected_titles": [
+          "Data Science Foundations: Statistical Inference Specialization",
+          "Data Science Fundamentals with Python and SQL Specialization",
+          "Advanced Linear Models for Data Science 2: Statistical Linear Models",
+          "Data Science as a Field",
+          "Applied Data Science Capstone",
+          "Process Mining: Data science in Action"
+        ]
+      }
+    ]
+  },
+  "tool_selection": {
+    "total_cases": 38,
+    "advisor_accuracy": 0.7895,
+    "details": [
+      {
+        "id": "gt-01",
+        "query": "Python programming courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-02",
+        "query": "I want to learn machine learning from scratch",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-03",
+        "query": "beginner courses with rating above 4.8",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-04",
+        "query": "cybersecurity courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-05",
+        "query": "I want to transition from backend development to data science",
+        "advisor_tools": [
+          "transfer_to_career_advisor",
+          "web_search",
+          "get_user_profile",
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-06",
+        "query": "deep learning courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-07",
+        "query": "advanced level courses",
+        "advisor_tools": [],
+        "advisor_match": false,
+        "retrieval_method": []
+      },
+      {
+        "id": "gt-08",
+        "query": "cloud computing and AWS",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-09",
+        "query": "courses from Google",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-10",
+        "query": "JavaScript web development",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-11",
+        "query": "I need to understand how to protect healthcare systems from cyber attacks",
+        "advisor_tools": [],
+        "advisor_match": false,
+        "retrieval_method": []
+      },
+      {
+        "id": "gt-12",
+        "query": "courses about prompt engineering and ChatGPT",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-13",
+        "query": "How can I build AI applications for production environments?",
+        "advisor_tools": [
+          "transfer_to_learning_path_designer",
+          "retrieve_courses",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-14",
+        "query": "data visualization and analytics courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-15",
+        "query": "beginner AI courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-16",
+        "query": "I want to explore the intersection of AI and healthcare",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-17",
+        "query": "Linux and security",
+        "advisor_tools": [],
+        "advisor_match": false,
+        "retrieval_method": []
+      },
+      {
+        "id": "gt-18",
+        "query": "UX design courses",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-19",
+        "query": "What courses can help me prepare for AWS certification?",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-20",
+        "query": "intermediate level data science courses with good ratings",
+        "advisor_tools": [
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-21",
+        "query": "What skills am I missing to become a machine learning engineer?",
+        "advisor_tools": [
+          "transfer_to_skill_gap_analyst",
+          "get_user_profile",
+          "web_search",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-22",
+        "query": "Analyze my skill gaps for a data scientist role",
+        "advisor_tools": [
+          "transfer_to_skill_gap_analyst",
+          "get_user_profile",
+          "web_search",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-23",
+        "query": "I know Python and SQL but want to work in AI. What am I missing?",
+        "advisor_tools": [
+          "transfer_to_skill_gap_analyst",
+          "get_user_profile",
+          "web_search",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-24",
+        "query": "Compare my current skills with what's needed for a cloud architect role",
+        "advisor_tools": [
+          "transfer_to_skill_gap_analyst",
+          "get_user_profile",
+          "web_search",
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-25",
+        "query": "How do I assess my readiness for a DevOps position?",
+        "advisor_tools": [
+          "transfer_to_skill_gap_analyst",
+          "get_user_profile",
+          "web_search",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-26",
+        "query": "What skills should I prioritize learning to become job-ready as a backend developer?",
+        "advisor_tools": [
+          "transfer_to_skill_gap_analyst",
+          "web_search",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-27",
+        "query": "What career path should I take to become an AI engineer?",
+        "advisor_tools": [
+          "transfer_to_career_advisor",
+          "web_search",
+          "get_user_profile",
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-28",
+        "query": "What is the job market like for cybersecurity professionals in 2025?",
+        "advisor_tools": [
+          "transfer_to_career_advisor",
+          "web_search"
+        ],
+        "advisor_match": false,
+        "retrieval_method": []
+      },
+      {
+        "id": "gt-29",
+        "query": "I'm a frontend developer. What careers can I transition to?",
+        "advisor_tools": [
+          "transfer_to_career_advisor",
+          "get_user_profile",
+          "web_search",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-30",
+        "query": "What certifications and skills do I need for a data engineering career?",
+        "advisor_tools": [
+          "transfer_to_career_advisor",
+          "web_search"
+        ],
+        "advisor_match": false,
+        "retrieval_method": []
+      },
+      {
+        "id": "gt-31",
+        "query": "How much do machine learning engineers earn and what do they do?",
+        "advisor_tools": [
+          "transfer_to_career_advisor",
+          "web_search"
+        ],
+        "advisor_match": false,
+        "retrieval_method": []
+      },
+      {
+        "id": "gt-32",
+        "query": "Is it better to specialize in cloud computing or data science for long-term career growth?",
+        "advisor_tools": [
+          "transfer_to_career_advisor",
+          "web_search",
+          "web_search"
+        ],
+        "advisor_match": false,
+        "retrieval_method": []
+      },
+      {
+        "id": "gt-33",
+        "query": "Create a learning path for machine learning from beginner to advanced",
+        "advisor_tools": [
+          "transfer_to_learning_path_designer",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-34",
+        "query": "Design a step-by-step curriculum to learn web development",
+        "advisor_tools": [
+          "transfer_to_learning_path_designer",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-35",
+        "query": "What's the best order to study data science courses?",
+        "advisor_tools": [
+          "transfer_to_learning_path_designer",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-36",
+        "query": "Build me a 6-month study plan for cloud computing",
+        "advisor_tools": [
+          "transfer_to_learning_path_designer"
+        ],
+        "advisor_match": false,
+        "retrieval_method": []
+      },
+      {
+        "id": "gt-37",
+        "query": "I want to go from zero to proficient in cybersecurity. What courses should I take in order?",
+        "advisor_tools": [
+          "transfer_to_learning_path_designer",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search"
+        ]
+      },
+      {
+        "id": "gt-38",
+        "query": "Map out a complete learning journey for becoming a full-stack developer",
+        "advisor_tools": [
+          "transfer_to_learning_path_designer",
+          "retrieve_courses",
+          "retrieve_courses",
+          "retrieve_courses",
+          "get_course_details",
+          "get_course_details",
+          "get_course_details"
+        ],
+        "advisor_match": true,
+        "retrieval_method": [
+          "hybrid_search",
+          "hybrid_search",
+          "hybrid_search"
+        ]
+      }
+    ]
+  },
+  "filter_eval": {
+    "total_cases": 5,
+    "avg_filter_satisfaction": 0.8,
+    "avg_param_accuracy": 0.0,
+    "details": [
+      {
+        "id": "gt-03",
+        "query": "beginner courses with rating above 4.8",
+        "filter_satisfaction": 1.0,
+        "param_accuracy": 0.0,
+        "param_details": {
+          "level": false,
+          "min_rating": false
+        },
+        "expected_params": {
+          "level": "Beginner",
+          "min_rating": 4.8
+        },
+        "actual_args": {
+          "level": "",
+          "min_rating": 0.0,
+          "organization": ""
+        },
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Mandarin Chinese 1: Chinese for Beginners",
+          "Mandarin Chinese 3: Chinese for Beginners",
+          "Learn Mandarin Chinese Specialization",
+          "Mandarin Chinese 2: Chinese for Beginners",
+          "Introduction to Python Fundamentals"
+        ]
+      },
+      {
+        "id": "gt-07",
+        "query": "advanced level courses",
+        "filter_satisfaction": 0.0,
+        "param_accuracy": 0.0,
+        "param_details": {
+          "level": false
+        },
+        "expected_params": {
+          "level": "Advanced"
+        },
+        "actual_args": {
+          "level": "",
+          "min_rating": 0.0,
+          "organization": ""
+        },
+        "retrieved_count": 0,
+        "retrieved_titles": []
+      },
+      {
+        "id": "gt-09",
+        "query": "courses from Google",
+        "filter_satisfaction": 1.0,
+        "param_accuracy": 0.0,
+        "param_details": {
+          "organization": false
+        },
+        "expected_params": {
+          "organization": "Google"
+        },
+        "actual_args": {
+          "level": "",
+          "min_rating": 0.0,
+          "organization": ""
+        },
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Getting started with Google Workspace Specialization",
+          "Essential Google Cloud Infrastructure: Foundation",
+          "Google Cloud Fundamentals: Core Infrastructure",
+          "Essential Google Cloud Infrastructure: Core Services",
+          "Google Chat"
+        ]
+      },
+      {
+        "id": "gt-15",
+        "query": "beginner AI courses",
+        "filter_satisfaction": 1.0,
+        "param_accuracy": 0.0,
+        "param_details": {
+          "level": false
+        },
+        "expected_params": {
+          "level": "Beginner"
+        },
+        "actual_args": {
+          "level": "",
+          "min_rating": 0.0,
+          "organization": ""
+        },
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Math for AI beginner part 1 Linear Algebra",
+          "AI for Education (Basic)",
+          "Practical Python for AI Coding 1",
+          "Automated Report Generation with Generative AI",
+          "Practical Python for AI Coding 2"
+        ]
+      },
+      {
+        "id": "gt-20",
+        "query": "intermediate level data science courses with good ratings",
+        "filter_satisfaction": 1.0,
+        "param_accuracy": 0.0,
+        "param_details": {
+          "level": false
+        },
+        "expected_params": {
+          "level": "Intermediate"
+        },
+        "actual_args": {
+          "level": "",
+          "min_rating": 0.0,
+          "organization": ""
+        },
+        "retrieved_count": 10,
+        "retrieved_titles": [
+          "Machine Learning with Apache Spark",
+          "Building Cloud Computing Solutions at Scale Specialization",
+          "Analyze Data",
+          "Cloud Data Engineering",
+          "Data Science Methods for Quality Improvement Specialization"
+        ]
+      }
+    ]
+  },
+  "agent_routing": {
+    "total_cases": 18,
+    "routing_accuracy": 1.0,
+    "details": [
+      {
+        "id": "gt-21",
+        "query": "What skills am I missing to become a machine learning engineer?",
+        "expected_agent": "Skill Gap Analyst",
+        "actual_agent": "Skill Gap Analyst",
+        "match": true
+      },
+      {
+        "id": "gt-22",
+        "query": "Analyze my skill gaps for a data scientist role",
+        "expected_agent": "Skill Gap Analyst",
+        "actual_agent": "Skill Gap Analyst",
+        "match": true
+      },
+      {
+        "id": "gt-23",
+        "query": "I know Python and SQL but want to work in AI. What am I missing?",
+        "expected_agent": "Skill Gap Analyst",
+        "actual_agent": "Skill Gap Analyst",
+        "match": true
+      },
+      {
+        "id": "gt-24",
+        "query": "Compare my current skills with what's needed for a cloud architect role",
+        "expected_agent": "Skill Gap Analyst",
+        "actual_agent": "Skill Gap Analyst",
+        "match": true
+      },
+      {
+        "id": "gt-25",
+        "query": "How do I assess my readiness for a DevOps position?",
+        "expected_agent": "Skill Gap Analyst",
+        "actual_agent": "Skill Gap Analyst",
+        "match": true
+      },
+      {
+        "id": "gt-26",
+        "query": "What skills should I prioritize learning to become job-ready as a backend developer?",
+        "expected_agent": "Skill Gap Analyst",
+        "actual_agent": "Skill Gap Analyst",
+        "match": true
+      },
+      {
+        "id": "gt-27",
+        "query": "What career path should I take to become an AI engineer?",
+        "expected_agent": "Career Advisor",
+        "actual_agent": "Career Advisor",
+        "match": true
+      },
+      {
+        "id": "gt-28",
+        "query": "What is the job market like for cybersecurity professionals in 2025?",
+        "expected_agent": "Career Advisor",
+        "actual_agent": "Career Advisor",
+        "match": true
+      },
+      {
+        "id": "gt-29",
+        "query": "I'm a frontend developer. What careers can I transition to?",
+        "expected_agent": "Career Advisor",
+        "actual_agent": "Career Advisor",
+        "match": true
+      },
+      {
+        "id": "gt-30",
+        "query": "What certifications and skills do I need for a data engineering career?",
+        "expected_agent": "Career Advisor",
+        "actual_agent": "Career Advisor",
+        "match": true
+      },
+      {
+        "id": "gt-31",
+        "query": "How much do machine learning engineers earn and what do they do?",
+        "expected_agent": "Career Advisor",
+        "actual_agent": "Career Advisor",
+        "match": true
+      },
+      {
+        "id": "gt-32",
+        "query": "Is it better to specialize in cloud computing or data science for long-term career growth?",
+        "expected_agent": "Career Advisor",
+        "actual_agent": "Career Advisor",
+        "match": true
+      },
+      {
+        "id": "gt-33",
+        "query": "Create a learning path for machine learning from beginner to advanced",
+        "expected_agent": "Learning Path Designer",
+        "actual_agent": "Learning Path Designer",
+        "match": true
+      },
+      {
+        "id": "gt-34",
+        "query": "Design a step-by-step curriculum to learn web development",
+        "expected_agent": "Learning Path Designer",
+        "actual_agent": "Learning Path Designer",
+        "match": true
+      },
+      {
+        "id": "gt-35",
+        "query": "What's the best order to study data science courses?",
+        "expected_agent": "Learning Path Designer",
+        "actual_agent": "Learning Path Designer",
+        "match": true
+      },
+      {
+        "id": "gt-36",
+        "query": "Build me a 6-month study plan for cloud computing",
+        "expected_agent": "Learning Path Designer",
+        "actual_agent": "Learning Path Designer",
+        "match": true
+      },
+      {
+        "id": "gt-37",
+        "query": "I want to go from zero to proficient in cybersecurity. What courses should I take in order?",
+        "expected_agent": "Learning Path Designer",
+        "actual_agent": "Learning Path Designer",
+        "match": true
+      },
+      {
+        "id": "gt-38",
+        "query": "Map out a complete learning journey for becoming a full-stack developer",
+        "expected_agent": "Learning Path Designer",
+        "actual_agent": "Learning Path Designer",
+        "match": true
+      }
+    ]
+  },
+  "latency": {
+    "p50": 12327.34,
+    "p95": 24354.95,
+    "p99": 27577.07,
+    "avg": 12181.88
+  }
+}

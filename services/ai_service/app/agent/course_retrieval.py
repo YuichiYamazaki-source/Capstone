@@ -4,11 +4,14 @@ Exposed to Learning Advisor as a function_tool.
 No LLM call — deterministic retrieval, lower latency.
 """
 
+import asyncio
 import logging
+import os
 
 from agents import function_tool
 
 from app.agent.context import (
+    add_collected_courses,
     add_retrieval_tool_calls,
     add_tool_call,
     set_retrieval_args,
@@ -17,6 +20,8 @@ from app.tools.hybrid_search import hybrid_search
 from app.tools.reranker import cross_encoder_rerank
 
 logger = logging.getLogger("ai-service.agent.retrieval")
+
+RERANK_ENABLED = os.getenv("RERANK_ENABLED", "true").lower() == "true"
 
 
 @function_tool  # LLM-facing: changes affect model behavior
@@ -66,18 +71,29 @@ async def retrieve_courses(
         return f"[ERROR] retrieve_courses: {e}"
 
     # Cross-encoder reranking for improved relevance
-    if results:
+    # Run in thread to avoid blocking the async event loop (CPU-bound embedding)
+    if results and RERANK_ENABLED:
         try:
-            results = cross_encoder_rerank(query, results, top_k=top_k)
+            results = await asyncio.to_thread(
+                cross_encoder_rerank, query, results, top_k
+            )
         except Exception as e:
             logger.warning(
                 "Cross-encoder rerank failed, using original order",
                 extra={"error": str(e)},
             )
             results = results[:top_k]
+    elif results:
+        results = results[:top_k]
+
+    # Collect reranked courses for API response (CourseCard data)
+    add_collected_courses(results)
 
     # Record retrieval method for evaluation metrics
-    add_retrieval_tool_calls(["hybrid_search", "cross_encoder_rerank"])
+    retrieval_methods = ["hybrid_search"]
+    if RERANK_ENABLED:
+        retrieval_methods.append("cross_encoder_rerank")
+    add_retrieval_tool_calls(retrieval_methods)
 
     if not results:
         return "No courses found matching your query."

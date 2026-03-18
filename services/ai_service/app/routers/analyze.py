@@ -5,6 +5,8 @@ Three separate endpoints allow the frontend to run each analysis independently:
   - POST /analyze/career
   - POST /analyze/learning-path
 
+GET /analyze/results/{user_id} returns previously saved results.
+
 Also keeps the combined POST /analyze for backward compatibility.
 """
 
@@ -13,6 +15,7 @@ import json
 import logging
 import re
 import time
+from datetime import UTC, datetime
 
 from fastapi import APIRouter
 from pydantic import BaseModel, Field, field_validator
@@ -26,14 +29,32 @@ from app.agent.context import (
 )
 from app.agent.learning_path import learning_path_agent
 from app.agent.skill_gap import skill_gap_agent
+from app.clients.mongodb import get_db
 from app.config import settings
-from app.observability import observe_function
+from app.observability import is_tracing_enabled, observe_function
 
 router = APIRouter(tags=["analyze"])
 logger = logging.getLogger("ai-service.analyze")
 
+
+def _tag_trace(tags: list[str]) -> None:
+    """Attach tags to the current LangFuse trace for Evaluator filtering."""
+    if not is_tracing_enabled():
+        return
+    try:
+        from langfuse import get_client
+
+        client = get_client()
+        trace_id = client.get_current_trace_id()
+        client._create_trace_tags_via_ingestion(trace_id=trace_id, tags=tags)
+    except Exception as e:
+        logger.warning("Trace tagging failed: %s", e)
+
+
 _OBJECT_ID_RE = re.compile(r"^[0-9a-fA-F]{24}$")
 _JSON_BLOCK_RE = re.compile(r"```json\s*(.*?)\s*```", re.DOTALL)
+
+_ANALYSIS_COLLECTION = "analysis_results"
 
 
 class AnalyzeRequest(BaseModel):
@@ -91,6 +112,29 @@ def _extract_json_and_evidence(text: str) -> tuple[dict, str]:
         return {"raw_response": text}, text
 
 
+async def _save_analysis_result(
+    user_id: str, analysis_type: str, result: dict, evidence: str, latency_ms: float
+) -> None:
+    """Upsert an analysis result into MongoDB."""
+    db = get_db()
+    await db[_ANALYSIS_COLLECTION].update_one(
+        {"user_id": user_id, "type": analysis_type},
+        {
+            "$set": {
+                "result": result,
+                "evidence": evidence,
+                "latency_ms": latency_ms,
+                "updated_at": datetime.now(UTC),
+            },
+            "$setOnInsert": {
+                "user_id": user_id,
+                "type": analysis_type,
+            },
+        },
+        upsert=True,
+    )
+
+
 async def _run_single_agent(agent, message: str, agent_name: str) -> tuple[dict, str]:
     """Run a single agent and return parsed JSON result + evidence.
 
@@ -120,6 +164,45 @@ async def _run_single_agent(agent, message: str, agent_name: str) -> tuple[dict,
         return {"error": f"{agent_name} temporarily unavailable"}, ""
 
 
+# --- Saved results endpoint ---
+
+
+class SavedAnalysisResponse(BaseModel):
+    """Previously saved analysis results for a user."""
+
+    skill_gap: SingleAnalyzeResponse | None = None
+    career: SingleAnalyzeResponse | None = None
+    learning_path: SingleAnalyzeResponse | None = None
+
+
+@router.get("/analyze/results/{user_id}", response_model=SavedAnalysisResponse)
+async def get_saved_results(user_id: str):
+    """Return previously saved analysis results for a user."""
+    if not _OBJECT_ID_RE.match(user_id):
+        return SavedAnalysisResponse()
+
+    db = get_db()
+    cursor = db[_ANALYSIS_COLLECTION].find({"user_id": user_id})
+    docs = await cursor.to_list(length=3)
+
+    response = SavedAnalysisResponse()
+    for doc in docs:
+        entry = SingleAnalyzeResponse(
+            result=doc.get("result", {}),
+            evidence=doc.get("evidence", ""),
+            latency_ms=doc.get("latency_ms", 0.0),
+        )
+        analysis_type = doc.get("type")
+        if analysis_type == "skill_gap":
+            response.skill_gap = entry
+        elif analysis_type == "career":
+            response.career = entry
+        elif analysis_type == "learning_path":
+            response.learning_path = entry
+
+    return response
+
+
 # --- Individual endpoints ---
 
 
@@ -136,16 +219,19 @@ async def analyze_skill_gap(request: AnalyzeRequest):
         "Skill Gap Analyst",
     )
 
-    latency_ms = (time.perf_counter() - start) * 1000
+    latency_ms = round((time.perf_counter() - start) * 1000, 2)
     logger.info(
         "Skill gap analysis completed",
-        extra={"user_id": request.user_id, "latency_ms": round(latency_ms, 2)},
+        extra={"user_id": request.user_id, "latency_ms": latency_ms},
     )
 
+    await _save_analysis_result(
+        request.user_id, "skill_gap", result, evidence, latency_ms
+    )
+    _tag_trace(["skill-gap-analyst", "retrieve-courses", "web-search"])
+
     return SingleAnalyzeResponse(
-        result=result,
-        evidence=evidence,
-        latency_ms=round(latency_ms, 2),
+        result=result, evidence=evidence, latency_ms=latency_ms
     )
 
 
@@ -162,16 +248,17 @@ async def analyze_career(request: AnalyzeRequest):
         "Career Advisor",
     )
 
-    latency_ms = (time.perf_counter() - start) * 1000
+    latency_ms = round((time.perf_counter() - start) * 1000, 2)
     logger.info(
         "Career analysis completed",
-        extra={"user_id": request.user_id, "latency_ms": round(latency_ms, 2)},
+        extra={"user_id": request.user_id, "latency_ms": latency_ms},
     )
 
+    await _save_analysis_result(request.user_id, "career", result, evidence, latency_ms)
+    _tag_trace(["career-advisor", "retrieve-courses", "web-search"])
+
     return SingleAnalyzeResponse(
-        result=result,
-        evidence=evidence,
-        latency_ms=round(latency_ms, 2),
+        result=result, evidence=evidence, latency_ms=latency_ms
     )
 
 
@@ -188,16 +275,19 @@ async def analyze_learning_path(request: AnalyzeRequest):
         "Learning Path Designer",
     )
 
-    latency_ms = (time.perf_counter() - start) * 1000
+    latency_ms = round((time.perf_counter() - start) * 1000, 2)
     logger.info(
         "Learning path analysis completed",
-        extra={"user_id": request.user_id, "latency_ms": round(latency_ms, 2)},
+        extra={"user_id": request.user_id, "latency_ms": latency_ms},
     )
 
+    await _save_analysis_result(
+        request.user_id, "learning_path", result, evidence, latency_ms
+    )
+    _tag_trace(["learning-path-designer", "retrieve-courses"])
+
     return SingleAnalyzeResponse(
-        result=result,
-        evidence=evidence,
-        latency_ms=round(latency_ms, 2),
+        result=result, evidence=evidence, latency_ms=latency_ms
     )
 
 

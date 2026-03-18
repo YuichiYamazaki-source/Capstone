@@ -77,6 +77,27 @@ async def chat(request: Request) -> Response:
     return await _proxy_to_ai(request, "/chat", timeout=180.0)
 
 
+@router.get("/analyze/results/{user_id}")
+async def get_saved_results(user_id: str) -> Response:
+    """Proxy saved analysis results from the AI service."""
+    url = f"{settings.ai_service_url}/analyze/results/{user_id}"
+    client = _get_http_client()
+    try:
+        resp = await client.get(url, timeout=10.0)
+    except httpx.ConnectError:
+        logger.error("AI service unreachable", extra={"target_url": url})
+        return Response(
+            content='{"detail":"AI service unavailable"}',
+            status_code=503,
+            media_type="application/json",
+        )
+    return Response(
+        content=resp.content,
+        status_code=resp.status_code,
+        media_type="application/json",
+    )
+
+
 @router.post("/analyze")
 async def analyze(request: Request) -> Response:
     """Proxy analyze requests to the AI service."""

@@ -8,7 +8,8 @@ from pydantic import BaseModel, Field, field_validator
 from app.agent.learning_advisor import run_agent
 from app.guardrails import sanitize_output, validate_input
 from app.monitoring import record_request_metrics
-from app.observability import observe_function
+from app.observability import is_tracing_enabled, observe_function
+from app.scoring import send_deterministic_scores
 
 router = APIRouter(tags=["chat"])
 logger = logging.getLogger("ai-service.chat")
@@ -121,6 +122,39 @@ async def chat(request: ChatRequest):
 
     # Output guardrails
     reply = sanitize_output(result["reply"])
+
+    # Tag trace with agent name and tools for LangFuse Evaluator filtering
+    agent_name = result.get("agent", "Learning Advisor")
+    if is_tracing_enabled():
+        try:
+            from langfuse import get_client
+
+            client = get_client()
+            trace_id = client.get_current_trace_id()
+
+            # Build tags for LangFuse Evaluator filtering
+            tags = [agent_name.lower().replace(" ", "-")]
+            if "retrieve_courses" in result.get("tool_calls", []):
+                tags.append("retrieve-courses")
+            if "web_search" in result.get("tool_calls", []):
+                tags.append("web-search")
+            logger.info(
+                "Tagging trace",
+                extra={"trace_id": trace_id, "tags": tags},
+            )
+            client._create_trace_tags_via_ingestion(
+                trace_id=trace_id, tags=tags
+            )
+        except Exception:
+            trace_id = None
+
+        # Send deterministic scores (non-blocking, no LLM cost)
+        # Quality metrics are handled by LangFuse Evaluators.
+        send_deterministic_scores(
+            trace_id,
+            tool_calls=result.get("tool_calls", []),
+            agent=agent_name,
+        )
 
     return ChatResponse(
         reply=reply,

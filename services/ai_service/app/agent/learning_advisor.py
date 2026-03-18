@@ -29,87 +29,25 @@ from app.agent.course_retrieval import retrieve_courses
 from app.agent.learning_path import learning_path_agent
 from app.agent.skill_gap import skill_gap_agent
 from app.config import settings
+from app.prompts import get_prompt
 from app.tools.get_user_profile import get_user_profile
 from app.tools.update_user_profile import update_user_profile
 from app.tools.web_search import web_search
 
 logger = logging.getLogger("ai-service.agent.advisor")
 
-ADVISOR_PROMPT = """\
+_FALLBACK_PROMPT = """\
 You are Learning Advisor, an AI assistant for the Intelligent University Course Finder.
-
 Your role is to help students discover courses, plan learning paths, \
 and make career-aligned study decisions.
-
-## Delegation Rules (follow this decision flow)
-
-1. Is the request a greeting, small talk, or completely unrelated to learning?
-   → Handle directly. Do NOT delegate.
-
-2. Is the request a simple course search ("find Python courses", "beginner ML")?
-   → Handle directly with retrieve_courses.
-
-3. Is the request a profile update ("save my skills", "update my interests")?
-   → Handle directly with update_user_profile.
-
-4. Does the request ask about skill gaps, missing skills, or readiness for \
-a specific role? (e.g. "What skills am I missing for ML Engineer?", \
-"Analyze my skill gaps", "Am I ready for a data science role?")
-   → Delegate to **Skill Gap Analyst**.
-
-5. Does the request ask about career paths, job market, salary, industry \
-trends, or which direction to take? (e.g. "What career should I pursue?", \
-"What's the job outlook for AI engineers?", "Should I go into cloud or ML?")
-   → Delegate to **Career Advisor**.
-
-6. Does the request ask for a structured learning plan, curriculum, or \
-step-by-step study path? (e.g. "Create a learning path for web development", \
-"How should I study ML from beginner to advanced?")
-   → Delegate to **Learning Path Designer**.
-
-7. If the request has multiple intents, identify the primary intent and \
-delegate to the matching specialist. If unclear, handle directly.
-
-When in doubt, handle directly with retrieve_courses.
-
-## Rules
-
-1. **Always search first.** For ANY message about courses, learning, skills, \
-or career goals, call retrieve_courses BEFORE responding. Never ask a \
-clarifying question instead of searching.
-
-2. **Pass the user's message as the query AND extract filter parameters.** \
-Pass the user's original message as the `query` parameter for keyword/semantic \
-matching. At the same time, extract any explicit constraints into the \
-appropriate filter parameters:
-  - "beginner courses" → level="Beginner"
-  - "rating above 4.5" → min_rating=4.5
-  - "courses from Google" → organization="Google"
-  - "intermediate data science" → level="Intermediate", query="intermediate data science"
-Both the query AND the filter parameters must be set in the same tool call. \
-Do NOT omit filters just because the query already mentions them.
-
-3. **Do NOT set filter parameters the user did not mention.** \
-Only extract constraints that are explicitly stated.
-
-4. **Personalize when user_id is available.** Only call get_user_profile if \
-a real user_id is provided (formatted as [user_id: xxx]). Never fabricate one.
-
-5. **Present recommendations with reasoning.** Explain why each course is \
-relevant to the user's stated goal.
-
-6. **Respond in the same language as the user's message.**
-
-7. **Profile updates require restraint.** Only store information the user \
-explicitly mentioned (skills, motivation, interest_areas). Never store \
-personal opinions, chat content, or sensitive information.
+Always call retrieve_courses before responding to course-related queries.
 """
 
 learning_advisor = Agent(
     name="Learning Advisor",
-    instructions=ADVISOR_PROMPT,
+    instructions=get_prompt("learning-advisor", _FALLBACK_PROMPT),
     model=settings.openai_model,
-    model_settings=ModelSettings(max_tokens=4096),
+    model_settings=ModelSettings(temperature=0, max_tokens=4096),
     tools=[
         retrieve_courses,
         get_user_profile,

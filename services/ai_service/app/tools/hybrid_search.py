@@ -19,7 +19,6 @@ from fastembed import TextEmbedding
 from qdrant_client import models
 from qdrant_client.models import FieldCondition, Filter, MatchText, Range
 
-from app.agent.context import add_collected_courses
 from app.circuit_breaker import CircuitOpenError, embedding_circuit, qdrant_circuit
 from app.clients.mongodb import get_db
 from app.clients.openai_client import get_openai_client
@@ -158,9 +157,6 @@ async def hybrid_search(
             extra={"error": str(e)},
         )
         courses = await _mongodb_fallback_search(query, level, min_rating, top_k)
-
-    # Collect for API response
-    add_collected_courses(courses)
 
     logger.info(
         "Hybrid search completed",

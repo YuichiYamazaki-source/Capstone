@@ -13,6 +13,35 @@ import SmartToyIcon from "@mui/icons-material/SmartToy";
 import PersonIcon from "@mui/icons-material/Person";
 import client from "../../api/client";
 import CourseCard from "../courses/CourseCard";
+import SkillGapContent from "../../components/analysis/SkillGapContent";
+import CareerContent from "../../components/analysis/CareerContent";
+import LearningPathContent from "../../components/analysis/LearningPathContent";
+
+// Agent names that return structured JSON (from backend agent definitions)
+const ANALYSIS_AGENTS = {
+  "Skill Gap Analyst": "skill-gap",
+  "Career Advisor": "career",
+  "Learning Path Designer": "learning-path",
+};
+
+/**
+ * Try to extract structured JSON from an agent reply.
+ * Handles: ```json ... ```, raw JSON object, or JSON embedded in text.
+ */
+function tryParseAnalysis(text) {
+  if (!text) return null;
+  // Try ```json ... ``` block first
+  const fenced = text.match(/```json\s*([\s\S]*?)\s*```/);
+  if (fenced) {
+    try { return JSON.parse(fenced[1]); } catch { /* fall through */ }
+  }
+  // Try raw JSON (starts with {)
+  const trimmed = text.trim();
+  if (trimmed.startsWith("{")) {
+    try { return JSON.parse(trimmed); } catch { /* fall through */ }
+  }
+  return null;
+}
 
 const SUGGESTIONS = [
   "I want to learn machine learning",
@@ -68,6 +97,9 @@ export default function Explore() {
       });
       const data = res.data;
       setConversationId(data.conversation_id);
+      const agentName = data.agent || "";
+      const analysisType = ANALYSIS_AGENTS[agentName] || null;
+      const analysisData = analysisType ? tryParseAnalysis(data.reply) : null;
       setMessages((prev) => [
         ...prev,
         {
@@ -76,6 +108,9 @@ export default function Explore() {
           toolCalls: data.tool_calls,
           latency: data.latency_ms,
           courses: data.courses || [],
+          agent: agentName,
+          analysisType,
+          analysisData,
         },
       ]);
     } catch (err) {
@@ -143,32 +178,53 @@ export default function Explore() {
               >
                 {msg.role === "ai" ? <SmartToyIcon sx={{ fontSize: 16 }} /> : <PersonIcon sx={{ fontSize: 16 }} />}
               </Avatar>
-              <Box sx={{ maxWidth: msg.courses?.length > 0 ? "85%" : "70%" }}>
-                <Box
-                  sx={{
-                    p: 2,
-                    borderRadius: 3,
-                    bgcolor: msg.role === "ai" ? "#f5f5f5" : "#6c63ff",
-                    color: msg.role === "user" ? "#fff" : "inherit",
-                    borderTopLeftRadius: msg.role === "ai" ? 4 : undefined,
-                    borderTopRightRadius: msg.role === "user" ? 4 : undefined,
-                    fontSize: 14,
-                    lineHeight: 1.6,
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
-                  {msg.text}
-                  {msg.toolCalls?.length > 0 && (
-                    <Box sx={{ mt: 1, display: "flex", gap: 0.5, flexWrap: "wrap" }}>
-                      {msg.toolCalls.map((t, j) => (
-                        <Chip key={j} label={t} size="small" sx={{ fontSize: 11, height: 20, bgcolor: "#e8eaf6", color: "#3949ab" }} />
-                      ))}
-                      {msg.latency > 0 && (
-                        <Chip label={`${(msg.latency / 1000).toFixed(1)}s`} size="small" sx={{ fontSize: 11, height: 20, bgcolor: "#e0f2f1", color: "#00695c" }} />
-                      )}
-                    </Box>
-                  )}
-                </Box>
+              <Box sx={{ maxWidth: msg.analysisData ? "90%" : msg.courses?.length > 0 ? "85%" : "70%" }}>
+                {/* Tool calls & latency metadata */}
+                {msg.toolCalls?.length > 0 && (
+                  <Box sx={{ mb: 1, display: "flex", gap: 0.5, flexWrap: "wrap", alignItems: "center" }}>
+                    {msg.agent && (
+                      <Chip label={msg.agent} size="small" sx={{ fontSize: 11, height: 20, bgcolor: "#f3e5f5", color: "#7b1fa2" }} />
+                    )}
+                    {msg.toolCalls.map((t, j) => (
+                      <Chip key={j} label={t} size="small" sx={{ fontSize: 11, height: 20, bgcolor: "#e8eaf6", color: "#3949ab" }} />
+                    ))}
+                    {msg.latency > 0 && (
+                      <Chip label={`${(msg.latency / 1000).toFixed(1)}s`} size="small" sx={{ fontSize: 11, height: 20, bgcolor: "#e0f2f1", color: "#00695c" }} />
+                    )}
+                  </Box>
+                )}
+                {/* Structured analysis content OR plain text */}
+                {msg.analysisData ? (
+                  <Box
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      bgcolor: "#fff",
+                      border: "1px solid #e0e0e0",
+                      borderTopLeftRadius: msg.role === "ai" ? 4 : undefined,
+                    }}
+                  >
+                    {msg.analysisType === "skill-gap" && <SkillGapContent data={msg.analysisData} />}
+                    {msg.analysisType === "career" && <CareerContent data={msg.analysisData} />}
+                    {msg.analysisType === "learning-path" && <LearningPathContent data={msg.analysisData} />}
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      p: 2,
+                      borderRadius: 3,
+                      bgcolor: msg.role === "ai" ? "#f5f5f5" : "#6c63ff",
+                      color: msg.role === "user" ? "#fff" : "inherit",
+                      borderTopLeftRadius: msg.role === "ai" ? 4 : undefined,
+                      borderTopRightRadius: msg.role === "user" ? 4 : undefined,
+                      fontSize: 14,
+                      lineHeight: 1.6,
+                      whiteSpace: "pre-wrap",
+                    }}
+                  >
+                    {msg.text}
+                  </Box>
+                )}
                 {msg.courses?.length > 0 && (
                   <Box
                     sx={{
