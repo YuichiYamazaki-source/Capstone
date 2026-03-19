@@ -151,6 +151,14 @@ Capstone/
 │   ├── architecture/
 │   │   ├── system-design.md         #   C4 model system design document
 │   │   └── diagrams/               #   draw.io architecture diagrams (8 files)
+│   ├── presentation/
+│   │   ├── capstone_presentation.pptx  # Stakeholder presentation slides
+│   │   ├── capstone_presentation.pdf   # PDF export of presentation
+│   │   ├── Architecture.pdf            # Architecture slides (PDF)
+│   │   ├── script-outline.md           # Presentation script outline (Japanese)
+│   │   ├── script_english.md           # Presentation script (English)
+│   │   ├── charts/                     # Chart assets for slides
+│   │   └── diagrams/                   # Diagram assets for slides
 │   ├── api-design.md               #   REST API endpoint specifications
 │   ├── data-flow.md                #   Ingestion and retrieval pipeline
 │   ├── evaluation.md               #   Eval metrics, results, and analysis
