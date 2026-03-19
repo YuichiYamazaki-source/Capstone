@@ -290,3 +290,12 @@
 | 1クエリあたりのコストは？ | LangFuseで追跡。(ダッシュボードの実数値を見せる) |
 | なぜLangChainではなくOpenAI Agents SDK？ | 軽量、抽象化のオーバーヘッドが少ない、ハンドオフロジックを直接制御できる。 |
 | Ground Truthはどう作った？ | DBクエリで期待コースを抽出 + 手動でルーティングラベルを付与。38ケース。限界は認識済み — 人間による検証が必要。 |
+| IR metricsが1K→6.6Kで大幅に下がった理由は？ | 2つの問題が重なっている。第1に方式の問題：Precision@K/Recall@KがGTタイトルとの文字列完全一致で判定しているため、GTにない関連コースが全て「不正解」扱い（Precision@5: 0.61→0.16）。DeepEvalのContextualPrecision/Recall（LLM-as-Judge）を使うべきだった。第2にGTそのものの正当性：GTはDBクエリから機械的に生成しており「ユーザーにとって本当に良い推薦か」の人間の判断が入っていない。LLM-as-Judgeに変えれば数値はより正確になるが、GTの根拠が薄い以上、いい数値が出てもUXとの相関は保証されない。本当の検証には実ユーザーの評価が必要。 |
+| なぜDeepEvalのContextualPrecision/Recallを使わなかった？ | 使うべきだった。ただし問題は半分しか解決しない。文字列一致→LLM-as-Judgeで数値の正確性は上がるが、GT自体が人間の「これが良い推薦」という判断に基づいていないため、メトリクスの改善がUX改善と相関する保証がない。完全な解決は：(1) LLM-as-Judgeで計測精度を上げる + (2) 実ユーザーのフィードバックからGTを構築し、メトリクスとUXを紐づける。両方PoB課題。 |
+| RRF重み [BM25=1.2, Dense=1.5] の根拠は？ | Denseに高めの重みを付けたのは、セマンティック検索の方がユーザーの意図を捉えやすいため。BM25はスキル名など具体語のカバーが役割。経験的初期値であり体系的チューニングはしていない。Grid SearchはPoB課題。 |
+| DeepEvalのthreshold 0.5は低くない？ | PoC段階では壊滅的に悪い応答を検出するベースライン。GTが不完全な現状で高い閾値を設定すると偽陰性（良い応答が不合格）が増える。実ユーザーデータでGT改善後に段階的に引き上げる。 |
+| PoCなのになぜマイクロサービス？ | 評価チェックリストに「Microservices Representation」が明記。加えてAI ServiceとCourse Serviceは依存ライブラリが大きく異なり（AI: openai-agents, DeepEval / Course: Motor, pymongo）、コンテナ分離の方がビルドが速い。 |
+| Prompt Injectionの7つのregexで十分？ | Regexは第1防衛線（"ignore previous instructions"等の典型パターン検出）。Topic relevanceチェック（150+キーワード + LLMフォールバック）が第2防衛線。PoB/Prdでは専用分類モデル（Rebuff, Lakera Guard）を検討。 |
+| ローカルMiniLMにフォールバックした時の品質は？ | 次元が1/4（1536→384）なので品質は劣化する。フォールバックの目的は完全停止の防止であり品質維持ではない。フォールバック連鎖（Hybrid→BM25のみ→MongoDB $text）は品質と可用性のトレードオフ。 |
+| OpenAI一本でベンダーロックインは？ | PoCではエコシステム一貫性を優先。ロックインリスクは認識済み。HuggingFaceのEmbeddingフォールバックは実装済み。PoBのModel Routingでマルチベンダー対応を計画。 |
+| OpenAI Agents SDKのhandoffはどう動く？ | `handoff()`は現在のAgentの実行を終了し、会話コンテキストを別Agentに渡す。Runner（実行ループ）が次のAgentのプロンプトとToolセットに切り替える。HTTP通信ではなくプロセス内の関数呼び出し。 |
